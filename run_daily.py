@@ -4,15 +4,20 @@ Drop new xlsx/csv files into inbox/, then run this script. It will:
   1. Ingest & clean new files, deduplicating against the master book
   2. Score all leads (resellers) and sequence shops
   3. Exclude anyone actioned within the last 48 h or whose exact action was already issued
-  4. Output today_dms.csv and shops_actions.csv
-  5. Log every action to pipeline.db and print a run report
+  4. Draft outreach text for every actioned lead via claude-haiku (or templates with --no-api)
+  5. Output today_dms.csv and shops_actions.csv (with draft_message column)
+  6. Log every action to pipeline.db and print a run report
 
-Usage: python run_daily.py [--dry-run]
+Usage:
+  python run_daily.py            # full run with Anthropic API
+  python run_daily.py --no-api   # template fallback, no API key needed
+  python run_daily.py --dry-run  # score only, no writes or API calls
 """
 
 import argparse
 import difflib
 import math
+import os
 import re
 import shutil
 import sqlite3
@@ -20,6 +25,9 @@ from datetime import date, datetime, timedelta
 from pathlib import Path
 
 import pandas as pd
+from dotenv import load_dotenv
+
+load_dotenv()  # reads .env if present; safe to call when file is absent
 
 # ── Paths ─────────────────────────────────────────────────────────────────────
 DB_PATH     = Path("pipeline.db")
@@ -69,6 +77,9 @@ CALL_AFTER_DAYS  = 3
 VISIT_AFTER_DAYS = 14
 
 SCORE_DATE = date.today()
+
+HAIKU_MODEL = "claude-haiku-4-5-20251001"
+STALE_DAYS  = 90   # days since last touch → "warm but stale" acknowledgment in draft
 
 LEAD_COLS = [
     "lead_id", "source", "handle", "store_name", "contact_name", "email",
@@ -418,10 +429,194 @@ def _engagement_score(row):
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
+# MESSAGE DRAFTING
+# ═══════════════════════════════════════════════════════════════════════════════
+
+_DRAFT_SYSTEM = (
+    "You draft outreach for Fleek, a UK vintage clothing reseller platform. "
+    "Strict rules: British English only; no em dashes; never invent prices, stock levels, "
+    "promotions, delivery terms or discounts; where a specific detail would strengthen the "
+    "message write [rep: placeholder describing what to add] instead; output the message "
+    "text only — no labels, headers or preamble."
+)
+
+
+def _draft_prompt(row: dict, channel: str, days_since) -> str:
+    name    = row.get("handle") or row.get("store_name") or "the lead"
+    source  = row.get("source") or ""
+    stage   = row.get("stage") or ""
+    inbound = row.get("last_inbound_text")
+    has_q   = bool(inbound and "?" in str(inbound) and str(inbound) not in ("nan", "None"))
+    stale   = days_since is not None and days_since >= STALE_DAYS
+    notes   = row.get("notes")
+    vel     = row.get("sales_velocity_30d")
+    fol     = row.get("followers")
+
+    nt = 0
+    try: nt = int(float(str(row.get("num_touches") or 0).replace("<NA>", "0")))
+    except (ValueError, TypeError): pass
+
+    eng_parts = []
+    if vel and str(vel) not in ("nan", "None"):
+        eng_parts.append(f"{int(float(vel))} sales/mo")
+    if fol and str(fol) not in ("nan", "None"):
+        fk = float(fol) / 1000
+        eng_parts.append(f"{fk:.0f}k followers" if fk >= 1 else f"{int(float(fol))} followers")
+
+    lines = [
+        f"Lead: {name}" + (f" ({source})" if source else ""),
+        f"Stage: {stage}, {nt} prior contacts",
+        (f'Last inbound from them: "{inbound}"'
+         if inbound and str(inbound) not in ("nan", "None", "") else "Last inbound: none"),
+        (f"Days since last contact: {days_since}" if days_since is not None
+         else "Days since last contact: unknown"),
+        f"Spend estimate: {_spend_label(row)}",
+    ]
+    if eng_parts:
+        lines.append(f"Engagement: {', '.join(eng_parts)}")
+    if notes and str(notes) not in ("nan", "None", ""):
+        lines.append(f"Notes: {notes}")
+
+    if channel == "dm":
+        ch = "an Instagram DM — casual, direct, 2-3 sentences max, at most one emoji if it reads naturally"
+    elif channel == "email":
+        ch = "an email — first line must be 'Subject: [subject line]', then the body (3-5 sentences), no emojis"
+    elif channel == "call":
+        ch = "call talking points — 3-5 bullet points starting with a dash, prompts for a rep (not a script), no emojis"
+    else:
+        ch = "visit prep notes — 3-4 bullet points starting with a dash, for a field rep, no emojis"
+
+    if has_q:
+        stage_note = (f"Their last message was an unanswered question: \"{inbound}\". "
+                      "Address or acknowledge it first — that is the re-engagement hook.")
+    elif stale:
+        stage_note = (f"It has been {days_since} days since last contact. "
+                      "Acknowledge the gap honestly rather than pretending continuity.")
+    elif nt == 0:
+        stage_note = "This is a first touch — no prior relationship exists."
+    else:
+        stage_note = ""
+
+    prompt = "\n".join(lines) + f"\n\nWrite {ch}."
+    if stage_note:
+        prompt += f"\nNote: {stage_note}"
+    return prompt
+
+
+def _template_draft(row: dict, channel: str, days_since) -> str:
+    """Plain-text template fallback used with --no-api."""
+    handle  = f"@{row.get('handle')}" if row.get("handle") else ""
+    store   = row.get("store_name") or ""
+    cname   = row.get("contact_name") or ""
+    inbound = row.get("last_inbound_text") or ""
+    has_q   = "?" in str(inbound) and str(inbound) not in ("nan", "None", "")
+    stale   = days_since is not None and days_since >= STALE_DAYS
+    city    = row.get("city") or ""
+
+    nt = 0
+    try: nt = int(float(str(row.get("num_touches") or 0).replace("<NA>", "0")))
+    except (ValueError, TypeError): pass
+
+    if channel == "dm":
+        if has_q:
+            return (f"Hi {handle}, sorry for the slow reply -- to answer your question: "
+                    f"[rep: answer \"{inbound}\"]. Happy to send more detail if that's useful.")
+        elif stale:
+            return (f"Hi {handle}, it's been a while -- hope things are going well. "
+                    "Reaching back out in case the timing is better now. "
+                    "[rep: one-line reminder of Fleek offer].")
+        elif nt == 0:
+            return (f"Hi {handle}, spotted your page and thought there might be a good fit "
+                    "with Fleek. Happy to share how it works if you're open to it.")
+        else:
+            return (f"Hi {handle}, just checking back in -- happy to share what we've been "
+                    "working on lately if useful. [rep: add one hook from their listings/niche].")
+
+    elif channel == "email":
+        sal  = f"Hi {cname}," if cname else "Hi there,"
+        subj = f"Fleek x {store}" if store else "Fleek -- quick question"
+        if has_q:
+            body = (f"Thanks for getting back to me. To answer your question: "
+                    f"[rep: answer \"{inbound}\"]. Happy to set up a call to run through anything else.")
+        elif stale:
+            ref = store or "the shop"
+            body = (f"It's been a while since we last spoke -- I hope things are going well at {ref}. "
+                    "Reaching back out in case the timing is better now. [rep: brief Fleek value prop].")
+        elif nt == 0:
+            body = (f"[rep: one-line intro on Fleek]. I came across {store or 'your shop'} and "
+                    "thought it could be a great fit. Would you be open to a quick call to explore?")
+        else:
+            body = ("Just following up on our last conversation. "
+                    "[rep: reference last touch context]. Happy to pick up whenever suits you.")
+        return f"Subject: {subj}\n\n{sal}\n\n{body}\n\n[rep: your name]"
+
+    else:  # call or visit
+        points = [
+            "- Confirm they received our outreach re: Fleek",
+            "- Key ask: [rep: 1-2 sentences on Fleek value prop for their seller type]",
+            f"- Their context: {city + ' -- mention local angle' if city else '[rep: reference listings/niche]'}",
+        ]
+        if has_q:
+            points.insert(1, f"- Address their question first: [rep: answer \"{inbound}\"]")
+        if stale:
+            points.append(f"- It's been {days_since}d -- acknowledge the gap, ask if timing is better")
+        points.append("- Proposed next step: [rep: trial consignment / follow-up email / visit date]")
+        return "\n".join(points)
+
+
+def generate_draft(row: dict, channel: str, days_since, api_client) -> str:
+    """Generate outreach draft via API, falling back to template on any error."""
+    if api_client is not None:
+        try:
+            msg = api_client.messages.create(
+                model=HAIKU_MODEL,
+                max_tokens=220,
+                system=_DRAFT_SYSTEM,
+                messages=[{"role": "user", "content": _draft_prompt(row, channel, days_since)}],
+            )
+            return msg.content[0].text.strip()
+        except Exception:
+            pass
+    return _template_draft(row, channel, days_since)
+
+
+def _add_drafts(output_df: pd.DataFrame, full_leads: pd.DataFrame,
+                action_col: str, api_client) -> pd.DataFrame:
+    """Merge full lead data into output_df and add draft_message column."""
+    lookup = full_leads.set_index("lead_id")
+    drafts = []
+    for _, r in output_df.iterrows():
+        lid   = r.get("lead_id")
+        frow  = lookup.loc[lid].to_dict() if lid in lookup.index else r.to_dict()
+        action = str(r.get(action_col) or "")
+        days_since = _days_ago(_to_date(r.get("last_touch_date")))
+
+        if action.startswith("Await reply"):
+            drafts.append("")
+            continue
+
+        if "Email" in action or action_col == "action" and "dm" in action.lower():
+            channel = "dm" if action_col == "action" else "email"
+        elif "Call" in action:
+            channel = "call"
+        elif "Visit" in action:
+            channel = "visit"
+        else:
+            channel = "dm"  # reseller default
+
+        drafts.append(generate_draft(frow, channel, days_since, api_client))
+
+    output_df = output_df.copy()
+    output_df["draft_message"] = drafts
+    return output_df
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
 # DAILY SCORING & OUTPUT
 # ═══════════════════════════════════════════════════════════════════════════════
 
-def score_and_output(conn: sqlite3.Connection, run_id: str, run_date: str, dry_run: bool) -> dict:
+def score_and_output(conn: sqlite3.Connection, run_id: str, run_date: str,
+                     dry_run: bool, api_client) -> dict:
     df          = pd.read_sql("SELECT * FROM leads", conn)
     recent_ids  = recent_lead_ids(conn)
     prev_issued = previously_issued(conn)
@@ -470,6 +665,7 @@ def score_and_output(conn: sqlite3.Connection, run_id: str, run_date: str, dry_r
     top_dms   = scored_df.head(TOP_N_DMS).copy()
 
     if not dry_run:
+        top_dms = _add_drafts(top_dms, df, "action", api_client)
         top_dms.to_csv("today_dms.csv", index=False, encoding="utf-8-sig")
         for _, r in top_dms.iterrows():
             actions_to_log.append({
@@ -564,8 +760,32 @@ def score_and_output(conn: sqlite3.Connection, run_id: str, run_date: str, dry_r
         )
 
     if not dry_run:
+        shops_df = _add_drafts(shops_df, df, "next_action", api_client)
         shops_df.to_csv("shops_actions.csv", index=False, encoding="utf-8-sig")
         log_actions(conn, run_id, run_date, actions_to_log)
+
+    # Pick three sample drafts for the run report
+    samples = {}
+    if not dry_run and "draft_message" in top_dms.columns:
+        q_dm = top_dms[top_dms["action"].str.contains("unanswered question", na=False)]
+        if len(q_dm):
+            r = q_dm.iloc[0]
+            samples["dm_question"] = {"handle": r.get("handle"), "reason": r.get("reason"),
+                                       "draft": r.get("draft_message", "")}
+        cold = top_dms[top_dms["action"].str.contains("never contacted|awaiting reply|ghosted", na=False)]
+        if not len(cold):  # fall back to lowest-score DM
+            cold = top_dms.tail(1)
+        if len(cold):
+            r = cold.iloc[0]
+            samples["dm_cold"] = {"handle": r.get("handle"), "reason": r.get("reason"),
+                                   "draft": r.get("draft_message", "")}
+    if not dry_run and "draft_message" in shops_df.columns:
+        email_rows = shops_df[shops_df["next_action"].str.contains("Email", na=False) &
+                               ~shops_df["draft_message"].fillna("").str.strip().eq("")]
+        if len(email_rows):
+            r = email_rows.iloc[0]
+            samples["shop_email"] = {"store": r.get("store_name"), "action": r.get("next_action"),
+                                      "draft": r.get("draft_message", "")}
 
     return {
         "resellers_scored":    len(scored_df),
@@ -577,6 +797,8 @@ def score_and_output(conn: sqlite3.Connection, run_id: str, run_date: str, dry_r
         "top_dms":             top_dms,
         "shops_df":            shops_df,
         "actions_logged":      len(actions_to_log),
+        "samples":             samples,
+        "api_used":            api_client is not None,
     }
 
 
@@ -584,7 +806,7 @@ def score_and_output(conn: sqlite3.Connection, run_id: str, run_date: str, dry_r
 # RUN REPORT
 # ═══════════════════════════════════════════════════════════════════════════════
 
-def print_report(run_id, run_date, ingest_stats, score_stats, prev_run_info):
+def print_report(run_id, run_date, ingest_stats, score_stats, prev_run_info, api_used=False):
     total_new  = sum(s["new"]        for s in ingest_stats)
     total_dups = sum(s["duplicates"] for s in ingest_stats)
     total_rows = sum(s["rows_read"]  for s in ingest_stats)
@@ -617,6 +839,8 @@ def print_report(run_id, run_date, ingest_stats, score_stats, prev_run_info):
     print(f"    DMs queued in today_dms.csv:            {score_stats['dms_issued']}")
     print(f"    Shop actions in shops_actions.csv:      {score_stats['shops_actioned']}")
     print(f"    Actions logged to ledger:               {score_stats['actions_logged']}")
+    drafting_mode = "claude-haiku" if api_used else "--no-api templates"
+    print(f"    Draft mode:                             {drafting_mode}")
 
     if len(score_stats["top_dms"]) > 0:
         print(f"\n  TOP 10 DMs:")
@@ -635,6 +859,31 @@ def print_report(run_id, run_date, ingest_stats, score_stats, prev_run_info):
                 names = grp["store_name"].dropna().tolist()
                 print(f"    {grp.iloc[0]['city_cluster']} — {', '.join(str(n) for n in names[:4])}")
 
+    # Sample drafts
+    samples = score_stats.get("samples", {})
+    if samples:
+        print(f"\n  SAMPLE DRAFTS")
+        if "dm_question" in samples:
+            s = samples["dm_question"]
+            print(f"\n  [1] DM revive — unanswered question (@{s['handle']})")
+            print(f"      Reason: {s['reason']}")
+            print(f"      ---")
+            for line in str(s["draft"]).splitlines():
+                print(f"      {line}")
+        if "dm_cold" in samples:
+            s = samples["dm_cold"]
+            print(f"\n  [2] DM cold-ish (@{s['handle']})")
+            print(f"      Reason: {s['reason']}")
+            print(f"      ---")
+            for line in str(s["draft"]).splitlines():
+                print(f"      {line}")
+        if "shop_email" in samples:
+            s = samples["shop_email"]
+            print(f"\n  [3] Shop email ({s['store']} — {s['action']})")
+            print(f"      ---")
+            for line in str(s["draft"]).splitlines():
+                print(f"      {line}")
+
     print("\n" + "=" * 68)
 
 
@@ -645,11 +894,27 @@ def print_report(run_id, run_date, ingest_stats, score_stats, prev_run_info):
 def main():
     parser = argparse.ArgumentParser(description="Fleek GTM daily runner")
     parser.add_argument("--dry-run", action="store_true",
-                        help="Score without writing outputs or logging to ledger")
+                        help="Score without writing outputs, API calls, or ledger logging")
+    parser.add_argument("--no-api", action="store_true",
+                        help="Use plain templates instead of claude-haiku (no API key needed)")
     args = parser.parse_args()
 
     run_id   = datetime.now().isoformat()
     run_date = str(SCORE_DATE)
+
+    # Set up API client unless skipped
+    api_client = None
+    if not args.no_api and not args.dry_run:
+        api_key = os.getenv("ANTHROPIC_API_KEY", "").strip()
+        if api_key:
+            try:
+                from anthropic import Anthropic
+                api_client = Anthropic(api_key=api_key)
+            except ImportError:
+                print("  [warn] anthropic package not installed — falling back to templates")
+        else:
+            print("  [warn] ANTHROPIC_API_KEY not set in .env — falling back to templates")
+            print("         Run with --no-api to suppress this warning.")
 
     conn = init_db()
 
@@ -662,8 +927,10 @@ def main():
                      if prev_row else None)
 
     ingest_stats = ingest_inbox(conn)
-    score_stats  = score_and_output(conn, run_id, run_date, dry_run=args.dry_run)
-    print_report(run_id, run_date, ingest_stats, score_stats, prev_run_info)
+    score_stats  = score_and_output(conn, run_id, run_date,
+                                    dry_run=args.dry_run, api_client=api_client)
+    print_report(run_id, run_date, ingest_stats, score_stats, prev_run_info,
+                 api_used=api_client is not None)
 
     conn.close()
 
