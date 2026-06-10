@@ -1,4 +1,4 @@
-lead_id,store_name,contact_name,email,phone,city,country,stage,num_touches,next_action,due_date,assigned_bdr,last_touch_date,est_monthly_spend_gbp,city_cluster
+﻿lead_id,store_name,contact_name,email,phone,city,country,stage,num_touches,next_action,due_date,assigned_bdr,last_touch_date,est_monthly_spend_gbp,city_cluster
 L0159,Camden Vault,Sven Petrov,svenpetrov39@gmail.com,+317011781216,Amsterdam,NL,Call Booked,3,Call: warm lead / confirm call,2026-06-10,,,5810.0,Day trip: Amsterdam (3 visits)
 L0206,Atelier Loom,Ines Fischer,inesfischer52@gmail.com,+312318014119,Amsterdam,NL,New Lead,3,Email: first touch,2026-06-10,Maya,2026-01-28,4790.0,Day trip: Amsterdam (3 visits)
 L0229,Corner Trunk,Lukas Tanaka,lukastanaka@yahoo.com,+317553365298,Amsterdam,NL,Contacted,0,Email: first touch,2026-06-10,,2025-12-15,1840.0,Day trip: Amsterdam (3 visits)

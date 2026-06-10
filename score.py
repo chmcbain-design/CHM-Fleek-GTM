@@ -4,6 +4,7 @@ Loads cleaned_pipeline.csv, scores resellers 0-100, sequences shops, outputs:
   today_dms.csv    — top 40 resellers to DM today
   shops_actions.csv — shops with next action + city clusters
 """
+import math
 import re
 from datetime import date, timedelta
 
@@ -22,14 +23,11 @@ W_RECENCY      = 0.10
 
 TOP_N_DMS = 40                     # max resellers in today_dms.csv
 
-# Spend bands (monthly GBP) → raw score 0-100
-SPEND_BANDS = [
-    (5_000, 100),
-    (2_000,  80),
-    (1_000,  60),
-    (  500,  40),
-    (    0,  20),
-]
+# Spend scoring — log-normalized against this ceiling
+SPEND_MAX_GBP = 10_000   # normalisation ceiling (score approaches 100 here)
+# Source data caps spend at £9,000 (40 leads hit this exactly).
+# Leads at the cap get a ±5-point proxy adjustment from price × velocity.
+SPEND_DATA_CAP = 9_000
 
 # Follower cap — above this, extra followers add nothing
 FOLLOWER_CAP = 10_000
@@ -91,14 +89,37 @@ def has_question(text):
     return "?" in str(text)
 
 
-def spend_score(amount):
-    """Map monthly spend (GBP) to 0-100."""
+def spend_score(row):
+    """
+    Log-normalized spend score 0-100.
+    For leads at the £9k data cap, adds a ±5-point proxy adjustment
+    (avg_listing_price * sales_velocity) to differentiate within the group.
+    """
+    amount = pd.to_numeric(row["est_monthly_spend_gbp"], errors="coerce")
+
+    # Proxy fallback if spend missing (shouldn't happen in this dataset)
     if pd.isna(amount):
-        return None
-    for threshold, score in SPEND_BANDS:
-        if float(amount) >= threshold:
-            return score
-    return 20
+        price = pd.to_numeric(row["avg_listing_price_gbp"], errors="coerce")
+        vel   = pd.to_numeric(row["sales_velocity_30d"],    errors="coerce")
+        if pd.notna(price) and pd.notna(vel):
+            amount = price * vel
+        else:
+            return 10
+
+    v = float(amount)
+    base = math.log1p(v) / math.log1p(SPEND_MAX_GBP) * 100
+
+    # Proxy tiebreaker for capped leads (proxy range ~2,400–12,474 in this data)
+    if v == SPEND_DATA_CAP:
+        price = pd.to_numeric(row["avg_listing_price_gbp"], errors="coerce")
+        vel   = pd.to_numeric(row["sales_velocity_30d"],    errors="coerce")
+        if pd.notna(price) and pd.notna(vel):
+            proxy = price * vel
+            # centre on 0, scale ±5 points (12,474 = observed max proxy)
+            adjustment = ((proxy / 12_474) - 0.5) * 10
+            base = base + adjustment
+
+    return round(min(max(base, 0), 100))
 
 
 def recency_score(last_touch_date):
@@ -175,18 +196,26 @@ def engagement_score_and_label(row):
     return score, label
 
 
-def spend_label(amount):
+def spend_label(row):
+    amount = pd.to_numeric(row["est_monthly_spend_gbp"], errors="coerce")
     if pd.isna(amount):
         return "spend unknown"
     v = float(amount)
+    if v == SPEND_DATA_CAP:
+        price = pd.to_numeric(row["avg_listing_price_gbp"], errors="coerce")
+        vel   = pd.to_numeric(row["sales_velocity_30d"],    errors="coerce")
+        if pd.notna(price) and pd.notna(vel):
+            proxy = price * vel
+            px = f"proxy £{proxy/1000:.1f}k" if proxy >= 1000 else f"proxy £{int(proxy)}"
+            return f"est £9k/mo cap ({px})"
     if v >= 1000:
         return f"est £{v/1000:.1f}k/mo"
     return f"est £{int(v)}/mo"
 
 
-def build_reason(conv_reason, spend_amt, eng_label, recency_days):
+def build_reason(conv_reason, row, recency_days):
     parts = [conv_reason]
-    parts.append(spend_label(spend_amt))
+    parts.append(spend_label(row))
     if recency_days is not None:
         parts.append(f"last touch {recency_days}d ago")
     return ", ".join(parts)
@@ -221,7 +250,7 @@ resellers_active = resellers[~excluded].copy()
 scored_rows = []
 for _, row in resellers_active.iterrows():
     conv_s, conv_reason = conversation_score(row)
-    spend_s = spend_score(row["est_monthly_spend_gbp"]) or 0
+    spend_s = spend_score(row)
     eng_s, eng_label   = engagement_score_and_label(row)
     rec_s  = recency_score(row["last_touch_date"])
 
@@ -235,9 +264,7 @@ for _, row in resellers_active.iterrows():
     lt_d = to_date(row["last_touch_date"])
     recency_days = days_ago(lt_d) if lt_d else None
 
-    reason = build_reason(
-        conv_reason, row["est_monthly_spend_gbp"], eng_label, recency_days
-    )
+    reason = build_reason(conv_reason, row, recency_days)
 
     scored_rows.append({
         "lead_id":          row["lead_id"],
@@ -259,7 +286,7 @@ for _, row in resellers_active.iterrows():
 
 scored_df = pd.DataFrame(scored_rows).sort_values("score", ascending=False)
 top_dms = scored_df.head(TOP_N_DMS).copy()
-top_dms.to_csv("today_dms.csv", index=False)
+top_dms.to_csv("today_dms.csv", index=False, encoding="utf-8-sig")
 
 
 # ════════════════════════════════════════════════════════════════════════════
@@ -347,7 +374,7 @@ shops_df["city_cluster"] = shops_df["city"].apply(
     lambda c: f"Day trip: {c} ({day_trip_cities[c]} visits)" if c in day_trip_cities.index else ""
 )
 
-shops_df.to_csv("shops_actions.csv", index=False)
+shops_df.to_csv("shops_actions.csv", index=False, encoding="utf-8-sig")
 
 
 # ════════════════════════════════════════════════════════════════════════════
