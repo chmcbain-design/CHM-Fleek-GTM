@@ -1,0 +1,252 @@
+lead_id,source,handle,store_name,contact_name,email,phone,city,country,followers,active_listings,avg_listing_price_gbp,sales_velocity_30d,est_monthly_spend_gbp,stage,first_seen_date,last_touch_date,num_touches,last_inbound_text,assigned_bdr,notes,lead_type
+L0199,store,rummageplumeco,Vintage Lane,Zoe Park,zoepark33@outlook.com,7491870177,London,UK,,,,0.0,1240.0,Negotiating,2026-02-05,2026-02-10,2,"Happy to chat, mornings best.",Maya,slow to reply,shop
+L0174,google_maps,staticshop,Second Collective,Lukas Walsh,lukaswalsh70@outlook.com,+447800705413,Bristol,UK,,,,,4960.0,Replied,2026-02-02,2026-02-14,0,What's the fee structure?,Maya,slow to reply,shop
+L0218,in-person,,Loft Threads,Freya Lopez,freyalopez@hotmail.com,7974367360,Brighton,UK,0.0,,,0.0,2930.0,Replied,2025-12-07,2026-02-07,4,"Thanks, can you email a one-pager?",Tomas,follows competitor,shop
+L0237,Physical Store,heritagevntgarchive,Brick Lane Wardrobe,Felix Silva,hello@bricklanewardr.store,0044754561948,Manchester,UK,,,,0.0,1280.0,Lost,2025-12-16,2026-01-25,6,What's the fee structure?,,price sensitive,shop
+L0225,store,,Camden Loom,Zoe Moreau,zoemoreau64@gmail.com,0044775728317,Manchester,UK,0.0,0.0,,,5930.0,Negotiating,2026-01-04,2026-01-19,0,"Thanks, can you email a one-pager?",Tomas,owner travels a lot,shop
+L0219,store,threadbare_,Corner Vault,Marcus Silva,hello@cornervault.com,+14855371013,New York,US,,,,,2590.0,Negotiating,2026-02-16,2026-02-18,4,Not taking on new channels currently.,Priya,wants menswear focus,shop
+L0167,Physical Store,stitchvaultshop,Rusty Edit,Pablo Okafor,info@rustyedit.store,+496659322961,Berlin,DE,,,,,1030.0,Warm,2026-01-22,2026-02-18,6,We already sell on Vinted.,Tomas,met at market,shop
+L0178,google_maps,,Golden Cellar,Zoe Petrov,shop@goldencellar.store,+319663623910,Amsterdam,NL,0.0,,,0.0,5960.0,Ghosted,2025-12-12,2026-01-19,2,Interested - send pricing.,Priya,slow to reply,shop
+L0071,IG,vntgcobaltarchive,,Hugo,hugo91@gmail.com,,,,1519.0,48.0,32.0,10.0,420.0,Replied,2025-12-28,2026-01-01,4,already on another platform tbh,Maya,wants menswear focus,shop
+L0226,in-person,driftshop,Brick Lane Closet,Yuki Park,info@bricklaneclose.co.uk,+11389584195,New York,US,,,,,5200.0,Ghosted,2025-12-29,2026-01-05,5,"Sure, pop in on Thursday.",,price sensitive,shop
+L0087,Instagram,giltwornarchive,,,pablokhan50@gmail.com,,,,2248.0,71.0,30.0,29.0,1680.0,Replied,2025-12-25,2026-01-03,4,how does payout work,Tomas,high engagement acct,shop
+L0186,store,,Past Edit,Carlos Hassan,info@pastedit.co.uk,+447544203406,Manchester,UK,0.0,0.0,,,2100.0,Negotiating,2026-01-26,2026-01-30,2,We already sell on Vinted.,,ref from supplier,shop
+L0204,Physical Store,fadedgrailstore,House of Drawer,Liam Tanaka,liamtanaka75@hotmail.com,+447809816692,Leeds,UK,,,,,5270.0,Contacted,2025-12-19,2026-02-18,1,We already sell on Vinted.,Maya,,shop
+L0170,in-person,,Camden Garms,Elena Hassan,elenahassan13@yahoo.com,+494893323395,Berlin,DE,,0.0,,,1150.0,Negotiating,2026-02-23,2026-02-23,3,"Owner is back next week, call then.",Tomas,slow to reply,shop
+L0234,google_maps,emberfinds,Blue Vault,Aisha Nguyen,hello@bluevault.store,+16944301212,New York,US,,,,,3730.0,New Lead,2026-01-03,,1,Interested - send pricing.,Maya,price sensitive,shop
+L0249,Physical Store,,Old Emporium,Mia Walsh,hello@oldemporium.co.uk,+311671779808,Amsterdam,NL,,0.0,,,1410.0,Lost,2025-12-13,2026-01-16,2,"Thanks, can you email a one-pager?",Maya,price sensitive,shop
+L0059,Vinted,emberarchive,,Tom,tom73@hotmail.com,,,,2386.0,109.0,30.0,27.0,1490.0,Replied,2025-12-21,2025-12-26,3,"yeah keen, drop details",,ref from supplier,shop
+L0025,eBay,staticvintage,,Marcus,marcus@gmail.com,,,,42251.0,274.0,27.0,183.0,9000.0,Replied,,2026-02-11,4,how much for the whole bundle?,Tomas,wants menswear focus,shop
+L0216,in-person,,Retro Lab,Yuki Adebayo,yukiadebayo86@gmail.com,7823764573,Bristol,UK,0.0,,,0.0,4970.0,Lost,2026-01-29,2026-02-15,6,,Priya,big consignment potential,shop
+L0194,Physical Store,,Blue Edit,Nadia Nguyen,nadianguyen76@gmail.com,07223378267,Leeds,UK,,,,0.0,1010.0,Contacted,2026-02-08,2026-02-23,6,We already sell on Vinted.,Priya,high engagement acct,shop
+L0195,google_maps,,Rusty Edit,Hugo Berg,hugoberg91@outlook.com,+496481002890,Berlin,DE,,,,0.0,3890.0,Call Booked,2026-01-21,2026-02-27,6,"Sure, pop in on Thursday.",Priya,high engagement acct,shop
+L0252,Physical Store,,Rusty Wardrobe,Dmitri Rossi,shop@rustywardrobe.com,+315768362487,Amsterdam,NL,,,,,5170.0,Contacted,2026-01-04,2026-02-09,4,"Happy to chat, mornings best.",Tomas,slow to reply,shop
+L0105,Whatnot,sepiacollective,,Greta,,,,,1157.0,39.0,15.0,13.0,140.0,Call Booked,2026-02-19,2026-02-20,4,need to think about it,Maya,slow to reply,reseller
+L0175,in-person,cinderwaxfinds,Loft Cellar,Priya Fischer,shop@loftcellar.com,0044785719596,Manchester,UK,,,,0.0,860.0,Ghosted,2025-12-08,,4,"Happy to chat, mornings best.",,,shop
+L0041,IG,giltvintage,,Nadia,,,,,41381.0,249.0,54.0,191.0,9000.0,Contacted,2026-01-23,2026-02-27,3,what brands do you take?,Priya,wants menswear focus,reseller
+L0156,google_maps,,Loft Lane,Lena Park,lenapark79@outlook.com,+447737683411,Bristol,UK,,,,,2580.0,Ghosted,2025-12-29,2026-01-05,2,"Sure, pop in on Thursday.",Maya,follows competitor,shop
+L0233,Physical Store,,The Collective,Priya Tanaka,shop@thecollective.com,07182574459,London,UK,,,,,880.0,Warm,2025-12-18,2026-02-22,3,"Owner is back next week, call then.",Priya,price sensitive,shop
+L0153,store,,Brick Lane Bazaar,Marta Schmidt,martaschmidt75@outlook.com,+447519325528,Manchester,UK,,,,,3430.0,Ghosted,2025-12-15,2025-12-30,6,"Owner is back next week, call then.",Maya,ref from supplier,shop
+L0193,google_maps,,House of Collective,Priya Berg,priyaberg@outlook.com,+13371436821,New York,US,,0.0,,,1890.0,Contacted,2025-12-12,2026-01-03,3,Not taking on new channels currently.,,ref from supplier,shop
+L0256,store,,Rusty Cellar,Raj Novak,shop@rustycellar.store,+16208071959,LA,US,,0.0,,,5090.0,New Lead,2026-01-13,2025-12-27,3,,Priya,met at market,shop
+L0200,google_maps,,Found Bazaar,Zoe Fischer,zoefischer86@yahoo.com,0044725195903,Leeds,UK,,0.0,,,1560.0,New Lead,2025-12-25,2026-02-09,3,"Thanks, can you email a one-pager?",,high engagement acct,shop
+L0144,Whatnot,y2kvaultcollective,,,coraokafor35@hotmail.com,,,,5900.0,37.0,11.0,15.0,230.0,Warm,2025-12-26,2026-01-03,5,ok sounds good when can we talk,,follows competitor,shop
+L0023,Vinted,cobaltfadedstore,,,ineskhan30@yahoo.com,,,,5978.0,98.0,27.0,0.0,800.0,Warm,2025-12-27,2026-01-05,7,ok sounds good when can we talk,,price sensitive,shop
+L0201,in-person,embersupply,Rusty Cellar,Hugo Janssen,hello@rustycellar.store,7835022204,Brighton,UK,,,,,2740.0,Lost,,2026-02-03,2,,Priya,ref from supplier,shop
+L0241,google_maps,,Maison Vault,Elena Schmidt,elenaschmidt50@outlook.com,+494422144906,Berlin,DE,,,,,5420.0,New Lead,2025-12-17,2026-01-14,3,"Sure, pop in on Thursday.",Priya,slow to reply,shop
+L0255,google_maps,,Velvet Trunk,Omar Petrov,omarpetrov@gmail.com,+15561482584,New York,US,,0.0,,,700.0,Contacted,2026-02-02,2026-02-19,1,"Sure, pop in on Thursday.",,high engagement acct,shop
+L0183,store,,Old Lane,James Marchetti,jamesmarchetti8@gmail.com,0044754231500,Leeds,UK,,,,,5640.0,New Lead,2026-01-30,2026-02-02,6,"Owner is back next week, call then.",Priya,price sensitive,shop
+L0214,Physical Store,,House of Wardrobe,Hugo Adebayo,shop@houseofwardrob.store,+493772397393,Berlin,DE,,,,,4780.0,Replied,2026-01-27,2026-02-04,4,What's the fee structure?,Priya,high engagement acct,shop
+L0192,store,,Camden Exchange,Sven Hughes,hello@camdenexchange.store,+334896004150,Paris,FR,,0.0,,,4860.0,Contacted,2026-01-06,2026-02-27,5,,Maya,ref from supplier,shop
+L0206,Physical Store,,Atelier Loom,Ines Fischer,inesfischer52@gmail.com,+312318014119,Amsterdam,NL,,,,,4790.0,New Lead,2025-12-23,2026-01-28,3,What's the fee structure?,Maya,price sensitive,shop
+L0158,store,,Velvet Edit,Priya Silva,info@velvetedit.store,+498135200091,Berlin,DE,0.0,,,,980.0,Call Booked,2026-01-05,2026-01-09,2,Interested - send pricing.,,high engagement acct,shop
+L0181,store,,Rusty Lab,Greta Lopez,gretalopez@gmail.com,+338523057348,Paris,FR,,,,,3010.0,Ghosted,2026-01-31,2026-02-14,3,"Too busy this season, try later.",Priya,price sensitive,shop
+L0215,google_maps,,Corner Bazaar,Raj Romano,info@cornerbazaar.store,+311925081201,Amsterdam,NL,,,,,2520.0,Contacted,2026-02-18,2026-02-22,3,Not taking on new channels currently.,Priya,met at market,shop
+L0235,store,,Brick Lane Threads,Cora Khan,corakhan27@yahoo.com,07965352784,London,UK,,,,,5660.0,Warm,2025-12-15,2026-02-24,6,"Owner is back next week, call then.",Priya,ref from supplier,shop
+L0019,Instagram,archiveatticvintage,,,carlosjanssen79@hotmail.com,,,,6109.0,47.0,36.0,30.0,1870.0,Replied,2026-02-01,2026-02-19,6,how does payout work,,big consignment potential,shop
+L0164,Physical Store,motharchivestore,Golden Emporium,Hugo Kaur,hugokaur@yahoo.com,+447347656134,Bristol,UK,,,,,1640.0,New Lead,2026-02-12,2026-02-15,1,Not taking on new channels currently.,,,shop
+L0157,store,,Atelier Drawer,Freya Janssen,freyajanssen@yahoo.com,0044784145620,Bristol,UK,,,,,4360.0,Contacted,2026-02-20,2026-02-21,3,"Owner is back next week, call then.",Maya,owner travels a lot,shop
+L0168,Physical Store,driftstore,Rusty Edit,Yuki Silva,hello@rustyedit.com,+19027833017,LA,US,,,,,2720.0,New Lead,2025-12-03,,1,"Owner is back next week, call then.",,owner travels a lot,shop
+L0245,store,,Blue Garms,Zoe Hassan,info@bluegarms.co.uk,07991883600,Brighton,UK,,,,,1040.0,Negotiating,2026-01-05,2026-01-09,2,We already sell on Vinted.,Priya,wants menswear focus,shop
+L0190,in-person,,Maison Garms,Elena Reid,elenareid@gmail.com,+447786468104,Manchester,UK,,,,,5260.0,Ghosted,2026-01-21,2026-02-18,6,"Sure, pop in on Thursday.",Maya,follows competitor,shop
+L0191,Physical Store,sepiaco,Old Rail,Mia Romano,,+18038993664,LA,US,,,,,5610.0,Call Booked,2026-02-08,2026-02-23,0,"Thanks, can you email a one-pager?",Priya,ref from supplier,reseller
+L0128,eBay,plumetonicgallery,,Felix,,,,,3408.0,18.0,12.0,36.0,170.0,Contacted,2026-02-26,2026-02-28,5,how much for the whole bundle?,Tomas,price sensitive,reseller
+L0198,in-person,,Loft Lab,Marcus Lopez,shop@loftlab.com,+334097319885,Paris,FR,0.0,,,,3060.0,Contacted,2026-01-15,2026-01-26,5,"Thanks, can you email a one-pager?",,ref from supplier,shop
+L0141,Instagram,emberreworked_uk,,Sven,,,,,1488.0,92.0,33.0,25.0,2380.0,Negotiating,2025-12-04,2026-01-27,2,whats your commission?,Tomas,ref from supplier,reseller
+L0228,google_maps,archivegrailfinds,Second Trunk,Zoe Janssen,hello@secondtrunk.store,+16465543766,New York,US,,,,,4670.0,Call Booked,2025-12-17,2026-02-15,6,,,high engagement acct,shop
+L0189,google_maps,,Velvet Bazaar,Marta Park,martapark@hotmail.com,+447225121758,Brighton,UK,,,,,1840.0,Won,2026-01-10,2026-01-26,0,Interested - send pricing.,Priya,owner travels a lot,shop
+L0084,eBay,y2kvintage,,Dmitri,,,,,5601.0,24.0,15.0,23.0,310.0,New Lead,2025-12-20,2026-02-14,1,"yeah keen, drop details",Priya,slow to reply,reseller
+L0230,Physical Store,,Second Garms,James Weber,info@secondgarms.co.uk,+16169161729,LA,US,,0.0,,,2790.0,Warm,2026-02-21,2026-02-21,5,"Thanks, can you email a one-pager?",,,shop
+L0042,Depop,prelovedtonicvintage,,Pablo,,,,,53745.0,435.0,64.0,109.0,9000.0,Lost,2025-12-26,2026-01-13,6,already on another platform tbh,,ref from supplier,reseller
+L0262,IG,reworkedstaticfinds,,Omar,,,,,843.0,103.0,9.0,29.0,460.0,New Lead,2025-12-16,2026-02-05,9,send me the bundle list,,follows competitor,reseller
+L0236,in-person,,Maison Emporium,Felix Rossi,felixrossi@gmail.com,+336923932047,Paris,FR,,,,,5670.0,Replied,2026-01-27,2026-02-19,5,Not taking on new channels currently.,,ref from supplier,shop
+L0161,google_maps,,Maison Rail,Noah Fischer,info@maisonrail.com,+447237119418,Bristol,UK,,,,,3150.0,Negotiating,2026-01-29,2026-02-26,6,Interested - send pricing.,,big consignment potential,shop
+L0166,Physical Store,,Loft Collective,Sven Reid,svenreid@hotmail.com,+447797777255,Bristol,UK,,,,,2630.0,Lost,2025-12-20,2026-02-28,6,"Too busy this season, try later.",,owner travels a lot,shop
+L0081,Instagram,fadedstaticsupply,,,,,,,6942.0,81.0,28.0,39.0,2770.0,Replied,2026-01-09,2026-01-15,6,already on another platform tbh,Tomas,big consignment potential,reseller
+L0103,eBay,archive__,,Raj,,,,,4496.0,53.0,14.0,25.0,350.0,Contacted,2025-12-10,2025-12-19,6,can you do a call fri?,,wants menswear focus,reseller
+L0056,Depop,sepiay2kfinds,,,,,,,5162.0,66.0,36.0,19.0,1150.0,Warm,2026-01-03,2026-01-07,6,send me the bundle list,Priya,big consignment potential,reseller
+L0197,store,,Corner Loom,Yuki Tanaka,hello@cornerloom.com,+447524968605,Manchester,UK,,,,,3980.0,New Lead,,2026-02-15,5,"Thanks, can you email a one-pager?",Tomas,high engagement acct,shop
+L0030,Depop,emberretrovintage,,,,,,,6733.0,13.0,14.0,9.0,120.0,Ghosted,2026-01-09,2026-01-15,3,how much for the whole bundle?,Priya,met at market,reseller
+L0016,eBay,archivestatic_uk,,,,,,,837.0,110.0,30.0,27.0,2210.0,Replied,2026-02-26,2026-02-27,5,need to think about it,Priya,high engagement acct,reseller
+L0263,IG,sableshop,,,,,,,707.0,66.0,39.0,38.0,1890.0,New Lead,2026-02-13,2025-12-17,5,ok sounds good when can we talk,Maya,owner travels a lot,reseller
+L0185,google_maps,,Brick Lane Closet,Zoe Lopez,shop@bricklaneclose.co.uk,,Brighton,UK,,,,0.0,860.0,Negotiating,2025-12-30,2026-01-22,3,Interested - send pricing.,Priya,,shop
+L0155,Physical Store,,The Exchange,Ines Schmidt,hello@theexchange.com,+447618213574,London,UK,,,,,4140.0,Ghosted,2025-12-29,2026-01-23,0,We already sell on Vinted.,,price sensitive,shop
+L0061,eBay,embermarrowco,,,,,,,13512.0,129.0,29.0,120.0,9000.0,Replied,2025-12-31,2026-01-15,7,already on another platform tbh,Tomas,big consignment potential,reseller
+L0231,store,,House of Lane,Raj Nguyen,info@houseoflane.store,+332453781218,Paris,FR,,,,0.0,5120.0,Replied,2026-02-14,2026-02-14,5,"Owner is back next week, call then.",,,shop
+L0211,in-person,,Second Society,Aisha Costa,aishacosta79@outlook.com,+12608084195,LA,US,,,,,2760.0,Negotiating,2026-02-13,2026-02-21,6,"Sure, pop in on Thursday.",,met at market,shop
+L0121,instagram_dm,stitchmothsupply,,Noah,,,,,5649.0,8.0,29.0,32.0,170.0,Negotiating,2025-12-20,2026-02-26,4,,Priya,wants menswear focus,reseller
+L0217,Physical Store,,Golden Wardrobe,Raj Murphy,rajmurphy@outlook.com,+18229051272,New York,US,,,,,4920.0,Ghosted,2026-01-12,,3,"Owner is back next week, call then.",Priya,wants menswear focus,shop
+L0251,instagram_dm,marrowgrail_uk,,Aisha,,,,,1958.0,70.0,14.0,31.0,600.0,Warm,2025-12-04,2026-02-12,6,,Tomas,met at market,reseller
+L0085,IG,relicthreads,,,,,,,39493.0,449.0,48.0,140.0,9000.0,Negotiating,2025-12-25,2026-02-01,2,already on another platform tbh,Priya,high engagement acct,reseller
+L0032,IG,loomstore,,,,,,,772.0,16.0,12.0,22.0,120.0,Ghosted,2026-02-06,2026-02-13,2,whats the catch lol,Maya,owner travels a lot,reseller
+L0227,Physical Store,,Loft Emporium,Zoe Marchetti,shop@loftemporium.co.uk,,Brighton,UK,,,,,2150.0,Call Booked,2026-02-01,2026-02-24,6,"Too busy this season, try later.",Tomas,owner travels a lot,shop
+L0135,Depop,y2kretroarchive,,Bea,,,,,5112.0,91.0,14.0,26.0,1230.0,Replied,2026-02-14,2026-02-24,6,send me the bundle list,Tomas,,reseller
+L0117,Depop,fadedhazelarchive,,,,,,,602.0,83.0,13.0,19.0,680.0,Warm,2026-02-25,2026-02-28,7,whats the catch lol,Priya,price sensitive,reseller
+L0146,Vinted,archivevntgthreads,,Sofia,,,,,6766.0,22.0,20.0,31.0,280.0,Lost,2026-02-09,2026-02-16,1,how does payout work,,high engagement acct,reseller
+L0064,Vinted,plumecobaltvintage,,,,,,,4314.0,75.0,19.0,2.0,120.0,Warm,2026-02-23,2026-02-28,3,can you do a call fri?,Priya,big consignment potential,reseller
+L0205,Physical Store,,Maison Trunk,Hugo Marchetti,hugomarchetti@outlook.com,+447400985349,Brighton,UK,,,,,2400.0,Contacted,2026-01-12,2026-01-23,5,,Tomas,high engagement acct,shop
+L0140,Vinted,wornfinds,,,,,,,4906.0,92.0,26.0,27.0,1610.0,Contacted,2026-02-12,2026-02-28,5,whats your commission?,Tomas,price sensitive,reseller
+L0038,eBay,prelovedgallery,,,,,,,5556.0,94.0,19.0,39.0,2160.0,Ghosted,2026-01-22,2026-01-24,3,interested but busy this week,Maya,slow to reply,reseller
+L0221,google_maps,,Found Vault,Theo Nguyen,theonguyen12@yahoo.com,+491787308973,Berlin,DE,,,,,2580.0,Call Booked,2026-02-21,,0,"Happy to chat, mornings best.",Priya,big consignment potential,shop
+L0134,Instagram,toniccollective,,Ines,,,,,2721.0,126.0,26.0,33.0,3340.0,Replied,2026-02-06,2026-02-22,7,,Priya,met at market,reseller
+L0210,store,,Old Collective,James Park,info@oldcollective.store,+18783983612,LA,US,,0.0,,,5190.0,New Lead,,,1,"Sure, pop in on Thursday.",Maya,high engagement acct,shop
+L0232,store,,Retro Wardrobe,Liam Kaur,,+15477363339,New York,US,,,,0.0,1810.0,Warm,,2026-01-29,2,"Thanks, can you email a one-pager?",Maya,slow to reply,reseller
+L0052,Depop,heritagegallery,,,,,,,6397.0,79.0,35.0,16.0,1420.0,Replied,2025-12-23,2025-12-26,4,maybe next month,Priya,wants menswear focus,reseller
+L0147,Depop,reliccobaltstudio,,Freya,,,,,1177.0,7.0,29.0,39.0,150.0,Negotiating,2026-01-17,2026-02-16,1,send me the bundle list,,slow to reply,reseller
+L0002,Depop,emberfadedsupply,,,,,,,4412.0,68.0,23.0,28.0,1120.0,Replied,2026-02-05,2026-02-25,4,whats the catch lol,Maya,met at market,reseller
+L0018,Whatnot,giltcollective,,,,,,,1594.0,63.0,11.0,40.0,580.0,Replied,2026-02-07,2026-02-14,4,already on another platform tbh,Tomas,high engagement acct,reseller
+L0159,store,,Camden Vault,Sven Petrov,svenpetrov39@gmail.com,+317011781216,Amsterdam,NL,,,,0.0,5810.0,Call Booked,2026-02-07,,3,Not taking on new channels currently.,,met at market,shop
+L0050,Whatnot,vaultvntgvintage,,,,,,,29418.0,544.0,47.0,129.0,9000.0,Replied,2026-02-25,2026-02-25,4,already on another platform tbh,Priya,owner travels a lot,reseller
+L0187,Physical Store,,Maison Rail,Omar Moreau,info@maisonrail.store,+447792907326,Bristol,UK,,,,,840.0,Won,2026-01-09,2026-01-09,0,"Happy to chat, mornings best.",,owner travels a lot,shop
+L0123,instagram_dm,threadbare__,,,,,,,41796.0,464.0,52.0,140.0,9000.0,Won,2025-12-20,2025-12-23,2,whats your commission?,Tomas,price sensitive,reseller
+L0065,instagram_dm,prelovedco,,,,,,,3858.0,8.0,35.0,10.0,120.0,Replied,2026-01-13,2026-01-23,4,can you do a call fri?,Maya,price sensitive,reseller
+L0055,IG,marrowloomgallery,,,,,,,61355.0,447.0,45.0,164.0,9000.0,Warm,2026-02-21,2026-02-26,5,maybe next month,Priya,slow to reply,reseller
+L0222,in-person,,Corner Loom,Theo Reid,info@cornerloom.co.uk,7462639414,Brighton,UK,,,,,440.0,Replied,2025-12-10,2026-02-09,3,Interested - send pricing.,,ref from supplier,shop
+L0004,eBay,vntg_uk,,,,,,,5984.0,23.0,22.0,1.0,120.0,Warm,2026-01-06,2026-01-22,3,whats the catch lol,Tomas,slow to reply,reseller
+L0079,IG,statichazelshop,,,,,,,8924.0,288.0,66.0,43.0,9000.0,Won,2026-02-05,2026-02-06,3,whats your commission?,Maya,follows competitor,reseller
+L0229,in-person,,Corner Trunk,Lukas Tanaka,lukastanaka@yahoo.com,+317553365298,Amsterdam,NL,,,,,1840.0,Contacted,2025-12-13,2025-12-15,0,"Thanks, can you email a one-pager?",,slow to reply,shop
+L0238,store,,The Garms,Hugo Silva,hello@thegarms.store,,London,UK,,,,,4010.0,Won,2026-01-18,2026-02-10,6,"Thanks, can you email a one-pager?",Maya,owner travels a lot,shop
+L0057,Whatnot,sepiavaultstore,,Lena,,,,,2815.0,55.0,27.0,30.0,1720.0,Warm,2026-01-31,2026-02-20,3,not interested right now,,follows competitor,reseller
+L0119,eBay,loomthreads,,,,,,,655.0,8.0,18.0,3.0,120.0,Call Booked,2025-12-26,2026-01-11,1,do you ship to EU?,Maya,owner travels a lot,reseller
+L0022,Whatnot,tonictonicfinds,,,,,,,4655.0,14.0,15.0,13.0,120.0,Warm,2026-02-01,2026-02-03,4,do you take menswear too,Tomas,big consignment potential,reseller
+L0108,Instagram,rummagecollective,,,,,,,20599.0,193.0,70.0,76.0,9000.0,Negotiating,2026-02-06,2026-02-27,5,can you do a call fri?,Maya,slow to reply,reseller
+L0020,Vinted,sableco,,,,,,,56042.0,370.0,27.0,120.0,9000.0,Replied,2025-12-25,2025-12-28,7,maybe next month,Tomas,high engagement acct,reseller
+L0203,store,,Past Cellar,Greta Reid,info@pastcellar.store,,Leeds,UK,0.0,,,,410.0,Warm,2026-02-05,2026-02-27,3,"Too busy this season, try later.",,ref from supplier,shop
+L0173,Physical Store,,Second Society,Lena Lopez,info@secondsociety.co.uk,+447603578759,Brighton,UK,,,,0.0,2220.0,Lost,,2026-01-05,6,"Too busy this season, try later.",,price sensitive,shop
+L0142,Instagram,sablecinderstudio,,,,,,,19993.0,202.0,62.0,97.0,9000.0,Warm,2026-01-04,2026-01-10,4,can you do a call fri?,Maya,owner travels a lot,reseller
+L0045,Vinted,retrosepiavintage,,,,,,,2333.0,123.0,10.0,34.0,1270.0,Replied,2026-01-30,2026-02-03,4,send me the bundle list,Tomas,follows competitor,reseller
+L0242,in-person,,Velvet Trunk,Nadia Reid,nadiareid29@outlook.com,+312866892778,Amsterdam,NL,0.0,,,,1730.0,Warm,2025-12-20,,0,We already sell on Vinted.,,wants menswear focus,shop
+L0090,instagram_dm,threadbarethreads,,,,,,,191.0,20.0,16.0,32.0,170.0,Negotiating,2025-12-16,2026-01-21,4,how does payout work,Maya,price sensitive,reseller
+L0246,Physical Store,,Old Rail,Dmitri Khan,shop@oldrail.store,+316761880473,Amsterdam,NL,,0.0,,,4620.0,Lost,,2026-01-16,3,"Happy to chat, mornings best.",,follows competitor,shop
+L0086,IG,threadbareshop,,,,,,,2623.0,23.0,24.0,19.0,210.0,Negotiating,2026-01-23,2026-02-15,4,do you ship to EU?,Priya,owner travels a lot,reseller
+L0044,Depop,plumetonicthreads,,,,,,,21314.0,327.0,62.0,110.0,9000.0,Warm,2025-12-31,2026-01-01,5,send me the bundle list,,owner travels a lot,reseller
+L0051,Depop,thriftwaxthreads,,,,,,,3281.0,47.0,11.0,17.0,290.0,Replied,2025-12-24,,5,what brands do you take?,Priya,met at market,reseller
+L0013,Whatnot,reworkedrelic_,,,,,,,16608.0,381.0,68.0,87.0,9000.0,Replied,2026-01-13,2026-01-25,3,already on another platform tbh,,slow to reply,reseller
+L0247,in-person,,Loft Exchange,Ines Marchetti,,07318272813,Bristol,UK,,,,,2800.0,Won,2026-02-06,2026-02-12,3,Not taking on new channels currently.,Tomas,,reseller
+L0067,instagram_dm,fadedthreadbarefinds,,,,,,,4982.0,53.0,35.0,30.0,1550.0,Lost,2026-02-19,2026-02-27,6,maybe next month,,big consignment potential,reseller
+L0082,instagram_dm,giltfadedvintage,,,,,,,4750.0,52.0,29.0,4.0,120.0,Replied,2025-12-20,2026-01-07,5,,Maya,met at market,reseller
+L0118,Vinted,vntgfinds,,,,,,,4216.0,122.0,40.0,31.0,5100.0,Warm,2026-02-18,2026-02-20,4,whats your commission?,,slow to reply,reseller
+L0083,Instagram,heritageember_uk,,,,,,,39501.0,377.0,61.0,79.0,9000.0,Lost,2026-02-02,2026-02-11,6,do you ship to EU?,,owner travels a lot,reseller
+L0110,Vinted,wornvintage,,,,,,,2717.0,46.0,22.0,15.0,520.0,Call Booked,2026-01-17,2026-02-28,1,,Maya,met at market,reseller
+L0213,in-person,,Second Threads,Pablo Novak,shop@secondthreads.com,,London,UK,0.0,,,,3100.0,New Lead,2025-12-30,2026-02-28,0,,,price sensitive,shop
+L0207,store,staticcollective,Camden Vault,Elena Silva,,,LA,US,,0.0,,,5450.0,Lost,2026-01-16,,2,"Owner is back next week, call then.",,slow to reply,reseller
+L0258,store,,Second Threads,Bea Bennett,,+313652691664,Amsterdam,NL,,,,,4510.0,New Lead,2026-02-23,2026-01-10,5,Not taking on new channels currently.,Tomas,met at market,reseller
+L0028,Depop,grailmothco,,,,,,,6495.0,72.0,36.0,33.0,2480.0,Replied,2026-02-25,2026-02-28,3,not interested right now,,price sensitive,reseller
+L0035,Instagram,loomthriftfinds,,Marta,,,,,1624.0,67.0,35.0,40.0,3750.0,Ghosted,2026-02-07,2026-02-15,3,,Tomas,,reseller
+L0094,Vinted,relicco,,,,,,,47585.0,400.0,63.0,127.0,9000.0,Won,2025-12-31,2026-01-26,3,"yeah keen, drop details",,high engagement acct,reseller
+L0113,Vinted,reworkedfinds,,,,,,,5926.0,41.0,17.0,32.0,870.0,Contacted,2025-12-03,2025-12-12,4,do you ship to EU?,Maya,,reseller
+L0058,Instagram,prelovedthreads,,,,,,,14496.0,451.0,40.0,202.0,9000.0,Negotiating,2026-01-04,2026-01-22,3,interested but busy this week,,slow to reply,reseller
+L0102,Whatnot,relicy2k_uk,,,,,,,24736.0,142.0,70.0,161.0,9000.0,Ghosted,,2026-02-25,5,whats your commission?,Maya,slow to reply,reseller
+L0132,Vinted,thriftgrailgallery,,Lukas,,,,,4316.0,15.0,15.0,30.0,130.0,Warm,,2026-02-02,3,what brands do you take?,,slow to reply,reseller
+L0148,Depop,heritageretrothreads,,,,,,,29930.0,485.0,43.0,117.0,9000.0,Call Booked,2026-01-30,2026-02-16,2,,Tomas,owner travels a lot,reseller
+L0139,Depop,denimgallery,,,,,,,3591.0,93.0,13.0,11.0,320.0,Call Booked,,2026-02-26,5,do you ship to EU?,Maya,high engagement acct,reseller
+L0009,Depop,cindershop,,,,,,,26680.0,173.0,53.0,172.0,9000.0,Warm,2025-12-07,2025-12-24,5,can you do a call fri?,,owner travels a lot,reseller
+L0180,store,,Old Collective,Marta Rossi,martarossi83@gmail.com,,Paris,FR,,,,,1460.0,Contacted,,2026-02-24,1,"Owner is back next week, call then.",Priya,big consignment potential,shop
+L0264,Instagram,emberco,,,,,,,4020.0,22.0,10.0,15.0,120.0,New Lead,2026-01-30,2026-02-21,2,send me the bundle list,,slow to reply,reseller
+L0130,Instagram,heritagefinds,,,,,,,2793.0,56.0,16.0,4.0,120.0,New Lead,2026-01-29,,0,can you do a call fri?,Tomas,follows competitor,reseller
+L0008,eBay,y2kpreloved_,,,,,,,3747.0,95.0,13.0,18.0,510.0,Replied,2026-02-18,2026-02-27,6,need to think about it,,owner travels a lot,reseller
+L0133,IG,curatedstudio,,,,,,,4255.0,86.0,8.0,28.0,380.0,Contacted,2026-02-21,2026-02-26,4,need to think about it,,slow to reply,reseller
+L0078,eBay,prelovedhazelshop,,,,,,,3057.0,108.0,29.0,13.0,1180.0,Negotiating,2026-01-02,2026-01-28,2,ok sounds good when can we talk,,ref from supplier,reseller
+L0209,in-person,,Corner Trunk,Marcus Cohen,info@cornertrunk.co.uk,+447916949092,Manchester,UK,,,,0.0,5600.0,Warm,,,3,,Tomas,price sensitive,shop
+L0063,Vinted,thriftco,,,,,,,19616.0,240.0,60.0,40.0,9000.0,Warm,2026-02-12,2026-02-15,6,need to think about it,,big consignment potential,reseller
+L0179,Physical Store,,Velvet Emporium,Carlos Walsh,info@velvetemporium.com,,Berlin,DE,,,,,2850.0,New Lead,2026-01-18,,3,"Owner is back next week, call then.",Tomas,met at market,shop
+L0001,Depop,heritagereworkedco,,,,,,,4685.0,94.0,30.0,24.0,2610.0,Replied,2025-12-26,2026-01-10,4,how much for the whole bundle?,,follows competitor,reseller
+L0160,google_maps,,Found Exchange,Tom Bennett,hello@foundexchange.com,0044766005300,Manchester,UK,,,,,4720.0,Negotiating,,2026-02-03,3,"Sure, pop in on Thursday.",,ref from supplier,shop
+L0138,Instagram,waxretrothreads,,,,,,,48153.0,122.0,32.0,90.0,9000.0,Warm,2026-02-03,2026-02-18,4,maybe next month,,met at market,reseller
+L0145,Whatnot,prelovedx,,Priya,,,,,59712.0,302.0,63.0,102.0,9000.0,Replied,2025-12-21,,6,can you do a call fri?,Maya,,reseller
+L0062,Instagram,sepiawaxstudio,,,,,,,5452.0,120.0,11.0,9.0,220.0,New Lead,2025-12-04,2026-01-04,1,,Maya,met at market,reseller
+L0150,Depop,staticgallery,,,,,,,2184.0,46.0,23.0,9.0,160.0,Won,2026-01-17,2026-02-24,6,,Priya,met at market,reseller
+L0076,instagram_dm,tonicarchivex,,,,,,,2023.0,66.0,40.0,13.0,1090.0,Warm,2025-12-20,2026-01-07,7,whats your commission?,,big consignment potential,reseller
+L0070,Depop,sepiagallery,,,,,,,5936.0,21.0,29.0,1.0,120.0,Lost,2025-12-07,2025-12-21,4,do you take menswear too,,high engagement acct,reseller
+L0066,IG,heritagestaticarchive,,,,,,,1686.0,90.0,23.0,27.0,2180.0,Replied,2026-02-01,2026-02-12,3,,Maya,ref from supplier,reseller
+L0040,instagram_dm,stitch_,,,,,,,5275.0,102.0,23.0,34.0,1650.0,Ghosted,2026-01-25,2026-02-26,6,already on another platform tbh,,follows competitor,reseller
+L0036,Instagram,cobaltvintage,,,,,,,26614.0,427.0,25.0,129.0,9000.0,Ghosted,2025-12-09,2025-12-10,4,how much for the whole bundle?,Maya,,reseller
+L0099,instagram_dm,plume_uk,,,,,,,3054.0,77.0,28.0,21.0,1210.0,Warm,2025-12-03,,3,whats the catch lol,Priya,met at market,reseller
+L0073,eBay,driftarchive,,,,,,,2961.0,25.0,10.0,29.0,180.0,Replied,2026-02-16,2026-02-21,3,how much for the whole bundle?,,owner travels a lot,reseller
+L0260,google_maps,,Vintage Closet,Noah Silva,,+14052154527,LA,US,0.0,,,,2860.0,Replied,2026-02-01,2026-01-19,2,Not taking on new channels currently.,,price sensitive,reseller
+L0184,google_maps,stitchx,Velvet Lane,Lukas Weber,,+447263875852,London,UK,,,,,1920.0,Ghosted,,2026-01-31,3,,Tomas,owner travels a lot,reseller
+L0127,eBay,vaultrelicfinds,,,,,,,4132.0,106.0,9.0,25.0,810.0,Replied,2026-02-01,2026-02-03,4,not interested right now,,big consignment potential,reseller
+L0196,Physical Store,,Golden Collective,Sofia Walsh,,+337041612736,Paris,FR,,,,,2290.0,Ghosted,2026-02-20,2026-02-26,1,"Owner is back next week, call then.",Maya,slow to reply,reseller
+L0068,Instagram,sablesupply,,,,,,,3690.0,64.0,28.0,31.0,1470.0,Contacted,2026-01-16,2026-01-22,2,whats the catch lol,,slow to reply,reseller
+L0095,Instagram,plumecollective,,,,,,,11058.0,137.0,43.0,45.0,6440.0,Replied,2026-01-15,2026-01-30,6,what brands do you take?,,met at market,reseller
+L0039,Vinted,waxvintage,,,,,,,39389.0,350.0,28.0,143.0,9000.0,Lost,2025-12-03,2025-12-24,2,maybe next month,Tomas,,reseller
+L0137,Vinted,drift_,,,,,,,1113.0,60.0,26.0,27.0,1080.0,Contacted,2025-12-30,2026-01-20,3,,Tomas,ref from supplier,reseller
+L0017,Depop,curateddenimarchive,,,,,,,6641.0,59.0,29.0,8.0,510.0,Replied,,2026-01-20,4,need to think about it,Tomas,big consignment potential,reseller
+L0096,Depop,tonicthrift_uk,,,,,,,30325.0,225.0,42.0,201.0,9000.0,Ghosted,2026-02-15,2026-02-21,6,do you ship to EU?,,price sensitive,reseller
+L0091,Vinted,atticstudio,,,,,,,6756.0,128.0,34.0,16.0,2500.0,Negotiating,2026-02-14,2026-02-18,5,send me the bundle list,,wants menswear focus,reseller
+L0111,instagram_dm,reworkedgallery,,,,,,,6821.0,17.0,22.0,30.0,240.0,Contacted,2026-02-05,2026-02-15,4,what brands do you take?,,wants menswear focus,reseller
+L0106,instagram_dm,threadbare_uk,,,,,,,5953.0,123.0,34.0,40.0,5170.0,Won,,2026-01-13,5,how does payout work,Priya,big consignment potential,reseller
+L0005,Instagram,giltthrift_,,,,,,,274.0,72.0,40.0,38.0,3380.0,Warm,2025-12-26,2026-01-11,7,interested but busy this week,Priya,,reseller
+L0053,IG,plumeprelovedsupply,,,,,,,2804.0,81.0,39.0,23.0,1250.0,Replied,2025-12-24,2026-01-09,5,whats your commission?,Tomas,,reseller
+L0034,Whatnot,vaultstore,,,,,,,14664.0,295.0,62.0,192.0,9000.0,Ghosted,,2025-12-25,2,can you do a call fri?,Priya,owner travels a lot,reseller
+L0212,store,,Golden Lane,Sven Marchetti,info@goldenlane.com,07772893185,Brighton,UK,,,,,4470.0,New Lead,2026-01-27,,3,"Too busy this season, try later.",,ref from supplier,shop
+L0048,Depop,thriftretrogallery,,,,,,,5472.0,49.0,12.0,16.0,330.0,Replied,2025-12-11,2025-12-24,5,whats your commission?,,met at market,reseller
+L0031,Whatnot,loomcollective,,,,,,,12419.0,328.0,42.0,154.0,9000.0,Ghosted,2025-12-01,2025-12-10,4,do you ship to EU?,Tomas,,reseller
+L0107,Vinted,denimretrosupply,,,,,,,3046.0,18.0,13.0,31.0,200.0,Replied,2025-12-27,2026-01-08,6,need to think about it,,high engagement acct,reseller
+L0154,Physical Store,,Old Lab,Carlos Silva,info@oldlab.co.uk,+336998199901,Paris,FR,,0.0,,,5090.0,Ghosted,,2026-02-21,6,,,slow to reply,shop
+L0172,store,,Camden Society,Felix Walsh,hello@camdensociety.store,0044712652037,Leeds,UK,,,,,2440.0,Ghosted,2025-12-23,2026-01-11,6,,,ref from supplier,shop
+L0007,Whatnot,retrodenimcollective,,,,,,,36629.0,373.0,43.0,137.0,9000.0,Warm,2025-12-05,2025-12-15,5,,Maya,wants menswear focus,reseller
+L0224,store,,Past Cellar,Tom Berg,tomberg@outlook.com,+13948899136,LA,US,,,,,5150.0,Replied,,2025-12-18,5,,,met at market,shop
+L0098,Whatnot,giltsupply,,,,,,,4975.0,62.0,28.0,2.0,120.0,Call Booked,2025-12-03,,1,send me the bundle list,,met at market,reseller
+L0109,Depop,thriftvintage,,,,,,,286.0,65.0,37.0,20.0,1330.0,Replied,,2026-01-11,3,do you ship to EU?,,met at market,reseller
+L0259,in-person,,Past Lane,Aisha Okafor,hello@pastlane.co.uk,07473285162,Leeds,UK,,,,,4580.0,New Lead,2025-12-30,2025-12-19,5,,,,shop
+L0116,instagram_dm,relicvintage,,James,,,,,5815.0,32.0,25.0,40.0,980.0,Warm,2026-01-10,,4,how does payout work,,,reseller
+L0075,eBay,hazely2kgallery,,,,,,,6375.0,78.0,24.0,26.0,1090.0,Replied,2025-12-23,2026-01-12,3,maybe next month,,,reseller
+L0033,Whatnot,moththreads,,,,,,,36610.0,568.0,37.0,206.0,9000.0,Ghosted,2026-02-11,2026-02-20,3,,,big consignment potential,reseller
+L0101,Vinted,rummagevintage,,,,,,,10052.0,490.0,63.0,132.0,9000.0,New Lead,2026-01-07,,0,,Priya,met at market,reseller
+L0136,Whatnot,cobaltcollective,,,,,,,481.0,27.0,36.0,30.0,980.0,Contacted,,2026-02-28,6,how does payout work,,wants menswear focus,reseller
+L0125,eBay,hazelfaded__,,,,,,,3522.0,9.0,22.0,38.0,290.0,Replied,2026-02-02,,7,whats the catch lol,,big consignment potential,reseller
+L0072,IG,staticvntgcollective,,,,,,,4368.0,49.0,31.0,21.0,650.0,New Lead,2026-02-07,,0,,Maya,ref from supplier,reseller
+L0129,Whatnot,heritage__,,,,,,,2196.0,108.0,39.0,33.0,2900.0,Ghosted,2026-02-06,2026-02-16,1,ok sounds good when can we talk,,,reseller
+L0208,store,,Corner Emporium,Nadia Andersson,nadiaandersson94@yahoo.com,,Brighton,UK,,,,,2990.0,Replied,2026-02-12,2026-02-24,2,"Owner is back next week, call then.",,,shop
+L0027,IG,mothstitchstore,,,,,,,6634.0,107.0,27.0,0.0,980.0,Replied,2026-01-04,2026-01-07,3,not interested right now,,,reseller
+L0131,Instagram,sepiawaxarchive,,,,,,,32858.0,451.0,35.0,197.0,9000.0,New Lead,2026-01-03,2026-01-20,1,what brands do you take?,,,reseller
+L0010,IG,relicthreadbare__,,,,,,,1005.0,16.0,34.0,33.0,560.0,Replied,2026-01-23,2026-02-10,5,"yeah keen, drop details",,,reseller
+L0100,Depop,driftco,,,,,,,4374.0,6.0,39.0,30.0,230.0,Replied,,2025-12-31,7,,Priya,big consignment potential,reseller
+L0060,Whatnot,cindersupply,,,,,,,64798.0,538.0,48.0,137.0,9000.0,Replied,,2026-01-16,7,how does payout work,,slow to reply,reseller
+L0104,Instagram,tonicrummagecollective,,,,,,,5960.0,7.0,36.0,34.0,170.0,Warm,2025-12-17,2026-01-02,4,whats the catch lol,,,reseller
+L0149,Vinted,threadbareretrovintage,,,,,,,5740.0,123.0,28.0,8.0,770.0,New Lead,2025-12-12,,0,interested but busy this week,,price sensitive,reseller
+L0182,store,,Camden Cellar,Freya Fischer,shop@camdencellar.com,+18923546663,New York,US,,,,,4420.0,New Lead,2026-01-12,,5,,,owner travels a lot,shop
+L0043,Vinted,cindercuratedfinds,,,,,,,4084.0,106.0,31.0,22.0,2810.0,Replied,2025-12-01,,5,whats your commission?,Tomas,,reseller
+L0114,Instagram,grailstitch__,,,,,,,33759.0,236.0,45.0,173.0,9000.0,New Lead,2026-01-25,,0,already on another platform tbh,,met at market,reseller
+L0024,Depop,vaultcollective,,,,,,,3944.0,80.0,22.0,10.0,550.0,Replied,2026-01-03,2026-01-10,3,,,slow to reply,reseller
+L0012,Whatnot,tonicstitchthreads,,,,,,,46640.0,544.0,66.0,189.0,9000.0,Replied,,2026-01-05,4,do you take menswear too,,ref from supplier,reseller
+L0049,Whatnot,cinder_,,,,,,,6429.0,33.0,10.0,18.0,180.0,Replied,2025-12-30,2026-01-11,3,,Tomas,,reseller
+L0089,Instagram,archivesupply,,,,,,,30651.0,367.0,45.0,116.0,9000.0,Ghosted,,2026-02-18,1,what brands do you take?,,price sensitive,reseller
+L0077,Vinted,reliccinder_,,,,,,,55595.0,446.0,51.0,121.0,9000.0,New Lead,2026-01-26,,0,,Priya,ref from supplier,reseller
+L0220,store,,Second Closet,Zoe Kaur,shop@secondcloset.store,7788153901,London,UK,,,,,5510.0,Ghosted,,2026-01-16,5,Interested - send pricing.,,,shop
+L0047,eBay,cobaltthreads,,,,,,,1783.0,119.0,29.0,28.0,3470.0,New Lead,2026-01-30,2026-02-14,1,,,wants menswear focus,reseller
+L0248,Physical Store,,Atelier Garms,Carlos Park,,+338781129387,Paris,FR,,,,,1400.0,Negotiating,2026-02-23,,6,,Maya,wants menswear focus,reseller
+L0253,Whatnot,giltgiltgallery,,,,,,,28205.0,539.0,35.0,213.0,9000.0,Contacted,2026-01-09,,5,,Maya,,reseller
+L0163,Physical Store,,Blue Collective,Tom Park,,,Bristol,UK,,,,,610.0,Replied,2025-12-16,2026-02-17,6,Interested - send pricing.,,owner travels a lot,reseller
+L0126,eBay,staticstitch__,,,,,,,12113.0,254.0,41.0,209.0,9000.0,Replied,,,5,"yeah keen, drop details",,slow to reply,reseller
+L0097,Depop,hazelvault__,,,,,,,5144.0,70.0,21.0,34.0,1790.0,Warm,2026-02-28,,4,,Priya,,reseller
+L0239,google_maps,,The Rail,Tom Tanaka,,+335745010661,Paris,FR,,,,,3610.0,Contacted,,2026-01-23,0,"Sure, pop in on Thursday.",,met at market,reseller
+L0046,Vinted,denimwaxthreads,,,,,,,5198.0,118.0,20.0,40.0,3160.0,Call Booked,2026-02-23,,6,send me the bundle list,,,reseller
+L0011,Vinted,vaultstudio,,,,,,,808.0,54.0,23.0,23.0,1010.0,Replied,,2026-01-30,6,,,,reseller
+L0284,store,heritageprelovedstudio,Maison Lab,Hugo Fischer,hugofischer@gmail.com,+336664789270,Paris,FR,,,,,1450.0,New Lead,2026-02-13,,0,,Maya,wants menswear focus,shop
+L0268,Physical Store,,The Trunk,Noah Khan,info@thetrunk.com,7799339576,Manchester,UK,0.0,,,,4220.0,New Lead,2026-02-07,,0,,Tomas,slow to reply,shop
+L0282,in-person,,Rusty Cellar,Nadia Moreau,shop@rustycellar.co.uk,,Leeds,UK,0.0,,,0.0,5320.0,New Lead,2026-02-05,,0,,Tomas,wants menswear focus,shop
+L0272,store,,Retro Loom,Zoe Silva,zoesilva55@hotmail.com,,Leeds,UK,,,,0.0,4610.0,New Lead,2026-02-16,,0,,Priya,slow to reply,shop
+L0266,store,,Camden Lab,Bea Reid,shop@camdenlab.com,07442671631,Manchester,UK,,0.0,,,660.0,New Lead,2026-02-15,,0,,,slow to reply,shop
+L0270,Physical Store,,Past Edit,Nadia Petrov,nadiapetrov@outlook.com,7197769276,Leeds,UK,,,,,4930.0,New Lead,2026-02-14,,0,,Maya,ref from supplier,shop
+L0291,store,,The Loom,Theo Walsh,theowalsh81@yahoo.com,+447725229176,Brighton,UK,0.0,,,,2560.0,New Lead,2026-02-13,,0,,,high engagement acct,shop
+L0273,google_maps,,House of Society,Lukas Moreau,lukasmoreau69@outlook.com,+447940476743,Leeds,UK,,,,,2850.0,New Lead,2026-02-03,,0,,Tomas,follows competitor,shop
+L0289,Physical Store,,Atelier Lab,Pablo Kaur,shop@atelierlab.co.uk,,New York,US,0.0,,,0.0,1930.0,New Lead,2026-02-11,,0,,,met at market,shop
+L0271,store,,Golden Lane,Dmitri Berg,dmitriberg32@hotmail.com,+339342614342,Paris,FR,,,,,5400.0,New Lead,2026-02-06,,0,,Tomas,,shop
+L0278,Instagram,thriftcollective,,,,,,,2344.0,97.0,38.0,24.0,1620.0,New Lead,2026-02-07,,0,,Tomas,big consignment potential,reseller
+L0279,store,,Corner Collective,Liam Reid,hello@cornercollecti.com,+447724851761,Bristol,UK,,,,,2120.0,New Lead,2026-02-07,,0,,,wants menswear focus,shop
+L0286,google_maps,,Old Vault,Pablo Fischer,hello@oldvault.co.uk,+317997887559,Amsterdam,NL,,,,,5080.0,New Lead,2026-02-08,,0,,,follows competitor,shop
+L0288,store,,Blue Lab,Sofia Petrov,sofiapetrov@yahoo.com,+336104191051,Paris,FR,,,,,5370.0,New Lead,2026-02-16,,0,,Maya,,shop
+L0274,in-person,,Blue Trunk,Tom Okafor,tomokafor87@hotmail.com,+499713101493,Berlin,DE,,,,,4710.0,New Lead,2026-02-13,,0,,,wants menswear focus,shop
+L0281,Vinted,staticfaded_uk,,,,,,,4747.0,116.0,22.0,9.0,760.0,New Lead,2026-02-15,,0,,,owner travels a lot,reseller
+L0269,Depop,sablemarrowarchive,,,,,,,790.0,65.0,26.0,32.0,2030.0,New Lead,2026-02-15,,0,,Tomas,,reseller
+L0285,Whatnot,plumesablestudio,,,,,,,231.0,47.0,32.0,22.0,1050.0,New Lead,2026-02-06,,0,,,follows competitor,reseller
+L0275,Instagram,thriftstudio,,,,,,,6011.0,66.0,23.0,21.0,1270.0,New Lead,2026-02-05,,0,,,price sensitive,reseller
+L0290,google_maps,,Vintage Collective,James Rossi,hello@vintagecollect.com,+335319606552,Paris,FR,,,,,5640.0,New Lead,2026-02-08,,0,,,,shop
+L0276,IG,emberstore,,,,,,,55074.0,559.0,47.0,126.0,9000.0,New Lead,2026-02-08,,0,,,owner travels a lot,reseller
+L0283,Vinted,heritagetonicvintage,,,,,,,3348.0,64.0,39.0,24.0,2030.0,New Lead,2026-02-16,,0,,Tomas,,reseller
+L0287,google_maps,,Atelier Drawer,Marta Murphy,hello@atelierdrawer.store,+14514744219,New York,US,,,,,5950.0,New Lead,2026-02-09,,0,,,,shop
+L0292,store,,Vintage Closet,Aisha Khan,shop@vintagecloset.co.uk,+339669546987,Paris,FR,,,,,880.0,New Lead,2026-02-16,,0,,,,shop
+L0277,Physical Store,,Atelier Trunk,Sven Okafor,shop@ateliertrunk.com,+318639720810,Amsterdam,NL,,,,,2730.0,New Lead,2026-02-14,,0,,,,shop
+L0280,instagram_dm,waxshop,,,,,,,32504.0,334.0,35.0,200.0,9000.0,New Lead,2026-02-03,,0,,,,reseller
