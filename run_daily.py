@@ -607,8 +607,22 @@ def _add_drafts(output_df: pd.DataFrame, full_leads: pd.DataFrame,
         drafts.append(generate_draft(frow, channel, days_since, api_client))
 
     output_df = output_df.copy()
-    output_df["draft_message"] = drafts
+    output_df["draft_message"] = pd.Series(drafts, dtype="object")
     return output_df
+
+
+# Output column schemas — used to create typed empty DataFrames so downstream
+# code can always rely on these columns existing, even when no rows are produced.
+DM_COLS = [
+    "lead_id", "handle", "source", "stage", "score", "reason", "action",
+    "est_monthly_spend_gbp", "followers", "sales_velocity_30d",
+    "last_touch_date", "assigned_bdr",
+]
+SHOP_COLS = [
+    "lead_id", "store_name", "contact_name", "email", "phone",
+    "city", "country", "stage", "num_touches", "next_action", "due_date",
+    "assigned_bdr", "last_touch_date", "est_monthly_spend_gbp",
+]
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -661,7 +675,7 @@ def score_and_output(conn: sqlite3.Connection, run_id: str, run_date: str,
         })
 
     scored_df = (pd.DataFrame(scored_rows).sort_values("score", ascending=False)
-                 if scored_rows else pd.DataFrame(columns=["score"]))
+                 if scored_rows else pd.DataFrame(columns=DM_COLS))
     top_dms   = scored_df.head(TOP_N_DMS).copy()
 
     if not dry_run:
@@ -748,7 +762,7 @@ def score_and_output(conn: sqlite3.Connection, run_id: str, run_date: str,
                 "action": action, "score": None, "reason": None,
             })
 
-    shops_df = pd.DataFrame(shop_rows) if shop_rows else pd.DataFrame()
+    shops_df = pd.DataFrame(shop_rows) if shop_rows else pd.DataFrame(columns=SHOP_COLS)
 
     if len(shops_df) and "city" in shops_df.columns:
         shops_df = shops_df.sort_values(["city", "next_action"])
@@ -766,7 +780,7 @@ def score_and_output(conn: sqlite3.Connection, run_id: str, run_date: str,
 
     # Pick three sample drafts for the run report
     samples = {}
-    if not dry_run and "draft_message" in top_dms.columns:
+    if not dry_run and "draft_message" in top_dms.columns and "action" in top_dms.columns:
         q_dm = top_dms[top_dms["action"].str.contains("unanswered question", na=False)]
         if len(q_dm):
             r = q_dm.iloc[0]
@@ -779,7 +793,7 @@ def score_and_output(conn: sqlite3.Connection, run_id: str, run_date: str,
             r = cold.iloc[0]
             samples["dm_cold"] = {"handle": r.get("handle"), "reason": r.get("reason"),
                                    "draft": r.get("draft_message", "")}
-    if not dry_run and "draft_message" in shops_df.columns:
+    if not dry_run and "draft_message" in shops_df.columns and "next_action" in shops_df.columns:
         email_rows = shops_df[shops_df["next_action"].str.contains("Email", na=False) &
                                ~shops_df["draft_message"].fillna("").str.strip().eq("")]
         if len(email_rows):
