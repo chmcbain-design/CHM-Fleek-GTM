@@ -24,10 +24,12 @@ W_RECENCY      = 0.10
 TOP_N_DMS = 40                     # max resellers in today_dms.csv
 
 # Spend scoring — log-normalized against this ceiling
-SPEND_MAX_GBP = 10_000   # normalisation ceiling (score approaches 100 here)
+SPEND_MAX_GBP   = 10_000  # normalisation ceiling (score approaches 100 here)
 # Source data caps spend at £9,000 (40 leads hit this exactly).
 # Leads at the cap get a ±5-point proxy adjustment from price × velocity.
-SPEND_DATA_CAP = 9_000
+SPEND_DATA_CAP  = 9_000
+# £120 appears 12 times and is the floor default/placeholder in the source data.
+SPEND_FLOOR_VALUE = 120
 
 # Follower cap — above this, extra followers add nothing
 FOLLOWER_CAP = 10_000
@@ -202,12 +204,9 @@ def spend_label(row):
         return "spend unknown"
     v = float(amount)
     if v == SPEND_DATA_CAP:
-        price = pd.to_numeric(row["avg_listing_price_gbp"], errors="coerce")
-        vel   = pd.to_numeric(row["sales_velocity_30d"],    errors="coerce")
-        if pd.notna(price) and pd.notna(vel):
-            proxy = price * vel
-            px = f"proxy £{proxy/1000:.1f}k" if proxy >= 1000 else f"proxy £{int(proxy)}"
-            return f"est £9k/mo cap ({px})"
+        return "est £9.0k/mo (capped)"
+    if v == SPEND_FLOOR_VALUE:
+        return "unverified"
     if v >= 1000:
         return f"est £{v/1000:.1f}k/mo"
     return f"est £{int(v)}/mo"
