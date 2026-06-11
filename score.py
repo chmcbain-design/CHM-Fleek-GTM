@@ -1,8 +1,8 @@
 """
 score.py — Fleek GTM lead prioritisation
 Loads cleaned_pipeline.csv, scores resellers 0-100, sequences shops, outputs:
-  today_dms.csv    — top 40 resellers to DM today
-  shops_actions.csv — shops with next action + city clusters
+  scored_dms.csv    — top 40 resellers to DM today
+  scored_shops.csv — shops with next action + city clusters
 """
 import math
 import re
@@ -21,7 +21,7 @@ W_SPEND        = 0.30
 W_ENGAGEMENT   = 0.20
 W_RECENCY      = 0.10
 
-TOP_N_DMS = 40                     # max resellers in today_dms.csv
+TOP_N_DMS = 40                     # max resellers in scored_dms.csv
 
 # Spend scoring — log-normalized against this ceiling
 SPEND_MAX_GBP   = 10_000  # normalisation ceiling (score approaches 100 here)
@@ -285,7 +285,7 @@ for _, row in resellers_active.iterrows():
 
 scored_df = pd.DataFrame(scored_rows).sort_values("score", ascending=False)
 top_dms = scored_df.head(TOP_N_DMS).copy()
-top_dms.to_csv("today_dms.csv", index=False, encoding="utf-8-sig")
+top_dms.to_csv("scored_dms.csv", index=False, encoding="utf-8-sig")
 
 
 # ════════════════════════════════════════════════════════════════════════════
@@ -373,7 +373,7 @@ shops_df["city_cluster"] = shops_df["city"].apply(
     lambda c: f"Day trip: {c} ({day_trip_cities[c]} visits)" if c in day_trip_cities.index else ""
 )
 
-shops_df.to_csv("shops_actions.csv", index=False, encoding="utf-8-sig")
+shops_df.to_csv("scored_shops.csv", index=False, encoding="utf-8-sig")
 
 
 # ════════════════════════════════════════════════════════════════════════════
@@ -388,7 +388,7 @@ print("=" * 62)
 print(f"\n  RESELLERS")
 print(f"  Active resellers scored:    {len(resellers_active)}")
 print(f"  Excluded (lost/DNC/48h):    {excl_count}")
-print(f"  Top {TOP_N_DMS} output → today_dms.csv")
+print(f"  Top {TOP_N_DMS} output → scored_dms.csv")
 
 print(f"\n  Top 10 resellers to DM today:")
 print(f"  {'#':<3} {'Handle':<25} {'Score':<6} {'Reason'}")
@@ -412,6 +412,6 @@ else:
     print(f"\n  No city clusters at Visit stage yet.")
 
 print(f"\n  Output files:")
-print(f"    today_dms.csv       ({len(top_dms)} rows)")
-print(f"    shops_actions.csv   ({len(shops_df)} rows)")
+print(f"    scored_dms.csv       ({len(top_dms)} rows)")
+print(f"    scored_shops.csv   ({len(shops_df)} rows)")
 print("=" * 62)
