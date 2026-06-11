@@ -4,7 +4,7 @@ Run with: python3 test_daily.py
 """
 import sys
 import pandas as pd
-from run_daily import _add_drafts, _validate_draft, _template_draft, DM_COLS, SHOP_COLS
+from run_daily import _add_drafts, _validate_draft, _template_draft, DM_COLS, SHOP_COLS, COMMERCIAL_KEYWORDS
 
 
 def _empty_leads():
@@ -114,6 +114,34 @@ def test_validate_rejects_empty_draft():
 
 # ── No blank drafts in output CSV (regression for the NaN bug) ────────────────
 
+def test_validate_catches_commercial_answer_without_placeholder():
+    """Draft that invents a real answer to a commercial question must fail check (d)."""
+    row = {"handle": "sepiawaxarchive",
+           "last_inbound_text": "what brands do you take?",
+           "contact_name": None}
+    bad = "Hi @sepiawaxarchive, we accept all major high-street and designer brands."
+    failures = _validate_draft(bad, row, "dm")
+    assert any("[rep:" in f or "commercial" in f for f in failures), (
+        f"Should flag missing [rep:] placeholder: {failures}"
+    )
+
+
+def test_validate_passes_commercial_question_with_placeholder():
+    """Draft that acknowledges a commercial question with [rep: ...] must pass check (d)."""
+    row = {"handle": "sepiawaxarchive",
+           "last_inbound_text": "what brands do you take?",
+           "contact_name": None}
+    good = "Hi @sepiawaxarchive, great question -- [rep: insert brands accepted]. Happy to send more detail."
+    failures = _validate_draft(good, row, "dm")
+    assert failures == [], f"Expected no failures: {failures}"
+
+
+def test_commercial_keywords_covers_expected_terms():
+    """Spot-check that key commercial terms are in the constant."""
+    for term in ("fee", "fees", "brands", "commission", "shipping", "pricing"):
+        assert term in COMMERCIAL_KEYWORDS, f"'{term}' missing from COMMERCIAL_KEYWORDS"
+
+
 def test_draft_alignment_after_sort():
     """
     Regression: after sort_values(), the DataFrame has a non-contiguous integer index.
@@ -184,6 +212,9 @@ if __name__ == "__main__":
         test_validate_passes_correct_dm,
         test_validate_passes_correct_email,
         test_validate_rejects_empty_draft,
+        test_validate_catches_commercial_answer_without_placeholder,
+        test_validate_passes_commercial_question_with_placeholder,
+        test_commercial_keywords_covers_expected_terms,
         test_draft_alignment_after_sort,
         test_no_blank_drafts_in_output_csv,
     ]

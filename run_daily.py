@@ -439,8 +439,20 @@ _DRAFT_SYSTEM = (
     "levels, promotions, delivery terms or discounts; where a specific detail is needed "
     "write [rep: description of what to add] as a placeholder; output the message text "
     "only -- no labels, headers or preamble; do not mention any account name, person name "
-    "or business name beyond those explicitly given to you in the lead data."
+    "or business name beyond those explicitly given to you in the lead data; "
+    "you do not know Fleek's commercial specifics -- which brands it accepts, fee structures, "
+    "pricing, shipping terms, or stock levels -- if the lead's question touches any of these "
+    "topics, do NOT attempt to answer it yourself; instead acknowledge the question warmly "
+    "and insert a bracketed placeholder such as [rep: insert fee structure] so the rep can "
+    "complete it; never assert facts about Fleek's offering."
 )
+
+# Keywords that flag a question as touching Fleek's commercial specifics.
+# When any of these appear in the inbound question, the draft MUST use a [rep: ...] placeholder.
+COMMERCIAL_KEYWORDS = frozenset({
+    "fee", "fees", "price", "pricing", "cost", "costs", "commission",
+    "brands", "brand", "shipping", "delivery", "stock", "accepts", "take",
+})
 
 
 def _draft_prompt(row: dict, channel: str, days_since) -> str:
@@ -505,10 +517,21 @@ def _draft_prompt(row: dict, channel: str, days_since) -> str:
     if inbound:
         lines.append(f'Last message from them: "{inbound}"')
         if has_q:
+            inbound_words = set(re.findall(r"\w+", inbound.lower()))
+            is_commercial = bool(inbound_words & COMMERCIAL_KEYWORDS)
             lines.append(
                 "INBOUND QUESTION RULE: their last message contains an unanswered question. "
                 "Your draft MUST acknowledge or answer it first -- do not open with anything else."
             )
+            if is_commercial:
+                lines.append(
+                    "COMMERCIAL QUESTION RULE: this question touches Fleek's commercial specifics "
+                    "(brands accepted, fees, pricing, shipping, or stock). "
+                    "You do not know these details -- do NOT answer it yourself. "
+                    "Acknowledge the question warmly and insert a [rep: ...] placeholder "
+                    "(e.g. [rep: insert fee structure here]) for the rep to complete. "
+                    "Never assert facts about Fleek's offering."
+                )
     else:
         lines.append("Last message from them: none")
 
@@ -576,6 +599,16 @@ def _validate_draft(draft: str, row: dict, channel: str) -> list:
                 f"does not reference unanswered question '{inbound}' -- "
                 "at least one keyword from it must appear"
             )
+
+    # (d) Commercial question must use a [rep: ...] placeholder, not an invented answer
+    if has_q and inbound:
+        inbound_words = set(re.findall(r"\w+", inbound.lower()))
+        if inbound_words & COMMERCIAL_KEYWORDS:
+            if "[rep:" not in draft:
+                failures.append(
+                    f"commercial question ('{inbound}') requires a [rep: ...] placeholder -- "
+                    "do not assert facts about Fleek's brands, fees, pricing, shipping or stock"
+                )
 
     return failures
 
