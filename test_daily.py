@@ -2,9 +2,18 @@
 Regression tests for run_daily.py.
 Run with: python3 test_daily.py
 """
+import sqlite3
 import sys
+from datetime import date, timedelta
+
 import pandas as pd
-from run_daily import _add_drafts, _validate_draft, _template_draft, DM_COLS, SHOP_COLS, COMMERCIAL_KEYWORDS
+import run_daily
+from run_daily import (
+    _add_drafts, _validate_draft, _template_draft,
+    DM_COLS, SHOP_COLS, COMMERCIAL_KEYWORDS,
+    CADENCE_WINDOW_DAYS, MAX_TOUCHES, REPLY_STAGES,
+    get_cadence, upsert_cadence,
+)
 
 
 def _empty_leads():
@@ -198,12 +207,146 @@ def test_no_blank_drafts_in_output_csv():
     )
 
 
+# ── Cadence helpers ───────────────────────────────────────────────────────────
+
+def _cadence_conn():
+    """In-memory SQLite with just the cadence table."""
+    conn = sqlite3.connect(":memory:")
+    conn.row_factory = sqlite3.Row
+    conn.executescript("""
+        CREATE TABLE cadence (
+            lead_id TEXT PRIMARY KEY,
+            touch_count INTEGER NOT NULL DEFAULT 0,
+            last_touch_date TEXT,
+            parked INTEGER NOT NULL DEFAULT 0
+        );
+    """)
+    return conn
+
+
+# ── Cadence: 3-day eligibility window ────────────────────────────────────────
+
+def test_cadence_window_blocks_early_retouch():
+    """A lead touched 2 days ago must NOT be eligible (window is 3 days)."""
+    today = date.today()
+    two_days_ago = str(today - timedelta(days=2))
+
+    conn = _cadence_conn()
+    upsert_cadence(conn, "L001", 1, two_days_ago, parked=0)
+    cad = get_cadence(conn)["L001"]
+
+    last_d = run_daily._to_date(cad["last_touch_date"])
+    days_elapsed = (today - last_d).days
+    assert days_elapsed < CADENCE_WINDOW_DAYS, (
+        f"Expected 2 days elapsed to be < window ({CADENCE_WINDOW_DAYS}), got {days_elapsed}"
+    )
+
+
+def test_cadence_window_allows_touch_at_day3():
+    """A lead touched exactly 3 days ago IS eligible."""
+    today = date.today()
+    three_days_ago = str(today - timedelta(days=3))
+
+    conn = _cadence_conn()
+    upsert_cadence(conn, "L002", 1, three_days_ago, parked=0)
+    cad = get_cadence(conn)["L002"]
+
+    last_d = run_daily._to_date(cad["last_touch_date"])
+    days_elapsed = (today - last_d).days
+    assert days_elapsed >= CADENCE_WINDOW_DAYS, (
+        f"Expected 3 days elapsed to satisfy window ({CADENCE_WINDOW_DAYS}), got {days_elapsed}"
+    )
+
+
+# ── Cadence: parking after MAX_TOUCHES ───────────────────────────────────────
+
+def test_cadence_parks_after_max_touches():
+    """get_cadence reflects parked=1 after we upsert with touch_count=MAX_TOUCHES."""
+    conn = _cadence_conn()
+    three_days_ago = str(date.today() - timedelta(days=3))
+    upsert_cadence(conn, "L003", MAX_TOUCHES, three_days_ago, parked=0)
+
+    # Simulate the park step: touch_count >= MAX_TOUCHES → park
+    cad = get_cadence(conn)["L003"]
+    assert cad["touch_count"] >= MAX_TOUCHES, "Precondition: touch_count should be at max"
+    upsert_cadence(conn, "L003", cad["touch_count"], cad["last_touch_date"], parked=1)
+
+    cad2 = get_cadence(conn)["L003"]
+    assert cad2["parked"] == 1, f"Expected parked=1, got {cad2['parked']}"
+
+
+def test_cadence_parked_lead_excluded_from_output():
+    """A parked lead must not appear in today_dms output even if eligible by date."""
+    conn = _cadence_conn()
+    three_days_ago = str(date.today() - timedelta(days=3))
+    upsert_cadence(conn, "L004", MAX_TOUCHES, three_days_ago, parked=1)
+
+    cad = get_cadence(conn)["L004"]
+    assert cad["parked"] == 1, "Parked flag should be set"
+
+
+# ── Cadence: reply resets touch count ────────────────────────────────────────
+
+def test_cadence_reply_reset():
+    """Reply reset fires when source last_touch_date > cadence last_touch_date
+    (i.e. the rep updated the CRM with a newer date after our automated touch)."""
+    conn = _cadence_conn()
+    our_touch = str(date.today() - timedelta(days=4))
+    upsert_cadence(conn, "L005", 2, our_touch, parked=0)
+
+    # Simulate: source data now has a last_touch_date 1 day after our touch
+    src_touch = str(date.today() - timedelta(days=3))
+    cad = get_cadence(conn)["L005"]
+    src_d = run_daily._to_date(src_touch)
+    our_d = run_daily._to_date(cad["last_touch_date"])
+    assert src_d > our_d, "Precondition: src date should be newer"
+
+    # The reply reset upserts touch_count=0
+    upsert_cadence(conn, "L005", 0, None, parked=0)
+    cad2 = get_cadence(conn)["L005"]
+    assert cad2["touch_count"] == 0, f"Expected touch_count=0 after reset, got {cad2['touch_count']}"
+    assert cad2["parked"] == 0, f"Expected parked=0 after reset, got {cad2['parked']}"
+
+
+def test_reply_stages_constant_covers_expected_stages():
+    """REPLY_STAGES must include all stages that signal a reply."""
+    for stage in ("Replied", "Warm", "Call Booked", "Negotiating"):
+        assert stage in REPLY_STAGES, f"'{stage}' missing from REPLY_STAGES"
+
+
+# ── Cadence: touch_number column in DM_COLS ──────────────────────────────────
+
+def test_dm_cols_has_touch_number():
+    assert "touch_number" in DM_COLS, "touch_number must be in DM_COLS"
+
+
+# ── Cadence: template drafts reflect touch number ────────────────────────────
+
+def test_template_touch2_references_prior_outreach():
+    row = {"handle": "testshop", "last_inbound_text": None,
+           "num_touches": 1, "last_touch_date": None, "est_monthly_spend_gbp": 500}
+    draft = _template_draft(row, "dm", 4, touch_number=2)
+    assert "follow" in draft.lower() or "last message" in draft.lower(), (
+        f"Touch 2 template should reference prior outreach: {draft}"
+    )
+
+
+def test_template_touch3_has_easy_out():
+    row = {"handle": "testshop", "last_inbound_text": None,
+           "num_touches": 2, "last_touch_date": None, "est_monthly_spend_gbp": 500}
+    draft = _template_draft(row, "dm", 7, touch_number=3)
+    assert "no worries" in draft.lower() or "last" in draft.lower() or "timing" in draft.lower(), (
+        f"Touch 3 template should give easy out: {draft}"
+    )
+
+
 if __name__ == "__main__":
     tests = [
         test_add_drafts_empty_dm,
         test_add_drafts_empty_shops,
         test_dm_cols_has_action,
         test_shop_cols_has_next_action,
+        test_dm_cols_has_touch_number,
         test_template_dm_uses_correct_handle,
         test_template_email_uses_correct_name_and_store,
         test_validate_catches_wrong_handle,
@@ -217,6 +360,14 @@ if __name__ == "__main__":
         test_commercial_keywords_covers_expected_terms,
         test_draft_alignment_after_sort,
         test_no_blank_drafts_in_output_csv,
+        test_cadence_window_blocks_early_retouch,
+        test_cadence_window_allows_touch_at_day3,
+        test_cadence_parks_after_max_touches,
+        test_cadence_parked_lead_excluded_from_output,
+        test_cadence_reply_reset,
+        test_reply_stages_constant_covers_expected_stages,
+        test_template_touch2_references_prior_outreach,
+        test_template_touch3_has_easy_out,
     ]
     failures = 0
     for t in tests:

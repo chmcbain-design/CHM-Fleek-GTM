@@ -46,7 +46,10 @@ FOLLOWER_CAP      = 10_000
 SPEND_MAX_GBP     = 10_000
 SPEND_DATA_CAP    = 9_000
 SPEND_FLOOR_VALUE = 120
-LEDGER_WINDOW_H   = 48     # hours — anyone actioned within this window is excluded
+LEDGER_WINDOW_H   = 48     # hours — hard-floor safety exclusion (date-based)
+CADENCE_WINDOW_DAYS = 3    # minimum days between touches for cadence-tracked leads
+MAX_TOUCHES       = 3      # touches without a reply → lead is parked
+REPLY_STAGES      = frozenset({"Replied", "Warm", "Call Booked", "Negotiating"})
 
 RECENCY_BANDS = [
     (  2,  40),
@@ -131,6 +134,13 @@ def init_db() -> sqlite3.Connection:
             rows_read       INTEGER,
             new_leads       INTEGER,
             duplicates_caught INTEGER
+        );
+
+        CREATE TABLE IF NOT EXISTS cadence (
+            lead_id         TEXT PRIMARY KEY,
+            touch_count     INTEGER NOT NULL DEFAULT 0,
+            last_touch_date TEXT,
+            parked          INTEGER NOT NULL DEFAULT 0
         );
     """)
     conn.commit()
@@ -319,12 +329,34 @@ def ingest_inbox(conn: sqlite3.Connection) -> list:
 # ═══════════════════════════════════════════════════════════════════════════════
 
 def recent_lead_ids(conn: sqlite3.Connection) -> set:
-    """Lead IDs that had any action logged within the last LEDGER_WINDOW_H hours."""
-    cutoff = (datetime.now() - timedelta(hours=LEDGER_WINDOW_H)).isoformat()
+    """Lead IDs actioned within the 48 h hard-floor window (date-based so --date simulation works)."""
+    cutoff = str(SCORE_DATE - timedelta(days=2))
     rows = conn.execute(
-        "SELECT DISTINCT lead_id FROM action_log WHERE run_id >= ?", (cutoff,)
+        "SELECT DISTINCT lead_id FROM action_log WHERE run_date >= ?", (cutoff,)
     ).fetchall()
     return {r["lead_id"] for r in rows}
+
+
+def get_cadence(conn: sqlite3.Connection) -> dict:
+    """Return {lead_id: {touch_count, last_touch_date, parked}} for all known leads."""
+    rows = conn.execute(
+        "SELECT lead_id, touch_count, last_touch_date, parked FROM cadence"
+    ).fetchall()
+    return {r["lead_id"]: dict(r) for r in rows}
+
+
+def upsert_cadence(conn: sqlite3.Connection, lead_id: str,
+                   touch_count: int, last_touch_date, parked: int = 0):
+    conn.execute(
+        """INSERT INTO cadence (lead_id, touch_count, last_touch_date, parked)
+           VALUES (?, ?, ?, ?)
+           ON CONFLICT(lead_id) DO UPDATE SET
+               touch_count=excluded.touch_count,
+               last_touch_date=excluded.last_touch_date,
+               parked=excluded.parked""",
+        (lead_id, touch_count, last_touch_date, parked),
+    )
+    conn.commit()
 
 def previously_issued(conn: sqlite3.Connection) -> dict:
     """Returns {lead_id: {action_string, ...}} for all time."""
@@ -455,7 +487,7 @@ COMMERCIAL_KEYWORDS = frozenset({
 })
 
 
-def _draft_prompt(row: dict, channel: str, days_since) -> str:
+def _draft_prompt(row: dict, channel: str, days_since, touch_number: int = 1) -> str:
     handle  = (str(row.get("handle") or "")).strip()
     store   = (str(row.get("store_name") or "")).strip()
     cname   = (str(row.get("contact_name") or "")).strip()
@@ -544,6 +576,23 @@ def _draft_prompt(row: dict, channel: str, days_since) -> str:
     elif not has_q and nt == 0:
         lines.append("Tone note: this is a first touch -- no prior relationship exists.")
 
+    # ── Touch-sequence instruction ────────────────────────────────────────────
+    lines.append(f"Touch sequence: {touch_number} of {MAX_TOUCHES}.")
+    if touch_number == 1:
+        lines.append("This is the first outreach to this lead -- treat it as a fresh introduction.")
+    elif touch_number == 2:
+        lines.append(
+            "This is a follow-up -- we reached out a few days ago and haven't heard back. "
+            "Keep it short and light. Reference that you got in touch recently, but do not guilt-trip "
+            "or over-explain. One sentence of context, then the ask."
+        )
+    elif touch_number >= 3:
+        lines.append(
+            "This is the final check-in. Be warm and low-pressure. Give them an explicit easy out: "
+            "something like 'no worries if the timing isn't right -- happy to reconnect whenever.' "
+            "Do not pitch hard. Leave the door open."
+        )
+
     # ── Channel instruction ───────────────────────────────────────────────────
     if channel == "dm":
         ch_instr = "an Instagram DM -- casual, direct, 2-3 sentences max, at most one emoji if it reads naturally"
@@ -630,7 +679,7 @@ def _call_api(api_client, prompt: str, max_tokens: int = 280) -> str:
     return text
 
 
-def _template_draft(row: dict, channel: str, days_since) -> str:
+def _template_draft(row: dict, channel: str, days_since, touch_number: int = 1) -> str:
     """Plain-text template fallback -- always returns a non-empty string."""
     handle  = f"@{row.get('handle')}" if row.get("handle") and str(row.get("handle")) not in ("nan", "None") else ""
     store   = row.get("store_name") or ""
@@ -648,6 +697,12 @@ def _template_draft(row: dict, channel: str, days_since) -> str:
         if has_q:
             return (f"Hi {handle}, sorry for the slow reply -- to answer your question: "
                     f"[rep: answer \"{inbound}\"]. Happy to send more detail if that's useful.")
+        elif touch_number == 2:
+            return (f"Hi {handle}, just following up on my message from a few days ago -- "
+                    "happy to answer any questions. [rep: one-line reminder of Fleek offer].")
+        elif touch_number >= 3:
+            return (f"Hi {handle}, last one from me -- no worries if the timing isn't right, "
+                    "door's open whenever. [rep: one-line offer or reason to reconnect].")
         elif stale:
             return (f"Hi {handle}, it's been a while -- hope things are going well. "
                     "Reaching back out in case the timing is better now. "
@@ -735,14 +790,16 @@ def _add_drafts(output_df: pd.DataFrame, full_leads: pd.DataFrame,
         else:
             channel = "email"
 
+        touch_number = int(r.get("touch_number") or 1)
+
         # No API client -- template only
         if api_client is None:
-            drafts.append(_template_draft(frow, channel, days_since))
+            drafts.append(_template_draft(frow, channel, days_since, touch_number))
             sources.append("template")
             continue
 
         # API path: generate → validate → one retry → template fallback
-        prompt = _draft_prompt(frow, channel, days_since)
+        prompt = _draft_prompt(frow, channel, days_since, touch_number)
         draft  = None
         source = "template_fallback"
 
@@ -777,7 +834,7 @@ def _add_drafts(output_df: pd.DataFrame, full_leads: pd.DataFrame,
             source = "template_fallback"
 
         if draft is None:
-            draft  = _template_draft(frow, channel, days_since)
+            draft  = _template_draft(frow, channel, days_since, touch_number)
             source = "template_fallback"
 
         drafts.append(draft)
@@ -793,6 +850,7 @@ def _add_drafts(output_df: pd.DataFrame, full_leads: pd.DataFrame,
 # code can always rely on these columns existing, even when no rows are produced.
 DM_COLS = [
     "lead_id", "handle", "source", "stage", "score", "reason", "action",
+    "touch_number",
     "est_monthly_spend_gbp", "followers", "sales_velocity_30d",
     "last_touch_date", "assigned_bdr",
 ]
@@ -812,41 +870,90 @@ def score_and_output(conn: sqlite3.Connection, run_id: str, run_date: str,
     df          = pd.read_sql("SELECT * FROM leads", conn)
     recent_ids  = recent_lead_ids(conn)
     prev_issued = previously_issued(conn)
+    cadence     = get_cadence(conn)
 
     actions_to_log:  list = []
     ledger_excl:     int  = 0
     action_dedup:    int  = 0
+    parked_today:    int  = 0
+
+    # ── Reply reset: reset cadence when the source data's last_touch_date has
+    #    advanced past our cadence last_touch_date — meaning the rep updated the
+    #    CRM with a reply date after our automated touch.
+    #    Limitation: this fires only when an updated file is re-ingested; without
+    #    a separate last_inbound_date field we cannot detect replies in-flight.
+    for lead_id, cad in cadence.items():
+        if cad["touch_count"] > 0 and not cad["parked"]:
+            lead_rows = df[df["lead_id"] == lead_id]
+            if len(lead_rows):
+                src_touch_d = _to_date(lead_rows.iloc[0].get("last_touch_date"))
+                our_touch_d = _to_date(cad["last_touch_date"])
+                if src_touch_d and our_touch_d and src_touch_d > our_touch_d:
+                    # CRM was updated with a newer date after our touch → reply received
+                    if not dry_run:
+                        upsert_cadence(conn, lead_id, 0, None, parked=0)
+                    cad["touch_count"] = 0
+                    cad["parked"] = 0
+
+    # ── Park leads that have exhausted their cadence (touch_count >= MAX_TOUCHES)
+    for lead_id, cad in cadence.items():
+        if cad["touch_count"] >= MAX_TOUCHES and not cad["parked"]:
+            if not dry_run:
+                upsert_cadence(conn, lead_id, cad["touch_count"], cad["last_touch_date"], parked=1)
+            cad["parked"] = 1
+            parked_today += 1
 
     # ── Resellers ──────────────────────────────────────────────────────────────
-    resellers      = df[df["lead_type"] == "reseller"].copy()
-    stage_excl     = resellers["stage"].isin(["Lost", "Won"]) | resellers["last_inbound_text"].apply(_is_decline)
-    r_ledger_excl  = resellers["lead_id"].isin(recent_ids) & ~stage_excl
-    hard_excl      = stage_excl | r_ledger_excl
-    ledger_excl   += int(r_ledger_excl.sum())
-    active = resellers[~hard_excl].copy()
+    resellers  = df[df["lead_type"] == "reseller"].copy()
+    stage_excl = resellers["stage"].isin(["Lost", "Won"]) | resellers["last_inbound_text"].apply(_is_decline)
 
     scored_rows = []
-    for _, row in active.iterrows():
+    for _, row in resellers[~stage_excl].iterrows():
+        lid = row["lead_id"]
+        cad = cadence.get(lid, {"touch_count": 0, "last_touch_date": None, "parked": 0})
+
+        # Parked → skip entirely
+        if cad["parked"]:
+            continue
+
+        # 48 h hard floor (date-based)
+        if lid in recent_ids:
+            ledger_excl += 1
+            continue
+
+        # 3-day cadence window
+        if cad["last_touch_date"]:
+            last_d = _to_date(cad["last_touch_date"])
+            if last_d and (SCORE_DATE - last_d).days < CADENCE_WINDOW_DAYS:
+                ledger_excl += 1
+                continue
+
+        touch_number = cad["touch_count"] + 1  # what this action will be
+
         cs, cr = _conversation_score(row)
         ss     = _spend_score(row)
         es     = _engagement_score(row)
         rs     = _recency_score(row.get("last_touch_date"))
         total  = round(cs*W_CONVERSATION + ss*W_SPEND + es*W_ENGAGEMENT + rs*W_RECENCY)
 
+        # Modest boost for due follow-ups: they've already shown intent by not declining
+        if touch_number >= 2:
+            total = min(100, total + 10)
+
         rd     = _days_ago(_to_date(row.get("last_touch_date")))
-        parts  = [cr, _spend_label(row)]
+        parts  = []
+        if touch_number >= 2:
+            parts.append(f"follow-up {touch_number} of {MAX_TOUCHES}, due today")
+        parts += [cr, _spend_label(row)]
         if rd is not None: parts.append(f"last touch {rd}d ago")
         reason = ", ".join(parts)
-        action = f"DM: {cr}"
 
-        lid = row["lead_id"]
-        if lid in prev_issued and action in prev_issued[lid]:
-            action_dedup += 1
-            continue
+        action = (f"DM: follow-up {touch_number}" if touch_number >= 2 else f"DM: {cr}")
 
         scored_rows.append({
             "lead_id": lid, "handle": row.get("handle"), "source": row.get("source"),
             "stage": row.get("stage"), "score": total, "reason": reason, "action": action,
+            "touch_number": touch_number,
             "est_monthly_spend_gbp": row.get("est_monthly_spend_gbp"),
             "followers": row.get("followers"), "sales_velocity_30d": row.get("sales_velocity_30d"),
             "last_touch_date": row.get("last_touch_date"), "assigned_bdr": row.get("assigned_bdr"),
@@ -864,6 +971,11 @@ def score_and_output(conn: sqlite3.Connection, run_id: str, run_date: str,
                 "lead_id": r["lead_id"], "channel": "dm",
                 "action": r["action"], "score": r["score"], "reason": r["reason"],
             })
+        # Update cadence: record the touch issued today
+        for _, r in top_dms.iterrows():
+            lid = r["lead_id"]
+            tn  = int(r.get("touch_number") or 1)
+            upsert_cadence(conn, lid, tn, run_date, parked=0)
 
     # ── Shops ──────────────────────────────────────────────────────────────────
     shops = df[(df["lead_type"] == "shop") & ~df["stage"].isin(["Lost", "Won"])].copy()
@@ -966,7 +1078,7 @@ def score_and_output(conn: sqlite3.Connection, run_id: str, run_date: str,
                 "handle": r.get("handle"), "reason": r.get("reason"),
                 "draft": r.get("draft_message", ""), "source": r.get("draft_source", ""),
             }
-        cold = top_dms[top_dms["action"].str.contains("never contacted|awaiting reply|ghosted", na=False)]
+        cold = top_dms[top_dms["action"].str.contains("never contacted|awaiting reply|ghosted|follow-up", na=False)]
         if not len(cold):
             cold = top_dms.tail(1)
         if len(cold):
@@ -1000,6 +1112,7 @@ def score_and_output(conn: sqlite3.Connection, run_id: str, run_date: str,
         "hard_excluded":       int(stage_excl.sum()),
         "ledger_excluded":     ledger_excl,
         "action_dedup":        action_dedup,
+        "parked_today":        parked_today,
         "dms_issued":          len(top_dms),
         "shops_actioned":      len(shop_rows),
         "top_dms":             top_dms,
@@ -1041,8 +1154,9 @@ def print_report(run_id, run_date, ingest_stats, score_stats, prev_run_info, api
     print(f"\n  SCORING & EXCLUSIONS")
     print(f"    Resellers eligible (after hard excl.):  {score_stats['resellers_scored']}")
     print(f"    Hard excluded (lost/DNC/won):           {score_stats['hard_excluded']}")
-    print(f"    Excluded by ledger (contacted <48 h):   {score_stats['ledger_excluded']}")
+    print(f"    Excluded by ledger / cadence window:    {score_stats['ledger_excluded']}")
     print(f"    Skipped (action already issued before): {score_stats['action_dedup']}")
+    print(f"    Parked today (touch {MAX_TOUCHES} exhausted):    {score_stats.get('parked_today', 0)}")
 
     print(f"\n  OUTPUT")
     print(f"    DMs queued in today_dms.csv:            {score_stats['dms_issued']}")
@@ -1113,7 +1227,23 @@ def main():
                         help="Score without writing outputs, API calls, or ledger logging")
     parser.add_argument("--no-api", action="store_true",
                         help="Use plain templates instead of claude-haiku (no API key needed)")
+    parser.add_argument("--reset", action="store_true",
+                        help="Delete pipeline.db before running (simulation / fresh start)")
+    parser.add_argument("--date", type=str, default=None, metavar="YYYY-MM-DD",
+                        help="Override run date for multi-day simulation")
     args = parser.parse_args()
+
+    if args.reset and DB_PATH.exists():
+        DB_PATH.unlink()
+        print("  [reset] pipeline.db deleted — starting fresh")
+
+    global SCORE_DATE
+    if args.date:
+        try:
+            SCORE_DATE = date.fromisoformat(args.date)
+        except ValueError:
+            print(f"  [error] --date must be YYYY-MM-DD, got: {args.date!r}")
+            return
 
     run_id   = datetime.now().isoformat()
     run_date = str(SCORE_DATE)
