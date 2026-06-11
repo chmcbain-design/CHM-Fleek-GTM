@@ -21,6 +21,7 @@ import os
 import re
 import shutil
 import sqlite3
+import time
 from datetime import date, datetime, timedelta
 from pathlib import Path
 
@@ -433,28 +434,64 @@ def _engagement_score(row):
 # ═══════════════════════════════════════════════════════════════════════════════
 
 _DRAFT_SYSTEM = (
-    "You draft outreach for Fleek, a UK vintage clothing reseller platform. "
-    "Strict rules: British English only; no em dashes; never invent prices, stock levels, "
-    "promotions, delivery terms or discounts; where a specific detail would strengthen the "
-    "message write [rep: placeholder describing what to add] instead; output the message "
-    "text only — no labels, headers or preamble."
+    "You draft outreach messages for Fleek, a UK vintage clothing reseller platform. "
+    "Rules (all strict): British English only; no em dashes; never invent prices, stock "
+    "levels, promotions, delivery terms or discounts; where a specific detail is needed "
+    "write [rep: description of what to add] as a placeholder; output the message text "
+    "only -- no labels, headers or preamble; do not mention any account name, person name "
+    "or business name beyond those explicitly given to you in the lead data."
 )
 
 
 def _draft_prompt(row: dict, channel: str, days_since) -> str:
-    name    = row.get("handle") or row.get("store_name") or "the lead"
-    source  = row.get("source") or ""
-    stage   = row.get("stage") or ""
-    inbound = row.get("last_inbound_text")
-    has_q   = bool(inbound and "?" in str(inbound) and str(inbound) not in ("nan", "None"))
-    stale   = days_since is not None and days_since >= STALE_DAYS
+    handle  = (str(row.get("handle") or "")).strip()
+    store   = (str(row.get("store_name") or "")).strip()
+    cname   = (str(row.get("contact_name") or "")).strip()
+    source  = (str(row.get("source") or "")).strip()
+    stage   = (str(row.get("stage") or "")).strip()
     notes   = row.get("notes")
     vel     = row.get("sales_velocity_30d")
     fol     = row.get("followers")
 
+    raw_inbound = row.get("last_inbound_text")
+    inbound = ""
+    if raw_inbound and str(raw_inbound).strip() not in ("nan", "None", ""):
+        inbound = str(raw_inbound).strip()
+    has_q = "?" in inbound
+    stale = days_since is not None and days_since >= STALE_DAYS
+
     nt = 0
     try: nt = int(float(str(row.get("num_touches") or 0).replace("<NA>", "0")))
     except (ValueError, TypeError): pass
+
+    lines = []
+
+    # ── Identity block: explicit grounding so the model uses exact names ──────
+    if channel == "dm":
+        if handle and handle not in ("nan", "None"):
+            lines.append(f"Handle: @{handle}")
+            lines.append(f'Addressing instruction: open with "Hi @{handle}" -- use this exact handle verbatim, no substitution.')
+        else:
+            lines.append("Handle: unknown")
+    else:
+        if cname and cname not in ("nan", "None"):
+            first = cname.split()[0]
+            lines.append(f"Contact name: {cname}")
+            lines.append(f'Addressing instruction: greet them as "Hi {first}," -- use this exact first name, no substitution.')
+        else:
+            lines.append("Contact name: unknown")
+        if store and store not in ("nan", "None"):
+            lines.append(f"Store name: {store}")
+            lines.append(f"Store instruction: refer to the business as '{store}' exactly -- no other business name.")
+
+    lines.append("No-invent rule: do not address, mention or reference any account, person or business other than the name(s) stated above.")
+
+    # ── Context block ─────────────────────────────────────────────────────────
+    if source and source not in ("nan", "None"):
+        lines.append(f"Source platform: {source}")
+    lines.append(f"Pipeline stage: {stage}, {nt} prior contacts")
+    lines.append(f"Days since last contact: {days_since}" if days_since is not None else "Days since last contact: unknown")
+    lines.append(f"Spend estimate: {_spend_label(row)}")
 
     eng_parts = []
     if vel and str(vel) not in ("nan", "None"):
@@ -462,54 +499,111 @@ def _draft_prompt(row: dict, channel: str, days_since) -> str:
     if fol and str(fol) not in ("nan", "None"):
         fk = float(fol) / 1000
         eng_parts.append(f"{fk:.0f}k followers" if fk >= 1 else f"{int(float(fol))} followers")
-
-    lines = [
-        f"Lead: {name}" + (f" ({source})" if source else ""),
-        f"Stage: {stage}, {nt} prior contacts",
-        (f'Last inbound from them: "{inbound}"'
-         if inbound and str(inbound) not in ("nan", "None", "") else "Last inbound: none"),
-        (f"Days since last contact: {days_since}" if days_since is not None
-         else "Days since last contact: unknown"),
-        f"Spend estimate: {_spend_label(row)}",
-    ]
     if eng_parts:
         lines.append(f"Engagement: {', '.join(eng_parts)}")
-    if notes and str(notes) not in ("nan", "None", ""):
+
+    if inbound:
+        lines.append(f'Last message from them: "{inbound}"')
+        if has_q:
+            lines.append(
+                "INBOUND QUESTION RULE: their last message contains an unanswered question. "
+                "Your draft MUST acknowledge or answer it first -- do not open with anything else."
+            )
+    else:
+        lines.append("Last message from them: none")
+
+    if notes and str(notes).strip() not in ("nan", "None", ""):
         lines.append(f"Notes: {notes}")
 
+    # ── Tone note ─────────────────────────────────────────────────────────────
+    if not has_q and stale:
+        lines.append(f"Tone note: it has been {days_since} days since last contact -- acknowledge the gap honestly, do not pretend continuity.")
+    elif not has_q and nt == 0:
+        lines.append("Tone note: this is a first touch -- no prior relationship exists.")
+
+    # ── Channel instruction ───────────────────────────────────────────────────
     if channel == "dm":
-        ch = "an Instagram DM — casual, direct, 2-3 sentences max, at most one emoji if it reads naturally"
+        ch_instr = "an Instagram DM -- casual, direct, 2-3 sentences max, at most one emoji if it reads naturally"
     elif channel == "email":
-        ch = "an email — first line must be 'Subject: [subject line]', then the body (3-5 sentences), no emojis"
+        ch_instr = "an email -- first line must be 'Subject: [subject line]', then a blank line, then the body (3-5 sentences), no emojis"
     elif channel == "call":
-        ch = "call talking points — 3-5 bullet points starting with a dash, prompts for a rep (not a script), no emojis"
+        ch_instr = "call talking points -- 3-5 bullet points starting with a dash, prompts for a rep (not a script), no emojis"
     else:
-        ch = "visit prep notes — 3-4 bullet points starting with a dash, for a field rep, no emojis"
+        ch_instr = "visit prep notes -- 3-4 bullet points starting with a dash, for a field rep, no emojis"
 
-    if has_q:
-        stage_note = (f"Their last message was an unanswered question: \"{inbound}\". "
-                      "Address or acknowledge it first — that is the re-engagement hook.")
-    elif stale:
-        stage_note = (f"It has been {days_since} days since last contact. "
-                      "Acknowledge the gap honestly rather than pretending continuity.")
-    elif nt == 0:
-        stage_note = "This is a first touch — no prior relationship exists."
+    return "\n".join(lines) + f"\n\nWrite {ch_instr}."
+
+
+def _validate_draft(draft: str, row: dict, channel: str) -> list:
+    """Return list of failure reasons; empty list means the draft passed."""
+    if not draft or len(draft.strip()) < 20:
+        return ["draft is empty or under 20 characters"]
+
+    handle  = (str(row.get("handle") or "")).strip()
+    cname   = (str(row.get("contact_name") or "")).strip()
+    raw_inbound = row.get("last_inbound_text") or ""
+    inbound = str(raw_inbound).strip() if str(raw_inbound).strip() not in ("nan", "None", "") else ""
+    has_q   = "?" in inbound
+
+    failures = []
+
+    # (a) Must contain the lead's @handle or contact first name
+    if channel == "dm":
+        if handle and handle not in ("nan", "None"):
+            if f"@{handle}" not in draft:
+                failures.append(f"missing required handle: '@{handle}' not found in draft")
     else:
-        stage_note = ""
+        if cname and cname not in ("nan", "None"):
+            first = cname.split()[0]
+            if first not in draft:
+                failures.append(f"missing contact first name: '{first}' not found in draft")
 
-    prompt = "\n".join(lines) + f"\n\nWrite {ch}."
-    if stage_note:
-        prompt += f"\nNote: {stage_note}"
-    return prompt
+    # (b) No unexpected @mentions
+    expected = {handle.lower()} if (handle and handle not in ("nan", "None")) else set()
+    found    = {m.lower() for m in re.findall(r"@(\w+)", draft)}
+    extra    = found - expected
+    if extra:
+        failures.append(
+            f"unexpected @mention(s): {', '.join(sorted(f'@{m}' for m in extra))} -- "
+            "only use names given in the lead data"
+        )
+
+    # (c) Unanswered inbound question must be referenced
+    if has_q and inbound:
+        keywords = {w.lower() for w in re.findall(r"\w+", inbound) if len(w) > 3}
+        if keywords and not any(kw in draft.lower() for kw in keywords):
+            failures.append(
+                f"does not reference unanswered question '{inbound}' -- "
+                "at least one keyword from it must appear"
+            )
+
+    return failures
+
+
+def _call_api(api_client, prompt: str, max_tokens: int = 280) -> str:
+    """
+    Single raw API call. Returns stripped non-empty text.
+    Raises ValueError on empty response; adds a brief sleep on rate-limit errors before re-raising.
+    """
+    msg  = api_client.messages.create(
+        model=HAIKU_MODEL,
+        max_tokens=max_tokens,
+        system=_DRAFT_SYSTEM,
+        messages=[{"role": "user", "content": prompt}],
+    )
+    text = msg.content[0].text.strip()
+    if not text:
+        raise ValueError("API returned an empty response")
+    return text
 
 
 def _template_draft(row: dict, channel: str, days_since) -> str:
-    """Plain-text template fallback used with --no-api."""
-    handle  = f"@{row.get('handle')}" if row.get("handle") else ""
+    """Plain-text template fallback -- always returns a non-empty string."""
+    handle  = f"@{row.get('handle')}" if row.get("handle") and str(row.get("handle")) not in ("nan", "None") else ""
     store   = row.get("store_name") or ""
     cname   = row.get("contact_name") or ""
     inbound = row.get("last_inbound_text") or ""
-    has_q   = "?" in str(inbound) and str(inbound) not in ("nan", "None", "")
+    has_q   = "?" in str(inbound) and str(inbound).strip() not in ("nan", "None", "")
     stale   = days_since is not None and days_since >= STALE_DAYS
     city    = row.get("city") or ""
 
@@ -533,13 +627,13 @@ def _template_draft(row: dict, channel: str, days_since) -> str:
                     "working on lately if useful. [rep: add one hook from their listings/niche].")
 
     elif channel == "email":
-        sal  = f"Hi {cname}," if cname else "Hi there,"
-        subj = f"Fleek x {store}" if store else "Fleek -- quick question"
+        sal  = f"Hi {cname}," if cname and str(cname) not in ("nan", "None") else "Hi there,"
+        subj = f"Fleek x {store}" if store and str(store) not in ("nan", "None") else "Fleek -- quick question"
         if has_q:
             body = (f"Thanks for getting back to me. To answer your question: "
                     f"[rep: answer \"{inbound}\"]. Happy to set up a call to run through anything else.")
         elif stale:
-            ref = store or "the shop"
+            ref  = store if store and str(store) not in ("nan", "None") else "the shop"
             body = (f"It's been a while since we last spoke -- I hope things are going well at {ref}. "
                     "Reaching back out in case the timing is better now. [rep: brief Fleek value prop].")
         elif nt == 0:
@@ -564,50 +658,101 @@ def _template_draft(row: dict, channel: str, days_since) -> str:
         return "\n".join(points)
 
 
-def generate_draft(row: dict, channel: str, days_since, api_client) -> str:
-    """Generate outreach draft via API, falling back to template on any error."""
-    if api_client is not None:
-        try:
-            msg = api_client.messages.create(
-                model=HAIKU_MODEL,
-                max_tokens=220,
-                system=_DRAFT_SYSTEM,
-                messages=[{"role": "user", "content": _draft_prompt(row, channel, days_since)}],
-            )
-            return msg.content[0].text.strip()
-        except Exception:
-            pass
-    return _template_draft(row, channel, days_since)
-
-
 def _add_drafts(output_df: pd.DataFrame, full_leads: pd.DataFrame,
                 action_col: str, api_client) -> pd.DataFrame:
-    """Merge full lead data into output_df and add draft_message column."""
-    lookup = full_leads.set_index("lead_id")
-    drafts = []
+    """
+    Add draft_message and draft_source columns to output_df.
+
+    draft_source values:
+      "api"               -- API call passed validation on the first attempt
+      "api_retry"         -- API call passed validation after one retry
+      "template"          -- no-API mode, or Await-reply row (no draft needed)
+      "template_fallback" -- API failed or validation failed twice; flag for human review
+    """
+    # Reset so pd.Series(drafts) index [0,1,2,...] aligns with iterrows order.
+    # Without this, sort_values() leaves a non-contiguous index and assignments
+    # by label silently scramble drafts across the wrong rows.
+    output_df = output_df.reset_index(drop=True)
+
+    lookup  = full_leads.set_index("lead_id")
+    drafts  = []
+    sources = []
+
     for _, r in output_df.iterrows():
-        lid   = r.get("lead_id")
-        frow  = lookup.loc[lid].to_dict() if lid in lookup.index else r.to_dict()
-        action = str(r.get(action_col) or "")
+        lid        = r.get("lead_id")
+        frow       = lookup.loc[lid].to_dict() if lid in lookup.index else r.to_dict()
+        action     = str(r.get(action_col) or "")
         days_since = _days_ago(_to_date(r.get("last_touch_date")))
 
+        # Await-reply rows: blank placeholder, no outreach needed
         if action.startswith("Await reply"):
             drafts.append("")
+            sources.append("template")
             continue
 
-        if "Email" in action or action_col == "action" and "dm" in action.lower():
-            channel = "dm" if action_col == "action" else "email"
+        # Determine channel from which column we're drafting for
+        if action_col == "action":
+            channel = "dm"
+        elif "Email" in action:
+            channel = "email"
         elif "Call" in action:
             channel = "call"
         elif "Visit" in action:
             channel = "visit"
         else:
-            channel = "dm"  # reseller default
+            channel = "email"
 
-        drafts.append(generate_draft(frow, channel, days_since, api_client))
+        # No API client -- template only
+        if api_client is None:
+            drafts.append(_template_draft(frow, channel, days_since))
+            sources.append("template")
+            continue
+
+        # API path: generate → validate → one retry → template fallback
+        prompt = _draft_prompt(frow, channel, days_since)
+        draft  = None
+        source = "template_fallback"
+
+        try:
+            time.sleep(0.3)  # pace calls; 133 leads × 0.3s ≈ 40s, avoids burst rate limits
+            draft    = _call_api(api_client, prompt)
+            failures = _validate_draft(draft, frow, channel)
+
+            if not failures:
+                source = "api"
+            else:
+                retry_prompt = (
+                    f'Your previous draft:\n"{draft}"\n\n'
+                    "Failed these checks:\n"
+                    + "\n".join(f"- {f}" for f in failures)
+                    + f"\n\nFix every issue and rewrite. Original brief:\n\n{prompt}"
+                )
+                time.sleep(0.5)
+                draft    = _call_api(api_client, retry_prompt)
+                failures = _validate_draft(draft, frow, channel)
+                if not failures:
+                    source = "api_retry"
+                else:
+                    draft  = None
+                    source = "template_fallback"
+
+        except Exception as exc:
+            name = type(exc).__name__.lower()
+            if any(s in name for s in ("ratelimit", "overload", "timeout", "connect")):
+                time.sleep(2.0)
+            draft  = None
+            source = "template_fallback"
+
+        if draft is None:
+            draft  = _template_draft(frow, channel, days_since)
+            source = "template_fallback"
+
+        drafts.append(draft)
+        sources.append(source)
 
     output_df = output_df.copy()
     output_df["draft_message"] = pd.Series(drafts, dtype="object")
+    output_df["draft_source"]  = pd.Series(sources, dtype="object")
     return output_df
 
 
@@ -784,22 +929,38 @@ def score_and_output(conn: sqlite3.Connection, run_id: str, run_date: str,
         q_dm = top_dms[top_dms["action"].str.contains("unanswered question", na=False)]
         if len(q_dm):
             r = q_dm.iloc[0]
-            samples["dm_question"] = {"handle": r.get("handle"), "reason": r.get("reason"),
-                                       "draft": r.get("draft_message", "")}
+            samples["dm_question"] = {
+                "handle": r.get("handle"), "reason": r.get("reason"),
+                "draft": r.get("draft_message", ""), "source": r.get("draft_source", ""),
+            }
         cold = top_dms[top_dms["action"].str.contains("never contacted|awaiting reply|ghosted", na=False)]
-        if not len(cold):  # fall back to lowest-score DM
+        if not len(cold):
             cold = top_dms.tail(1)
         if len(cold):
             r = cold.iloc[0]
-            samples["dm_cold"] = {"handle": r.get("handle"), "reason": r.get("reason"),
-                                   "draft": r.get("draft_message", "")}
+            samples["dm_cold"] = {
+                "handle": r.get("handle"), "reason": r.get("reason"),
+                "draft": r.get("draft_message", ""), "source": r.get("draft_source", ""),
+            }
     if not dry_run and "draft_message" in shops_df.columns and "next_action" in shops_df.columns:
-        email_rows = shops_df[shops_df["next_action"].str.contains("Email", na=False) &
-                               ~shops_df["draft_message"].fillna("").str.strip().eq("")]
+        email_rows = shops_df[
+            shops_df["next_action"].str.contains("Email", na=False) &
+            shops_df["draft_message"].astype(str).str.strip().ne("")
+        ]
         if len(email_rows):
             r = email_rows.iloc[0]
-            samples["shop_email"] = {"store": r.get("store_name"), "action": r.get("next_action"),
-                                      "draft": r.get("draft_message", "")}
+            samples["shop_email"] = {
+                "store": r.get("store_name"), "action": r.get("next_action"),
+                "draft": r.get("draft_message", ""), "source": r.get("draft_source", ""),
+            }
+
+    # Tally draft sources across both output frames
+    draft_sources: dict = {}
+    if not dry_run:
+        for df_part in (top_dms, shops_df):
+            if "draft_source" in df_part.columns:
+                for src, cnt in df_part["draft_source"].value_counts().items():
+                    draft_sources[src] = draft_sources.get(src, 0) + int(cnt)
 
     return {
         "resellers_scored":    len(scored_df),
@@ -813,6 +974,7 @@ def score_and_output(conn: sqlite3.Connection, run_id: str, run_date: str,
         "actions_logged":      len(actions_to_log),
         "samples":             samples,
         "api_used":            api_client is not None,
+        "draft_sources":       draft_sources,
     }
 
 
@@ -855,6 +1017,10 @@ def print_report(run_id, run_date, ingest_stats, score_stats, prev_run_info, api
     print(f"    Actions logged to ledger:               {score_stats['actions_logged']}")
     drafting_mode = "claude-haiku" if api_used else "--no-api templates"
     print(f"    Draft mode:                             {drafting_mode}")
+    ds = score_stats.get("draft_sources", {})
+    if ds:
+        parts = [f"{k}={v}" for k, v in sorted(ds.items()) if v > 0]
+        print(f"    Draft sources:                          {', '.join(parts)}")
 
     if len(score_stats["top_dms"]) > 0:
         print(f"\n  TOP 10 DMs:")
@@ -879,21 +1045,24 @@ def print_report(run_id, run_date, ingest_stats, score_stats, prev_run_info, api
         print(f"\n  SAMPLE DRAFTS")
         if "dm_question" in samples:
             s = samples["dm_question"]
-            print(f"\n  [1] DM revive — unanswered question (@{s['handle']})")
+            tag = f"  [{s['source']}]" if s.get("source") else ""
+            print(f"\n  [1] DM revive — unanswered question (@{s['handle']}){tag}")
             print(f"      Reason: {s['reason']}")
             print(f"      ---")
             for line in str(s["draft"]).splitlines():
                 print(f"      {line}")
         if "dm_cold" in samples:
             s = samples["dm_cold"]
-            print(f"\n  [2] DM cold-ish (@{s['handle']})")
+            tag = f"  [{s['source']}]" if s.get("source") else ""
+            print(f"\n  [2] DM cold-ish (@{s['handle']}){tag}")
             print(f"      Reason: {s['reason']}")
             print(f"      ---")
             for line in str(s["draft"]).splitlines():
                 print(f"      {line}")
         if "shop_email" in samples:
             s = samples["shop_email"]
-            print(f"\n  [3] Shop email ({s['store']} — {s['action']})")
+            tag = f"  [{s['source']}]" if s.get("source") else ""
+            print(f"\n  [3] Shop email ({s['store']} — {s['action']}){tag}")
             print(f"      ---")
             for line in str(s["draft"]).splitlines():
                 print(f"      {line}")
