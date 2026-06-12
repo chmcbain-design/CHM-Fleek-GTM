@@ -91,7 +91,44 @@ LEAD_COLS = [
     "avg_listing_price_gbp", "sales_velocity_30d", "est_monthly_spend_gbp",
     "stage", "first_seen_date", "last_touch_date", "num_touches",
     "last_inbound_text", "assigned_bdr", "notes", "lead_type",
+    "channel_type", "has_email",
 ]
+
+# Canonical source labels — raw variants mapped to these values
+SOURCE_MAP = {
+    "instagram":    "instagram",
+    "ig":           "instagram",
+    "instagram_dm": "instagram",
+    "depop":        "depop",
+    "ebay":         "ebay",
+    "vinted":       "vinted",
+    "whatnot":      "whatnot",
+    "physical store": "physical",
+    "physical":     "physical",
+    "in-person":    "physical",
+    "in person":    "physical",
+    "google_maps":  "physical",
+    "google maps":  "physical",
+    "store":        "physical",
+}
+
+ONLINE_SOURCES = frozenset({"instagram", "depop", "ebay", "vinted", "whatnot"})
+
+
+def _norm_source(s) -> str:
+    if not s or str(s).strip() in ("", "nan", "None"):
+        return "unknown"
+    return SOURCE_MAP.get(str(s).strip().lower(), str(s).strip().lower())
+
+
+def _derive_channel_type(row) -> str:
+    """'physical_shop' if the lead is contacted in person; 'online_reseller' otherwise."""
+    src = _norm_source(row.get("source"))
+    has_handle = bool(row.get("handle") and str(row.get("handle")).strip() not in ("", "nan", "None"))
+    has_email_val = bool(row.get("email") and str(row.get("email")).strip() not in ("", "nan", "None"))
+    if src == "physical" or (has_email_val and not has_handle):
+        return "physical_shop"
+    return "online_reseller"
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -113,7 +150,8 @@ def init_db() -> sqlite3.Connection:
             stage TEXT, first_seen_date TEXT, last_touch_date TEXT,
             num_touches INTEGER, last_inbound_text TEXT,
             assigned_bdr TEXT, notes TEXT, lead_type TEXT,
-            first_ingested TEXT, last_updated TEXT
+            first_ingested TEXT, last_updated TEXT,
+            channel_type TEXT, has_email INTEGER
         );
 
         CREATE TABLE IF NOT EXISTS action_log (
@@ -143,6 +181,13 @@ def init_db() -> sqlite3.Connection:
             parked          INTEGER NOT NULL DEFAULT 0
         );
     """)
+    conn.commit()
+    # Migrate existing DBs: add columns that may predate this schema version
+    for col_def in ("channel_type TEXT", "has_email INTEGER"):
+        col_name = col_def.split()[0]
+        existing_cols = [r[1] for r in conn.execute("PRAGMA table_info(leads)").fetchall()]
+        if col_name not in existing_cols:
+            conn.execute(f"ALTER TABLE leads ADD COLUMN {col_def}")
     conn.commit()
     return conn
 
@@ -206,9 +251,35 @@ def clean_dataframe(raw: pd.DataFrame) -> pd.DataFrame:
     df["num_touches"] = pd.to_numeric(df["num_touches"], errors="coerce")
     for col in ["followers", "active_listings", "avg_listing_price_gbp", "sales_velocity_30d"]:
         df[col] = pd.to_numeric(df[col], errors="coerce")
-    df["lead_type"] = df["email"].apply(
-        lambda e: "shop" if e and str(e).strip() not in ("", "nan") else "reseller"
+
+    # Normalise source labels to canonical set
+    df["source"] = df["source"].apply(_norm_source)
+
+    # has_email: true for any lead with a valid email regardless of lead_type
+    df["has_email"] = df["email"].apply(
+        lambda e: bool(e and str(e).strip() not in ("", "nan", "None"))
     )
+
+    # lead_type:
+    #   shop     → source="physical" (always a store, handle is just social presence)
+    #              OR has email but no handle (discovered online but no marketplace presence)
+    #   reseller → online platform source (instagram/depop/vinted/etc.) with handle
+    #              Resellers who ALSO have an email keep lead_type="reseller"; has_email=True
+    #              flags the extra channel so touch-2 can use email instead of a second DM.
+    def _lead_type(r):
+        src = _norm_source(r.get("source"))
+        has_handle = bool(r.get("handle") and str(r.get("handle")).strip() not in ("", "nan", "None"))
+        if src == "physical":
+            return "shop"
+        if has_handle:
+            return "reseller"
+        return "shop" if r["has_email"] else "reseller"
+
+    df["lead_type"] = df.apply(_lead_type, axis=1)
+
+    # channel_type: derived from source + contact signals, not source label alone
+    df["channel_type"] = df.apply(_derive_channel_type, axis=1)
+
     return df[LEAD_COLS]
 
 
@@ -855,7 +926,7 @@ def _add_drafts(output_df: pd.DataFrame, full_leads: pd.DataFrame,
 # code can always rely on these columns existing, even when no rows are produced.
 DM_COLS = [
     "lead_id", "handle", "source", "stage", "score", "reason", "action",
-    "touch_number",
+    "touch_number", "channel_type", "has_email",
     "est_monthly_spend_gbp", "followers", "sales_velocity_30d",
     "last_touch_date", "assigned_bdr",
 ]
@@ -945,12 +1016,15 @@ def score_and_output(conn: sqlite3.Connection, run_id: str, run_date: str,
         if touch_number >= 2:
             total = min(100, total + 10)
 
-        rd     = _days_ago(_to_date(row.get("last_touch_date")))
-        parts  = []
+        rd        = _days_ago(_to_date(row.get("last_touch_date")))
+        lead_has_email = bool(row.get("has_email"))
+        parts     = []
         if touch_number >= 2:
             parts.append(f"follow-up {touch_number} of {MAX_TOUCHES}, due today")
         parts += [cr, _spend_label(row)]
         if rd is not None: parts.append(f"last touch {rd}d ago")
+        if lead_has_email and touch_number >= 2:
+            parts.append("email available for follow-up")
         reason = ", ".join(parts)
 
         action = (f"DM: follow-up {touch_number}" if touch_number >= 2 else f"DM: {cr}")
@@ -959,6 +1033,8 @@ def score_and_output(conn: sqlite3.Connection, run_id: str, run_date: str,
             "lead_id": lid, "handle": row.get("handle"), "source": row.get("source"),
             "stage": row.get("stage"), "score": total, "reason": reason, "action": action,
             "touch_number": touch_number,
+            "channel_type": row.get("channel_type", "online_reseller"),
+            "has_email": lead_has_email,
             "est_monthly_spend_gbp": row.get("est_monthly_spend_gbp"),
             "followers": row.get("followers"), "sales_velocity_30d": row.get("sales_velocity_30d"),
             "last_touch_date": row.get("last_touch_date"), "assigned_bdr": row.get("assigned_bdr"),

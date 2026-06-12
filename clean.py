@@ -102,6 +102,31 @@ def normalise_stage(s):
     return STAGE_MAP.get(str(s).strip().lower(), str(s).strip())
 
 
+# ── Source normalisation ──────────────────────────────────────────────────────
+SOURCE_MAP = {
+    "instagram":    "instagram",
+    "ig":           "instagram",
+    "instagram_dm": "instagram",
+    "depop":        "depop",
+    "ebay":         "ebay",
+    "vinted":       "vinted",
+    "whatnot":      "whatnot",
+    "physical store": "physical",
+    "physical":     "physical",
+    "in-person":    "physical",
+    "in person":    "physical",
+    "google_maps":  "physical",
+    "google maps":  "physical",
+    "store":        "physical",
+}
+
+
+def normalise_source(s):
+    if pd.isna(s) or str(s).strip() == "":
+        return "unknown"
+    return SOURCE_MAP.get(str(s).strip().lower(), str(s).strip().lower())
+
+
 def fuzzy_match(a, b, threshold=0.85):
     """True if non-null strings are similar enough."""
     if not a or not b:
@@ -213,11 +238,39 @@ df["num_touches"] = pd.to_numeric(df["num_touches"], errors="coerce").astype("In
 for col in ["followers", "active_listings", "avg_listing_price_gbp", "sales_velocity_30d"]:
     df[col] = pd.to_numeric(df[col], errors="coerce")
 
-# ── Classification ────────────────────────────────────────────────────────────
-# shop  → has a valid email (regardless of source)
-# reseller → no email
+# ── Source normalisation ──────────────────────────────────────────────────────
+df["source"] = df["source"].apply(normalise_source)
 
-df["lead_type"] = df["email"].apply(lambda e: "shop" if pd.notna(e) and str(e).strip() else "reseller")
+# ── has_email flag ────────────────────────────────────────────────────────────
+df["has_email"] = df["email"].apply(lambda e: pd.notna(e) and str(e).strip() not in ("", "nan"))
+
+# ── Classification ────────────────────────────────────────────────────────────
+# reseller: has a handle (Instagram/marketplace seller), even if they also have an email
+# shop:     has email but no handle (physical store reached by email)
+# has_email=True resellers stay in the reseller flow; email becomes an additional touch channel
+
+def _lead_type(r):
+    src = normalise_source(r.get("source") or "")
+    has_handle = pd.notna(r.get("handle")) and str(r.get("handle")).strip() not in ("", "nan")
+    if src == "physical":
+        return "shop"
+    if has_handle:
+        return "reseller"
+    return "shop" if r["has_email"] else "reseller"
+
+df["lead_type"] = df.apply(_lead_type, axis=1)
+
+# ── channel_type ──────────────────────────────────────────────────────────────
+# Derived from actual contact signals: source label alone is not sufficient
+def _channel_type(row):
+    src = row.get("source", "")
+    has_handle = pd.notna(row.get("handle")) and str(row.get("handle")).strip() not in ("", "nan")
+    h_email    = row.get("has_email", False)
+    if src == "physical" or (h_email and not has_handle):
+        return "physical_shop"
+    return "online_reseller"
+
+df["channel_type"] = df.apply(_channel_type, axis=1)
 
 type_counts = df["lead_type"].value_counts().to_dict()
 
