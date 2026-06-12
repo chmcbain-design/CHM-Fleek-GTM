@@ -1376,10 +1376,37 @@ def print_report(run_id, run_date, ingest_stats, score_stats, prev_run_info,
     if len(sd) and "city_cluster" in sd.columns:
         trips = sd[sd["city_cluster"].str.startswith("Day trip", na=False)]
         if len(trips):
-            print(f"\n  DAY TRIPS (2+ shops at Visit stage):")
+            # Disambiguation: tag store names that appear under more than one city
+            name_cities: dict = {}
+            for _, row in sd.iterrows():
+                n = str(row.get("store_name") or "").strip()
+                c = str(row.get("city") or "").strip()
+                if n and c:
+                    name_cities.setdefault(n, set()).add(c)
+            ambiguous = {n for n, cs in name_cities.items() if len(cs) > 1}
+
+            def _tag(name, city):
+                s = str(name).strip()
+                return f"{s} ({str(city).strip()[:3].upper()})" if s in ambiguous else s
+
+            print(f"\n  DAY TRIPS (2+ shops at Visit stage in same city):")
             for city, grp in trips.groupby("city"):
-                names = grp["store_name"].dropna().tolist()
-                print(f"    {grp.iloc[0]['city_cluster']} — {', '.join(str(n) for n in names[:4])}")
+                visit_rows  = grp[grp["next_action"].str.startswith("Visit",  na=False)]
+                dropin_rows = grp[
+                    ~grp["next_action"].str.startswith("Visit", na=False) &
+                    ~grp["next_action"].str.startswith("Await", na=False)
+                ]
+                n_v = len(visit_rows)
+                n_d = len(dropin_rows)
+                v_names = [_tag(r["store_name"], city) for _, r in visit_rows.iterrows()]
+                d_names = [_tag(r["store_name"], city) for _, r in dropin_rows.iterrows()]
+                line = (f"    {city} — {n_v} visit{'s' if n_v != 1 else ''} due: "
+                        f"{', '.join(v_names)}")
+                if d_names:
+                    line += (f", plus {n_d} earlier-stage "
+                             f"shop{'s' if n_d != 1 else ''} worth a drop-in: "
+                             f"{', '.join(d_names)}")
+                print(line)
 
     # Sample drafts
     samples = score_stats.get("samples", {})
