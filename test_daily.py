@@ -10,7 +10,7 @@ import pandas as pd
 import run_daily
 from run_daily import (
     _add_drafts, _validate_draft, _template_draft,
-    DM_COLS, SHOP_COLS, COMMERCIAL_KEYWORDS,
+    DM_COLS, SHOP_COLS, COMMERCIAL_KEYWORDS, FIRST_TOUCH_REVIVE_PHRASES,
     CADENCE_WINDOW_DAYS, MAX_TOUCHES, REPLY_STAGES,
     get_cadence, upsert_cadence, merge_into_book, LEAD_COLS,
 )
@@ -402,6 +402,43 @@ def _make_lead(**kwargs):
     return base
 
 
+def test_first_touch_templates_no_revive_phrases():
+    """First-touch DM and email templates must never contain re-engagement copy."""
+    dm_row = {"handle": "testshop", "last_inbound_text": None,
+              "num_touches": 0, "last_touch_date": None, "est_monthly_spend_gbp": 500}
+    shop_row = {"handle": None, "store_name": "Test Boutique", "contact_name": "Jane",
+                "last_inbound_text": None, "num_touches": 0,
+                "last_touch_date": "2024-01-01", "est_monthly_spend_gbp": 500, "city": "London"}
+
+    for touch_number in (1,):
+        dm_draft    = _template_draft(dm_row, "dm", days_since=120, touch_number=touch_number)
+        email_draft = _template_draft(shop_row, "email", days_since=120, touch_number=touch_number)
+        for phrase in FIRST_TOUCH_REVIVE_PHRASES:
+            assert phrase not in dm_draft.lower(), (
+                f"First-touch DM contains revive phrase '{phrase}': {dm_draft!r}"
+            )
+            assert phrase not in email_draft.lower(), (
+                f"First-touch email contains revive phrase '{phrase}': {email_draft!r}"
+            )
+
+
+def test_validate_rejects_revive_phrase_on_first_touch():
+    """Validation check (f): first-touch drafts with re-engagement phrases must fail."""
+    row = {"handle": "boutique", "last_inbound_text": None, "contact_name": None}
+    for phrase in FIRST_TOUCH_REVIVE_PHRASES:
+        bad_draft = f"Hi @boutique, it's been a while — just wanted to reach out."
+        failures = _validate_draft(bad_draft.replace("been a while", phrase), row, "dm", touch_number=1)
+        assert any(phrase in f for f in failures), (
+            f"Expected validation failure for phrase '{phrase}' on first touch, got: {failures}"
+        )
+    # touch_number=2 with the same phrase must PASS check (f)
+    revive = "Hi @boutique, it's been a while. Reaching back out in case timing is better."
+    failures_t2 = _validate_draft(revive, row, "dm", touch_number=2)
+    assert not any("first-touch" in f for f in failures_t2), (
+        f"touch_number=2 should not trigger first-touch check, got: {failures_t2}"
+    )
+
+
 def test_merge_into_book_dedup_regression():
     """
     Regression: new bulk merge_into_book must produce identical dedup results to
@@ -497,6 +534,8 @@ if __name__ == "__main__":
         test_reply_stages_constant_covers_expected_stages,
         test_template_touch2_references_prior_outreach,
         test_template_touch3_has_easy_out,
+        test_first_touch_templates_no_revive_phrases,
+        test_validate_rejects_revive_phrase_on_first_touch,
         test_merge_into_book_dedup_regression,
     ]
     failures = 0

@@ -766,7 +766,10 @@ def _draft_prompt(row: dict, channel: str, days_since, touch_number: int = 1) ->
     return "\n".join(lines) + f"\n\nWrite {ch_instr}."
 
 
-def _validate_draft(draft: str, row: dict, channel: str) -> list:
+FIRST_TOUCH_REVIVE_PHRASES = ("been a while", "last spoke", "reaching back out")
+
+
+def _validate_draft(draft: str, row: dict, channel: str, touch_number: int = 1) -> list:
     """Return list of failure reasons; empty list means the draft passed."""
     if not draft or len(draft.strip()) < 20:
         return ["draft is empty or under 20 characters"]
@@ -813,6 +816,17 @@ def _validate_draft(draft: str, row: dict, channel: str) -> list:
     if "--" in draft or "—" in draft:
         failures.append("draft contains '--' or '—'; restructure with a comma, full stop or colon instead")
 
+    # (f) First-touch drafts must not imply prior contact
+    if touch_number == 1:
+        draft_lower = draft.lower()
+        for phrase in FIRST_TOUCH_REVIVE_PHRASES:
+            if phrase in draft_lower:
+                failures.append(
+                    f"first-touch draft contains '{phrase}' which implies prior contact; "
+                    "use a cold intro instead"
+                )
+                break
+
     # (d) Commercial question must use a [rep: ...] placeholder, not an invented answer
     if has_q and inbound:
         inbound_words = set(re.findall(r"\w+", inbound.lower()))
@@ -843,7 +857,7 @@ def _call_api(api_client, prompt: str, max_tokens: int = 280) -> str:
     return text
 
 
-def _template_draft(row: dict, channel: str, days_since, touch_number: int = 1) -> str:
+def _template_draft(row: dict, channel: str, days_since, touch_number: int = 1, action: str = "") -> str:
     """Plain-text template fallback -- always returns a non-empty string."""
     handle  = f"@{row.get('handle')}" if row.get("handle") and str(row.get("handle")) not in ("nan", "None") else ""
     store   = row.get("store_name") or ""
@@ -861,16 +875,17 @@ def _template_draft(row: dict, channel: str, days_since, touch_number: int = 1) 
         if has_q:
             return (f"Hi {handle}, sorry for the slow reply. To answer your question: "
                     f"[rep: answer \"{inbound}\"]. Happy to send more detail if that's useful.")
+        elif touch_number == 2 and stale:
+            # Revive: prior contact exists, gap is long — re-engagement copy is correct here
+            return (f"Hi {handle}, it's been a while. Hope things are going well. "
+                    "Reaching back out in case the timing is better now. "
+                    "[rep: one-line reminder of Fleek offer].")
         elif touch_number == 2:
             return (f"Hi {handle}, just following up on my message from a few days ago. "
                     "Happy to answer any questions. [rep: one-line reminder of Fleek offer].")
         elif touch_number >= 3:
             return (f"Hi {handle}, last one from me. No worries if the timing isn't right, "
                     "door's open whenever. [rep: one-line offer or reason to reconnect].")
-        elif stale:
-            return (f"Hi {handle}, it's been a while. Hope things are going well. "
-                    "Reaching back out in case the timing is better now. "
-                    "[rep: one-line reminder of Fleek offer].")
         elif nt == 0:
             return (f"Hi {handle}, spotted your page and thought there might be a good fit "
                     "with Fleek. Happy to share how it works if you're open to it.")
@@ -881,16 +896,21 @@ def _template_draft(row: dict, channel: str, days_since, touch_number: int = 1) 
     elif channel == "email":
         sal  = f"Hi {cname}," if cname and str(cname) not in ("nan", "None") else "Hi there,"
         subj = f"Fleek x {store}" if store and str(store) not in ("nan", "None") else "Fleek: quick question"
+        # "first touch" in the action string is the authoritative signal: the scoring
+        # layer already decided this is a cold intro regardless of CRM touch count.
+        is_first_touch = "first touch" in action.lower() or (touch_number == 1 and nt == 0)
         if has_q:
             body = (f"Thanks for getting back to me. To answer your question: "
                     f"[rep: answer \"{inbound}\"]. Happy to set up a call to run through anything else.")
+        elif is_first_touch:
+            # Cold intro — never imply prior contact on a first touch
+            body = (f"[rep: one-line intro on Fleek]. I came across {store or 'your shop'} and "
+                    "thought it could be a great fit. Would you be open to a quick call to explore?")
         elif stale:
+            # Revive after confirmed prior contact — re-engagement copy is correct here
             ref  = store if store and str(store) not in ("nan", "None") else "the shop"
             body = (f"It's been a while since we last spoke. Hope things are going well at {ref}. "
                     "Reaching back out in case the timing is better now. [rep: brief Fleek value prop].")
-        elif nt == 0:
-            body = (f"[rep: one-line intro on Fleek]. I came across {store or 'your shop'} and "
-                    "thought it could be a great fit. Would you be open to a quick call to explore?")
         else:
             body = ("Just following up on our last conversation. "
                     "[rep: reference last touch context]. Happy to pick up whenever suits you.")
@@ -958,7 +978,7 @@ def _add_drafts(output_df: pd.DataFrame, full_leads: pd.DataFrame,
 
         # No API client -- template only
         if api_client is None:
-            drafts.append(_template_draft(frow, channel, days_since, touch_number))
+            drafts.append(_template_draft(frow, channel, days_since, touch_number, action=action))
             sources.append("template")
             continue
 
@@ -970,7 +990,7 @@ def _add_drafts(output_df: pd.DataFrame, full_leads: pd.DataFrame,
         try:
             time.sleep(0.3)  # pace calls; 133 leads × 0.3s ≈ 40s, avoids burst rate limits
             draft    = _call_api(api_client, prompt)
-            failures = _validate_draft(draft, frow, channel)
+            failures = _validate_draft(draft, frow, channel, touch_number)
 
             if not failures:
                 source = "api"
@@ -983,7 +1003,7 @@ def _add_drafts(output_df: pd.DataFrame, full_leads: pd.DataFrame,
                 )
                 time.sleep(0.5)
                 draft    = _call_api(api_client, retry_prompt)
-                failures = _validate_draft(draft, frow, channel)
+                failures = _validate_draft(draft, frow, channel, touch_number)
                 if not failures:
                     source = "api_retry"
                 else:
@@ -998,7 +1018,7 @@ def _add_drafts(output_df: pd.DataFrame, full_leads: pd.DataFrame,
             source = "template_fallback"
 
         if draft is None:
-            draft  = _template_draft(frow, channel, days_since, touch_number)
+            draft  = _template_draft(frow, channel, days_since, touch_number, action=action)
             source = "template_fallback"
 
         drafts.append(draft)
