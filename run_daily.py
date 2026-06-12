@@ -1174,6 +1174,19 @@ def score_and_output(conn: sqlite3.Connection, run_id: str, run_date: str,
             if c not in issued: return c
         return None  # all candidates already issued — skip this lead
 
+    # Pre-fetch the last logged action for each recently-actioned shop so we can
+    # display it again without re-logging (same CSV content, no double-contact).
+    _recent_action: dict = {}
+    if recent_ids:
+        _rows = conn.execute(
+            "SELECT lead_id, action FROM action_log WHERE lead_id IN ({}) ORDER BY id".format(
+                ",".join("?" * len(recent_ids))
+            ),
+            list(recent_ids),
+        ).fetchall()
+        for _r in _rows:
+            _recent_action[_r["lead_id"]] = _r["action"]   # last row per lead wins
+
     shop_rows = []
     for _, row in shops.iterrows():
         lid   = row["lead_id"]
@@ -1181,13 +1194,15 @@ def score_and_output(conn: sqlite3.Connection, run_id: str, run_date: str,
             ledger_excl += 1
             try:    _nt = int(float(str(row.get("num_touches") or 0).replace("<NA>", "0")))
             except: _nt = 0
+            # Replay the last logged action so the CSV stays useful; do NOT re-log.
             shop_rows.append({
                 "lead_id": lid, "store_name": row.get("store_name"),
                 "contact_name": row.get("contact_name"), "email": row.get("email"),
                 "phone": row.get("phone"), "city": row.get("city"),
                 "country": row.get("country"), "stage": str(row.get("stage") or "").strip(),
-                "num_touches": _nt, "next_action": "Await reply (actioned today)",
-                "due_date": str(SCORE_DATE + timedelta(days=2)),
+                "num_touches": _nt,
+                "next_action": _recent_action.get(lid, "Await reply (actioned recently)"),
+                "due_date": str(SCORE_DATE),
                 "assigned_bdr": row.get("assigned_bdr"),
                 "last_touch_date": row.get("last_touch_date"),
                 "est_monthly_spend_gbp": row.get("est_monthly_spend_gbp"),

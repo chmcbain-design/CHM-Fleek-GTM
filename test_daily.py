@@ -583,11 +583,15 @@ def test_same_day_double_run_shops_visible():
     assert len(shops2) >= 2, (
         f"Run 2 shops_df must be non-empty (was empty before the fix); got {len(shops2)} rows"
     )
-    await_rows = shops2[shops2["next_action"] == "Await reply (actioned today)"]
-    assert len(await_rows) >= 2, (
-        f"Expected both shops to show 'Await reply (actioned today)'; got:\n"
-        + shops2[["lead_id", "next_action"]].to_string()
-    )
+    # Run 2 must replay the action logged in run 1, not replace it with a status sentinel.
+    # Both test shops are New Lead → run 1 assigns "Email: first touch".
+    for lid in ("TS001", "TS002"):
+        shop_row = shops2[shops2["lead_id"] == lid]
+        assert len(shop_row) == 1, f"{lid} must appear in run 2 shops_df"
+        action = shop_row.iloc[0]["next_action"]
+        assert action == "Email: first touch", (
+            f"{lid}: run 2 should replay the run-1 action 'Email: first touch', got {action!r}"
+        )
 
     # action_log count for these leads must not grow on run 2
     log_after_run2 = conn.execute(
