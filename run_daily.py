@@ -1468,8 +1468,13 @@ def main():
                         help="Override run date for multi-day simulation")
     args = parser.parse_args()
 
-    if args.reset and DB_PATH.exists():
-        DB_PATH.unlink()
+    if args.reset:
+        for _aux in [DB_PATH,
+                     DB_PATH.parent / (DB_PATH.name + "-journal"),
+                     DB_PATH.parent / (DB_PATH.name + "-wal"),
+                     DB_PATH.parent / (DB_PATH.name + "-shm")]:
+            if _aux.exists():
+                _aux.unlink()
         print("  [reset] pipeline.db deleted — starting fresh")
 
     global SCORE_DATE
@@ -1498,28 +1503,28 @@ def main():
             print("         Run with --no-api to suppress this warning.")
 
     conn = init_db()
+    try:
+        # First-run bootstrap: if the lead book is empty (fresh clone / --reset), auto-ingest
+        # the day-one data file so the very first run produces meaningful output.
+        bootstrap_stat = None
+        if conn.execute("SELECT COUNT(*) FROM leads").fetchone()[0] == 0:
+            bootstrap_stat = ingest_bootstrap(conn) or None
 
-    # First-run bootstrap: if the lead book is empty (fresh clone / --reset), auto-ingest
-    # the day-one data file so the very first run produces meaningful output.
-    bootstrap_stat = None
-    if conn.execute("SELECT COUNT(*) FROM leads").fetchone()[0] == 0:
-        bootstrap_stat = ingest_bootstrap(conn) or None
+        # Snapshot for "what changed" in report
+        prev_row = conn.execute(
+            "SELECT run_date FROM action_log ORDER BY id DESC LIMIT 1"
+        ).fetchone()
+        prev_leads_count = conn.execute("SELECT COUNT(*) FROM leads").fetchone()[0]
+        prev_run_info = ({"run_date": prev_row["run_date"], "leads_then": prev_leads_count}
+                         if prev_row else None)
 
-    # Snapshot for "what changed" in report
-    prev_row = conn.execute(
-        "SELECT run_date FROM action_log ORDER BY id DESC LIMIT 1"
-    ).fetchone()
-    prev_leads_count = conn.execute("SELECT COUNT(*) FROM leads").fetchone()[0]
-    prev_run_info = ({"run_date": prev_row["run_date"], "leads_then": prev_leads_count}
-                     if prev_row else None)
-
-    ingest_stats = ingest_inbox(conn)
-    score_stats  = score_and_output(conn, run_id, run_date,
-                                    dry_run=args.dry_run, api_client=api_client)
-    print_report(run_id, run_date, ingest_stats, score_stats, prev_run_info,
-                 api_used=api_client is not None, bootstrap_stat=bootstrap_stat)
-
-    conn.close()
+        ingest_stats = ingest_inbox(conn)
+        score_stats  = score_and_output(conn, run_id, run_date,
+                                        dry_run=args.dry_run, api_client=api_client)
+        print_report(run_id, run_date, ingest_stats, score_stats, prev_run_info,
+                     api_used=api_client is not None, bootstrap_stat=bootstrap_stat)
+    finally:
+        conn.close()
 
 
 if __name__ == "__main__":
