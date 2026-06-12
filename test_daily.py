@@ -12,7 +12,7 @@ from run_daily import (
     _add_drafts, _validate_draft, _template_draft,
     DM_COLS, SHOP_COLS, COMMERCIAL_KEYWORDS,
     CADENCE_WINDOW_DAYS, MAX_TOUCHES, REPLY_STAGES,
-    get_cadence, upsert_cadence,
+    get_cadence, upsert_cadence, merge_into_book, LEAD_COLS,
 )
 
 
@@ -375,6 +375,98 @@ def test_template_touch3_has_easy_out():
     )
 
 
+def _merge_db():
+    """In-memory DB with the full leads schema."""
+    conn = sqlite3.connect(":memory:")
+    conn.row_factory = sqlite3.Row
+    conn.executescript("""
+        CREATE TABLE leads (
+            lead_id TEXT PRIMARY KEY,
+            source TEXT, handle TEXT, store_name TEXT, contact_name TEXT,
+            email TEXT, phone TEXT, city TEXT, country TEXT,
+            followers REAL, active_listings REAL, avg_listing_price_gbp REAL,
+            sales_velocity_30d REAL, est_monthly_spend_gbp REAL,
+            stage TEXT, first_seen_date TEXT, last_touch_date TEXT,
+            num_touches INTEGER, last_inbound_text TEXT,
+            assigned_bdr TEXT, notes TEXT, lead_type TEXT,
+            first_ingested TEXT, last_updated TEXT,
+            channel_type TEXT, has_email INTEGER
+        );
+    """)
+    return conn
+
+
+def _make_lead(**kwargs):
+    base = {c: None for c in LEAD_COLS}
+    base.update(kwargs)
+    return base
+
+
+def test_merge_into_book_dedup_regression():
+    """
+    Regression: new bulk merge_into_book must produce identical dedup results to
+    the original row-by-row implementation.
+
+    Covers all three match paths:
+      (a) exact handle match
+      (b) exact email match
+      (c) fuzzy name match (store_name ≈ 90% similar)
+    and verifies:
+      - correct new / duplicate counts
+      - null-field enrichment is applied on duplicates
+      - within-batch dedup: second row in same batch that duplicates first is caught
+    """
+    conn = _merge_db()
+
+    # Pre-load three existing leads into the DB — E001 has no phone (null → will be enriched)
+    existing = pd.DataFrame([
+        _make_lead(lead_id="E001", handle="vintagevault",    email=None,
+                   store_name=None, contact_name=None, phone=None, city="London"),
+        _make_lead(lead_id="E002", handle=None,              email="shop@example.com",
+                   store_name=None, contact_name=None, city=None),
+        _make_lead(lead_id="E003", handle=None,              email=None,
+                   store_name="Camden Vintage", contact_name=None, city="London"),
+    ])
+    # Direct insert to avoid any dependency on merge logic
+    for _, r in existing.iterrows():
+        conn.execute(
+            "INSERT INTO leads (lead_id, handle, email, store_name, contact_name, phone, city) "
+            "VALUES (?,?,?,?,?,?,?)",
+            [r["lead_id"], r["handle"], r["email"], r["store_name"],
+             r["contact_name"], r["phone"], r["city"]],
+        )
+    conn.commit()
+
+    # Incoming batch:
+    #   N1 — genuinely new lead
+    #   D1 — duplicate of E001 by handle; adds phone that E001 is missing → should enrich
+    #   D2 — duplicate of E002 by email
+    #   D3 — duplicate of E003 by fuzzy store_name ("Camden Vintge" ≈ "Camden Vintage")
+    #   D4 — within-batch duplicate: same handle as N1, added in same batch
+    incoming = pd.DataFrame([
+        _make_lead(lead_id="N001", handle="newreseller",  email=None,              store_name=None, contact_name=None, city="Bristol",    phone=None),
+        _make_lead(lead_id="D001", handle="vintagevault", email=None,              store_name=None, contact_name=None, city="London",     phone="+447123456789"),
+        _make_lead(lead_id="D002", handle=None,           email="shop@example.com",store_name=None, contact_name=None, city=None,         phone=None),
+        _make_lead(lead_id="D003", handle=None,           email=None,              store_name="Camden Vintge", contact_name=None, city=None, phone=None),
+        _make_lead(lead_id="D004", handle="newreseller",  email=None,              store_name=None, contact_name=None, city="Edinburgh",  phone=None),
+    ])
+
+    stats = merge_into_book(incoming, conn)
+
+    assert stats["new"] == 1,        f"expected 1 new, got {stats['new']}"
+    assert stats["duplicates"] == 4, f"expected 4 dups, got {stats['duplicates']}"
+
+    leads = {r["lead_id"]: r for r in conn.execute("SELECT * FROM leads").fetchall()}
+
+    # E001 phone must be enriched (was None, D001 supplied "+447123456789")
+    assert leads["E001"]["phone"] == "+447123456789", \
+        f"E001 phone not enriched: {leads['E001']['phone']}"
+
+    # N001 must exist; D004 must NOT have been inserted (within-batch dup)
+    assert "N001" in leads, "new lead N001 not inserted"
+    assert "D004" not in leads, "within-batch dup D004 should not be a separate row"
+
+
 if __name__ == "__main__":
     tests = [
         test_add_drafts_empty_dm,
@@ -405,6 +497,7 @@ if __name__ == "__main__":
         test_reply_stages_constant_covers_expected_stages,
         test_template_touch2_references_prior_outreach,
         test_template_touch3_has_easy_out,
+        test_merge_into_book_dedup_regression,
     ]
     failures = 0
     for t in tests:

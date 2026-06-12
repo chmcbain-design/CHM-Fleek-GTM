@@ -297,9 +297,42 @@ def _fuzzy_match(a, b) -> bool:
     return difflib.SequenceMatcher(None, str(a).lower(), str(b).lower()).ratio() >= 0.85
 
 def merge_into_book(new_df: pd.DataFrame, conn: sqlite3.Connection) -> dict:
-    """Insert genuinely new leads; update existing ones with richer data. Returns stats."""
+    """Insert genuinely new leads; update existing ones with richer data. Returns stats.
+
+    Matching priority (identical to original): handle → email → fuzzy name.
+    Within-batch dedup preserved: indexes are updated after each new insert, so
+    a later row in the same batch can match against an earlier row from that batch.
+    """
     existing = pd.read_sql("SELECT * FROM leads", conn)
-    now = datetime.now().isoformat()
+    now      = datetime.now().isoformat()
+
+    # Build O(1) lookup indexes upfront instead of scanning the DataFrame per row
+    handle_idx: dict = {}   # handle  → lead_id
+    email_idx:  dict = {}   # email   → lead_id
+    name_pairs: list = []   # [(name_str, lead_id)] for fuzzy-only pass
+
+    # existing_data: lead_id → field dict (mutable — updated as dups accumulate changes)
+    existing_data: dict = {}
+
+    for _, ex in existing.iterrows():
+        lid = ex["lead_id"]
+        existing_data[lid] = dict(ex)
+        h = ex.get("handle")
+        e = ex.get("email")
+        if h and not _is_null(h):
+            handle_idx[h] = lid
+        if e and not _is_null(e):
+            email_idx[e] = lid
+        cn = str(ex.get("contact_name") or "").strip()
+        sn = str(ex.get("store_name")   or "").strip()
+        name = cn or sn
+        if name and name.lower() not in ("nan", "none", ""):
+            name_pairs.append((name, lid))
+
+    # Accumulate bulk ops — applied at the end to avoid per-row overhead
+    pending_inserts: list = []           # list of value-dicts for executemany
+    pending_updates: dict = {}           # lead_id → {col: val} accumulated updates
+
     new_count = dup_count = 0
 
     for _, row in new_df.iterrows():
@@ -308,55 +341,76 @@ def merge_into_book(new_df: pd.DataFrame, conn: sqlite3.Connection) -> dict:
         cname = str(row.get("contact_name") or "").strip()
         sname = str(row.get("store_name")   or "").strip()
 
-        # Match against existing book: handle → email → fuzzy name
+        # Match: handle → email → fuzzy name (same priority as before)
         match_id = None
-        if h and not _is_null(h) and len(existing):
-            hits = existing[existing["handle"] == h]
-            if len(hits): match_id = hits.iloc[0]["lead_id"]
-        if not match_id and e and not _is_null(e) and len(existing):
-            hits = existing[existing["email"] == e]
-            if len(hits): match_id = hits.iloc[0]["lead_id"]
-        if not match_id and len(existing):
+        if h and not _is_null(h):
+            match_id = handle_idx.get(h)
+        if not match_id and e and not _is_null(e):
+            match_id = email_idx.get(e)
+        if not match_id:
             name_a = cname or sname
             if name_a and name_a.lower() not in ("nan", "none", ""):
-                for _, ex in existing.iterrows():
-                    name_b = str(ex.get("contact_name") or ex.get("store_name") or "").strip()
+                for name_b, lid in name_pairs:
                     if _fuzzy_match(name_a, name_b):
-                        match_id = ex["lead_id"]
+                        match_id = lid
                         break
 
         if match_id:
-            # Update: fill any null fields in existing record with new data
-            updates = {}
-            ex_row = existing[existing["lead_id"] == match_id].iloc[0]
+            # Current known state of this lead (DB values + any already-accumulated updates)
+            current = dict(existing_data[match_id])
+            current.update(pending_updates.get(match_id, {}))
+
+            new_fields = {}
             for col in LEAD_COLS:
-                if col == "lead_id": continue
-                if _is_null(ex_row.get(col)) and not _is_null(row.get(col)):
-                    updates[col] = row[col]
-            if updates:
-                updates["last_updated"] = now
-                set_clause = ", ".join(f"{k}=?" for k in updates)
-                conn.execute(
-                    f"UPDATE leads SET {set_clause} WHERE lead_id=?",
-                    list(updates.values()) + [match_id]
-                )
-                # Keep in-memory copy current for subsequent rows in this batch
-                for col, val in updates.items():
-                    existing.loc[existing["lead_id"] == match_id, col] = val
+                if col == "lead_id":
+                    continue
+                if _is_null(current.get(col)) and not _is_null(row.get(col)):
+                    new_fields[col] = row[col]
+
+            if new_fields:
+                accumulated = pending_updates.setdefault(match_id, {})
+                accumulated.update(new_fields)
+                # Reflect into existing_data so subsequent rows see the merged state
+                existing_data[match_id].update(new_fields)
+
             dup_count += 1
+
         else:
             vals = {c: (None if _is_null(row.get(c)) else row[c]) for c in LEAD_COLS}
             vals["first_ingested"] = now
             vals["last_updated"]   = now
-            cols = list(vals.keys())
-            conn.execute(
-                f"INSERT INTO leads ({','.join(cols)}) VALUES ({','.join('?'*len(cols))})",
-                list(vals.values())
-            )
-            # Add to in-memory book so later rows in same batch can match against it
-            new_row = pd.DataFrame([vals]).reindex(columns=existing.columns)
-            existing = pd.concat([existing, new_row], ignore_index=True)
+            pending_inserts.append(vals)
             new_count += 1
+
+            # Update indexes immediately so later rows in this batch can match
+            lid = vals["lead_id"]
+            existing_data[lid] = vals
+            if vals.get("handle") and not _is_null(vals["handle"]):
+                handle_idx[vals["handle"]] = lid
+            if vals.get("email") and not _is_null(vals["email"]):
+                email_idx[vals["email"]] = lid
+            cn = str(vals.get("contact_name") or "").strip()
+            sn = str(vals.get("store_name")   or "").strip()
+            name = cn or sn
+            if name and name.lower() not in ("nan", "none", ""):
+                name_pairs.append((name, lid))
+
+    # Bulk INSERT all new leads in one round-trip
+    if pending_inserts:
+        cols = list(pending_inserts[0].keys())
+        conn.executemany(
+            f"INSERT INTO leads ({','.join(cols)}) VALUES ({','.join('?'*len(cols))})",
+            [[r[c] for c in cols] for r in pending_inserts],
+        )
+
+    # UPDATE duplicates (typically a small set; one UPDATE per matched lead_id)
+    for lead_id, upd in pending_updates.items():
+        upd["last_updated"] = now
+        set_clause = ", ".join(f"{k}=?" for k in upd)
+        conn.execute(
+            f"UPDATE leads SET {set_clause} WHERE lead_id=?",
+            list(upd.values()) + [lead_id],
+        )
 
     conn.commit()
     return {"new": new_count, "duplicates": dup_count}

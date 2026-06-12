@@ -76,13 +76,28 @@ The script is safe to re-run: the ledger tracks what has already been actioned, 
 
 ## Scaling to 30k leads
 
-What changes:
-- **Batch API calls** — replace the sequential per-row loop with async batching (Anthropic's batch API or `asyncio` with a semaphore). The 0.3s sleep pacing can be dropped.
+`scripts/scale_test.py` generates 30,000 synthetic leads and runs the full pipeline with `--no-api`. Measured timings on a MacBook (Apple Silicon):
+
+| Stage    | Time   | Throughput     |
+|----------|--------|----------------|
+| generate | 0.6s   | 54,000 leads/s |
+| clean    | 20.3s  | 1,500 leads/s  |
+| dedupe   | 6.9s   | 4,400 leads/s  |
+| score    | 14.3s  | 2,100 leads/s  |
+| draft    | 0.7s   | 44,000 leads/s |
+| **TOTAL**| **43s**|                |
+
+**Dedupe fix:** the original `merge_into_book` used a per-row `pd.concat` that grew the in-memory DataFrame by one row on every insert — O(n²) total. At 30k leads this projected to ~45 minutes. The rebuilt version constructs handle/email lookup dicts once (O(n)), does O(1) lookups per row, and issues a single `executemany` INSERT at the end. 30k leads now dedupes in under 7 seconds.
+
+**Remaining bottlenecks at larger scale:**
+- **Clean (20s)** — `apply()` row-by-row classification; vectorise the source-normalise and has_email derivations with `pd.Series.map` and boolean masking.
+- **Score (14s)** — same per-row loop; parallelise with `concurrent.futures` or vectorise the scoring math.
+- **Batch API calls** — replace the sequential per-row draft loop with async batching (Anthropic's batch API or `asyncio` with a semaphore). The 0.3s sleep pacing can be dropped at scale.
 - **DB indexes** — add indexes on `lead_id`, `actioned_at`, and `stage` in `pipeline.db` as the ledger grows.
-- **Input ingestion** — the `inbox/` polling pattern still works but should move to a watched S3 prefix or a proper queue (SQS/Pub-Sub) for reliability at scale.
+- **Input ingestion** — the `inbox/` polling pattern works but should move to a watched S3 prefix or a proper queue (SQS/Pub-Sub) for reliability at scale.
 - **Output delivery** — at volume, writing to CSVs and opening in Excel doesn't scale; connect `today_dms.csv` to an outreach tool (Outreach.io, Clay, or a custom Sheets integration) via API.
 
-What stays the same:
-- The scoring model and weights — they're data-driven, not heuristic, and the logic holds at any volume.
-- The validation layer — code-level draft checks are cheap and the fallback pattern is robust regardless of batch size.
-- The ledger exclusion pattern — SQLite handles millions of rows fine; swap for Postgres only if write concurrency becomes a constraint.
+What stays the same regardless of scale:
+- The scoring model and weights — data-driven, not heuristic, holds at any volume.
+- The validation layer — code-level draft checks are cheap; the fallback pattern is robust at any batch size.
+- The ledger exclusion pattern — SQLite handles millions of rows; swap for Postgres only if write concurrency becomes a constraint.
