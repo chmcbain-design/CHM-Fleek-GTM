@@ -31,9 +31,12 @@ from dotenv import load_dotenv
 load_dotenv()  # reads .env if present; safe to call when file is absent
 
 # ── Paths ─────────────────────────────────────────────────────────────────────
-DB_PATH     = Path("pipeline.db")
-INBOX_DIR   = Path("inbox")
-ARCHIVE_DIR = Path("archive")
+DB_PATH        = Path("pipeline.db")
+INBOX_DIR      = Path("inbox")
+ARCHIVE_DIR    = Path("archive")
+DATA_DIR       = Path("data")
+BOOTSTRAP_FILE = DATA_DIR / "pipeline_data.xlsx"
+BOOTSTRAP_SHEET = "pipeline"
 
 # ── Score weights ─────────────────────────────────────────────────────────────
 W_CONVERSATION = 0.40
@@ -447,6 +450,37 @@ def ingest_inbox(conn: sqlite3.Connection) -> list:
                             "rows_read": len(cleaned), **stats})
         shutil.move(str(fpath), str(ARCHIVE_DIR / fpath.name))
     return results
+
+
+def ingest_bootstrap(conn: sqlite3.Connection) -> dict:
+    """Auto-ingest the day-one data file on a fresh clone with an empty lead book.
+
+    Only reads the BOOTSTRAP_SHEET ('pipeline') from BOOTSTRAP_FILE — the day-2
+    sheet is intentionally left out so reviewers can simulate day 2 by dropping
+    data/new_drop_day2.xlsx into inbox/ and running again.
+    """
+    if not BOOTSTRAP_FILE.exists():
+        return {}
+    xl     = pd.ExcelFile(BOOTSTRAP_FILE)
+    sheet  = BOOTSTRAP_SHEET if BOOTSTRAP_SHEET in xl.sheet_names else next(
+        (s for s in xl.sheet_names if s.lower() != "readme"), None
+    )
+    if not sheet:
+        return {}
+    raw = xl.parse(sheet, dtype=str)
+    if "lead_id" not in raw.columns or "stage" not in raw.columns:
+        return {}
+    cleaned = clean_dataframe(raw).drop_duplicates(subset=["lead_id"])
+    stats   = merge_into_book(cleaned, conn)
+    now     = datetime.now().isoformat()
+    conn.execute(
+        "INSERT INTO ingestion_log (source_file, processed_at, rows_read, new_leads, duplicates_caught) "
+        "VALUES (?,?,?,?,?)",
+        (str(BOOTSTRAP_FILE), now, len(cleaned), stats["new"], stats["duplicates"]),
+    )
+    conn.commit()
+    return {"filename": str(BOOTSTRAP_FILE), "sheet": sheet,
+            "rows_read": len(cleaned), **stats, "bootstrap": True}
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -1263,10 +1297,12 @@ def score_and_output(conn: sqlite3.Connection, run_id: str, run_date: str,
 # RUN REPORT
 # ═══════════════════════════════════════════════════════════════════════════════
 
-def print_report(run_id, run_date, ingest_stats, score_stats, prev_run_info, api_used=False):
-    total_new  = sum(s["new"]        for s in ingest_stats)
-    total_dups = sum(s["duplicates"] for s in ingest_stats)
-    total_rows = sum(s["rows_read"]  for s in ingest_stats)
+def print_report(run_id, run_date, ingest_stats, score_stats, prev_run_info,
+                 api_used=False, bootstrap_stat=None):
+    all_ingested = ([bootstrap_stat] if bootstrap_stat else []) + ingest_stats
+    total_new  = sum(s["new"]        for s in all_ingested)
+    total_dups = sum(s["duplicates"] for s in all_ingested)
+    total_rows = sum(s["rows_read"]  for s in all_ingested)
 
     print("=" * 68)
     print("  Fleek GTM — daily run report")
@@ -1278,11 +1314,15 @@ def print_report(run_id, run_date, ingest_stats, score_stats, prev_run_info, api
     print("=" * 68)
 
     print(f"\n  INGESTION")
+    if bootstrap_stat:
+        print(f"    [first run] auto-ingested {bootstrap_stat['filename']} [{bootstrap_stat['sheet']}]: "
+              f"{bootstrap_stat['rows_read']} rows  →  {bootstrap_stat['new']} new leads loaded")
+        print(f"    To simulate day 2: cp data/new_drop_day2.xlsx inbox/ && python3 run_daily.py --no-api")
     if ingest_stats:
         for s in ingest_stats:
             print(f"    {s['filename']} [{s['sheet']}]: "
                   f"{s['rows_read']} rows  →  {s['new']} new  /  {s['duplicates']} matched to existing")
-    else:
+    if not bootstrap_stat and not ingest_stats:
         print("    (no new files in inbox)")
     print(f"  Totals: {total_rows} rows read, {total_new} new leads, {total_dups} duplicates caught")
 
@@ -1399,6 +1439,12 @@ def main():
 
     conn = init_db()
 
+    # First-run bootstrap: if the lead book is empty (fresh clone / --reset), auto-ingest
+    # the day-one data file so the very first run produces meaningful output.
+    bootstrap_stat = None
+    if conn.execute("SELECT COUNT(*) FROM leads").fetchone()[0] == 0:
+        bootstrap_stat = ingest_bootstrap(conn) or None
+
     # Snapshot for "what changed" in report
     prev_row = conn.execute(
         "SELECT run_date FROM action_log ORDER BY id DESC LIMIT 1"
@@ -1411,7 +1457,7 @@ def main():
     score_stats  = score_and_output(conn, run_id, run_date,
                                     dry_run=args.dry_run, api_client=api_client)
     print_report(run_id, run_date, ingest_stats, score_stats, prev_run_info,
-                 api_used=api_client is not None)
+                 api_used=api_client is not None, bootstrap_stat=bootstrap_stat)
 
     conn.close()
 

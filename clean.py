@@ -136,8 +136,8 @@ def fuzzy_match(a, b, threshold=0.85):
 
 # ── Load ──────────────────────────────────────────────────────────────────────
 
-pipeline   = pd.read_excel("pipeline_data.xlsx", sheet_name="pipeline",      dtype=str)
-new_drop   = pd.read_excel("pipeline_data.xlsx", sheet_name="new_drop_day2", dtype=str)
+pipeline   = pd.read_excel("data/pipeline_data.xlsx", sheet_name="pipeline",      dtype=str)
+new_drop   = pd.read_excel("data/pipeline_data.xlsx", sheet_name="new_drop_day2", dtype=str)
 
 pipeline["_sheet"]  = "pipeline"
 new_drop["_sheet"]  = "new_drop_day2"

@@ -7,18 +7,25 @@ A lightweight sales pipeline tool built for Fleek's UK vintage clothing reseller
 ## Quick Start
 
 ```bash
-# Install dependencies
+git clone https://github.com/chmcbain-design/CHM-Fleek-GTM.git
+cd CHM-Fleek-GTM
 pip install -r requirements.txt
-
-# Copy the env template and add your Anthropic API key
-cp .env.example .env
-# Edit .env and set ANTHROPIC_API_KEY=sk-ant-...
-
-# Run the pipeline (with live API drafting)
-python3 run_daily.py
-
-# Run without an API key (template drafts only — safe for testing)
 python3 run_daily.py --no-api
+```
+
+That's it. On the first run the script detects an empty lead book, auto-ingests `data/pipeline_data.xlsx` (265 day-one leads), scores them, and writes `today_dms.csv` and `shops_actions.csv`.
+
+**To simulate day 2** (30 new leads drop in):
+```bash
+cp data/new_drop_day2.xlsx inbox/
+python3 run_daily.py --no-api
+```
+
+**To use live AI drafts** instead of templates, add your Anthropic API key first:
+```bash
+cp .env.example .env
+# Edit .env: set ANTHROPIC_API_KEY=sk-ant-...
+python3 run_daily.py
 ```
 
 **Requirements:** Python 3.9+, pandas, openpyxl, anthropic, python-dotenv. See `requirements.txt`.
