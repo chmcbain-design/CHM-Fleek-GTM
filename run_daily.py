@@ -1179,6 +1179,19 @@ def score_and_output(conn: sqlite3.Connection, run_id: str, run_date: str,
         lid   = row["lead_id"]
         if lid in recent_ids:
             ledger_excl += 1
+            try:    _nt = int(float(str(row.get("num_touches") or 0).replace("<NA>", "0")))
+            except: _nt = 0
+            shop_rows.append({
+                "lead_id": lid, "store_name": row.get("store_name"),
+                "contact_name": row.get("contact_name"), "email": row.get("email"),
+                "phone": row.get("phone"), "city": row.get("city"),
+                "country": row.get("country"), "stage": str(row.get("stage") or "").strip(),
+                "num_touches": _nt, "next_action": "Await reply (actioned today)",
+                "due_date": str(SCORE_DATE + timedelta(days=2)),
+                "assigned_bdr": row.get("assigned_bdr"),
+                "last_touch_date": row.get("last_touch_date"),
+                "est_monthly_spend_gbp": row.get("est_monthly_spend_gbp"),
+            })
             continue
 
         stage = str(row.get("stage") or "").strip()

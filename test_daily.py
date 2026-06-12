@@ -13,6 +13,7 @@ from run_daily import (
     DM_COLS, SHOP_COLS, COMMERCIAL_KEYWORDS, FIRST_TOUCH_REVIVE_PHRASES,
     CADENCE_WINDOW_DAYS, MAX_TOUCHES, REPLY_STAGES,
     get_cadence, upsert_cadence, merge_into_book, LEAD_COLS,
+    score_and_output,
 )
 
 
@@ -402,6 +403,45 @@ def _make_lead(**kwargs):
     return base
 
 
+def _full_db():
+    """In-memory DB with the complete schema (leads + action_log + ingestion_log + cadence)."""
+    conn = sqlite3.connect(":memory:")
+    conn.row_factory = sqlite3.Row
+    conn.executescript("""
+        CREATE TABLE leads (
+            lead_id TEXT PRIMARY KEY,
+            source TEXT, handle TEXT, store_name TEXT, contact_name TEXT,
+            email TEXT, phone TEXT, city TEXT, country TEXT,
+            followers REAL, active_listings REAL, avg_listing_price_gbp REAL,
+            sales_velocity_30d REAL, est_monthly_spend_gbp REAL,
+            stage TEXT, first_seen_date TEXT, last_touch_date TEXT,
+            num_touches INTEGER, last_inbound_text TEXT,
+            assigned_bdr TEXT, notes TEXT, lead_type TEXT,
+            first_ingested TEXT, last_updated TEXT,
+            channel_type TEXT, has_email INTEGER
+        );
+        CREATE TABLE action_log (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            run_id TEXT NOT NULL, run_date TEXT NOT NULL,
+            lead_id TEXT NOT NULL, channel TEXT NOT NULL,
+            action TEXT NOT NULL, score REAL, reason TEXT
+        );
+        CREATE TABLE ingestion_log (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            source_file TEXT NOT NULL, processed_at TEXT NOT NULL,
+            rows_read INTEGER, new_leads INTEGER, duplicates_caught INTEGER
+        );
+        CREATE TABLE cadence (
+            lead_id TEXT PRIMARY KEY,
+            touch_count INTEGER NOT NULL DEFAULT 0,
+            last_touch_date TEXT,
+            parked INTEGER NOT NULL DEFAULT 0
+        );
+    """)
+    conn.commit()
+    return conn
+
+
 def test_first_touch_templates_no_revive_phrases():
     """First-touch DM and email templates must never contain re-engagement copy."""
     dm_row = {"handle": "testshop", "last_inbound_text": None,
@@ -504,6 +544,61 @@ def test_merge_into_book_dedup_regression():
     assert "D004" not in leads, "within-batch dup D004 should not be a separate row"
 
 
+def test_same_day_double_run_shops_visible():
+    """Regression: running score_and_output twice on the same day must still produce
+    a non-empty shops_df on the second call.  Shops actioned in run 1 hit the 48h
+    hard floor in run 2 but must appear in shops_actions.csv with
+    next_action='Await reply (actioned today)' rather than being silently dropped.
+    No new action_log entries must be written for those leads on the second call."""
+    conn = _full_db()
+    today = str(date.today())
+
+    # Insert two New-Lead shops — no prior history
+    for lid, name, email in [
+        ("TS001", "Test Shop One", "ts1@example.com"),
+        ("TS002", "Test Shop Two", "ts2@example.com"),
+    ]:
+        conn.execute(
+            "INSERT INTO leads "
+            "(lead_id, store_name, email, stage, lead_type, num_touches, source, has_email) "
+            "VALUES (?,?,?,?,?,?,?,?)",
+            (lid, name, email, "New Lead", "shop", 0, "physical", 1),
+        )
+    conn.commit()
+
+    # Run 1 — actions are issued and logged
+    r1 = score_and_output(conn, "run1", today, dry_run=False, api_client=None)
+    assert r1["shops_actioned"] >= 2, (
+        f"Run 1 should action both shops; got {r1['shops_actioned']}"
+    )
+    log_after_run1 = conn.execute(
+        "SELECT COUNT(*) FROM action_log WHERE lead_id IN ('TS001','TS002')"
+    ).fetchone()[0]
+    assert log_after_run1 >= 2, "Run 1 should log at least 2 shop actions"
+
+    # Run 2 — same day, shops must still appear with await marker
+    r2 = score_and_output(conn, "run2", today, dry_run=False, api_client=None)
+    shops2 = r2["shops_df"]
+
+    assert len(shops2) >= 2, (
+        f"Run 2 shops_df must be non-empty (was empty before the fix); got {len(shops2)} rows"
+    )
+    await_rows = shops2[shops2["next_action"] == "Await reply (actioned today)"]
+    assert len(await_rows) >= 2, (
+        f"Expected both shops to show 'Await reply (actioned today)'; got:\n"
+        + shops2[["lead_id", "next_action"]].to_string()
+    )
+
+    # action_log count for these leads must not grow on run 2
+    log_after_run2 = conn.execute(
+        "SELECT COUNT(*) FROM action_log WHERE lead_id IN ('TS001','TS002')"
+    ).fetchone()[0]
+    assert log_after_run2 == log_after_run1, (
+        f"Run 2 must not re-log recently-actioned shops; "
+        f"before={log_after_run1}, after={log_after_run2}"
+    )
+
+
 if __name__ == "__main__":
     tests = [
         test_add_drafts_empty_dm,
@@ -537,6 +632,7 @@ if __name__ == "__main__":
         test_first_touch_templates_no_revive_phrases,
         test_validate_rejects_revive_phrase_on_first_touch,
         test_merge_into_book_dedup_regression,
+        test_same_day_double_run_shops_visible,
     ]
     failures = 0
     for t in tests:

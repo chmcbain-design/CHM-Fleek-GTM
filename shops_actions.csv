@@ -1,1 +1,80 @@
-﻿lead_id,store_name,contact_name,email,phone,city,country,stage,num_touches,next_action,due_date,assigned_bdr,last_touch_date,est_monthly_spend_gbp,draft_message,draft_source
+﻿lead_id,store_name,contact_name,email,phone,city,country,stage,num_touches,next_action,due_date,assigned_bdr,last_touch_date,est_monthly_spend_gbp,city_cluster,draft_message,draft_source
+L0252,Rusty Wardrobe,Dmitri Rossi,shop@rustywardrobe.com,+315768362487,Amsterdam,NL,Contacted,4,Await reply (actioned today),2026-06-14,Tomas,2026-02-09,5170.0,,,template
+L0258,Second Threads,Bea Bennett,,+313652691664,Amsterdam,NL,New Lead,5,Await reply (actioned today),2026-06-14,Tomas,2026-01-10,4510.0,,,template
+L0206,Atelier Loom,Ines Fischer,inesfischer52@gmail.com,+312318014119,Amsterdam,NL,New Lead,3,Await reply (actioned today),2026-06-14,Maya,2026-01-28,4790.0,,,template
+L0215,Corner Bazaar,Raj Romano,info@cornerbazaar.store,+311925081201,Amsterdam,NL,Contacted,3,Await reply (actioned today),2026-06-14,Priya,2026-02-22,2520.0,,,template
+L0159,Camden Vault,Sven Petrov,svenpetrov39@gmail.com,+317011781216,Amsterdam,NL,Call Booked,3,Await reply (actioned today),2026-06-14,,,5810.0,,,template
+L0229,Corner Trunk,Lukas Tanaka,lukastanaka@yahoo.com,+317553365298,Amsterdam,NL,Contacted,0,Await reply (actioned today),2026-06-14,,2025-12-15,1840.0,,,template
+L0178,Golden Cellar,Zoe Petrov,shop@goldencellar.store,+319663623910,Amsterdam,NL,Ghosted,2,Await reply (actioned today),2026-06-14,Priya,2026-01-19,5960.0,,,template
+L0242,Velvet Trunk,Nadia Reid,nadiareid29@outlook.com,+312866892778,Amsterdam,NL,Warm,0,Await reply (actioned today),2026-06-14,,,1730.0,,,template
+L0202,Loft Collective,Nadia Nguyen,nadianguyen76@gmail.com,+497013495802,Berlin,DE,Ghosted,5,Await reply (actioned today),2026-06-14,Priya,2026-02-21,2670.0,,,template
+L0170,Camden Garms,Elena Hassan,elenahassan13@yahoo.com,+494893323395,Berlin,DE,Negotiating,3,Await reply (actioned today),2026-06-14,Tomas,2026-02-23,1150.0,,,template
+L0179,Velvet Emporium,Carlos Walsh,info@velvetemporium.com,,Berlin,DE,New Lead,3,Await reply (actioned today),2026-06-14,Tomas,,2850.0,,,template
+L0241,Maison Vault,Elena Schmidt,elenaschmidt50@outlook.com,+494422144906,Berlin,DE,New Lead,3,Await reply (actioned today),2026-06-14,Priya,2026-01-14,5420.0,,,template
+L0214,House of Wardrobe,Hugo Adebayo,shop@houseofwardrob.store,+493772397393,Berlin,DE,Replied,4,Await reply (actioned today),2026-06-14,Priya,2026-02-04,4780.0,,,template
+L0158,Velvet Edit,Priya Silva,info@velvetedit.store,+498135200091,Berlin,DE,Call Booked,2,Await reply (actioned today),2026-06-14,,2026-01-09,980.0,,,template
+L0221,Found Vault,Theo Nguyen,theonguyen12@yahoo.com,+491787308973,Berlin,DE,Call Booked,0,Await reply (actioned today),2026-06-14,Priya,,2580.0,,,template
+L0167,Rusty Edit,Pablo Okafor,info@rustyedit.store,+496659322961,Berlin,DE,Warm,6,Await reply (actioned today),2026-06-14,Tomas,2026-02-18,1030.0,,,template
+L0195,Rusty Edit,Hugo Berg,hugoberg91@outlook.com,+496481002890,Berlin,DE,Call Booked,6,Await reply (actioned today),2026-06-14,Priya,2026-02-27,3890.0,,,template
+L0185,Brick Lane Closet,Zoe Lopez,shop@bricklaneclose.co.uk,,Brighton,UK,Negotiating,3,Await reply (actioned today),2026-06-14,Priya,2026-01-22,860.0,,,template
+L0218,Loft Threads,Freya Lopez,freyalopez@hotmail.com,7974367360,Brighton,UK,Replied,4,Await reply (actioned today),2026-06-14,Tomas,2026-02-07,2930.0,,,template
+L0208,Corner Emporium,Nadia Andersson,nadiaandersson94@yahoo.com,,Brighton,UK,Replied,2,Await reply (actioned today),2026-06-14,,2026-02-24,2990.0,,,template
+L0227,Loft Emporium,Zoe Marchetti,shop@loftemporium.co.uk,,Brighton,UK,Call Booked,6,Await reply (actioned today),2026-06-14,Tomas,2026-02-24,2150.0,,,template
+L0205,Maison Trunk,Hugo Marchetti,hugomarchetti@outlook.com,+447400985349,Brighton,UK,Contacted,5,Await reply (actioned today),2026-06-14,Tomas,2026-01-23,2400.0,,,template
+L0222,Corner Loom,Theo Reid,info@cornerloom.co.uk,7462639414,Brighton,UK,Replied,3,Await reply (actioned today),2026-06-14,,2026-02-09,440.0,,,template
+L0245,Blue Garms,Zoe Hassan,info@bluegarms.co.uk,07991883600,Brighton,UK,Negotiating,2,Await reply (actioned today),2026-06-14,Priya,2026-01-09,1040.0,,,template
+L0212,Golden Lane,Sven Marchetti,info@goldenlane.com,07772893185,Brighton,UK,New Lead,3,Await reply (actioned today),2026-06-14,,,4470.0,,,template
+L0156,Loft Lane,Lena Park,lenapark79@outlook.com,+447737683411,Bristol,UK,Ghosted,2,Await reply (actioned today),2026-06-14,Maya,2026-01-05,2580.0,,,template
+L0161,Maison Rail,Noah Fischer,info@maisonrail.com,+447237119418,Bristol,UK,Negotiating,6,Await reply (actioned today),2026-06-14,,2026-02-26,3150.0,,,template
+L0174,Second Collective,Lukas Walsh,lukaswalsh70@outlook.com,+447800705413,Bristol,UK,Replied,0,Await reply (actioned today),2026-06-14,Maya,2026-02-14,4960.0,,,template
+L0163,Blue Collective,Tom Park,,,Bristol,UK,Replied,6,Await reply (actioned today),2026-06-14,,2026-02-17,610.0,,,template
+L0164,Golden Emporium,Hugo Kaur,hugokaur@yahoo.com,+447347656134,Bristol,UK,New Lead,1,Await reply (actioned today),2026-06-14,,2026-02-15,1640.0,,,template
+L0157,Atelier Drawer,Freya Janssen,freyajanssen@yahoo.com,0044784145620,Bristol,UK,Contacted,3,Await reply (actioned today),2026-06-14,Maya,2026-02-21,4360.0,,,template
+L0224,Past Cellar,Tom Berg,tomberg@outlook.com,+13948899136,LA,US,Replied,5,Await reply (actioned today),2026-06-14,,2025-12-18,5150.0,,,template
+L0230,Second Garms,James Weber,info@secondgarms.co.uk,+16169161729,LA,US,Warm,5,Await reply (actioned today),2026-06-14,,2026-02-21,2790.0,,,template
+L0256,Rusty Cellar,Raj Novak,shop@rustycellar.store,+16208071959,LA,US,New Lead,3,Await reply (actioned today),2026-06-14,Priya,2025-12-27,5090.0,,,template
+L0211,Second Society,Aisha Costa,aishacosta79@outlook.com,+12608084195,LA,US,Negotiating,6,Await reply (actioned today),2026-06-14,,2026-02-21,2760.0,,,template
+L0210,Old Collective,James Park,info@oldcollective.store,+18783983612,LA,US,New Lead,1,Await reply (actioned today),2026-06-14,Maya,,5190.0,,,template
+L0260,Vintage Closet,Noah Silva,,+14052154527,LA,US,Replied,2,Await reply (actioned today),2026-06-14,,2026-01-19,2860.0,,,template
+L0168,Rusty Edit,Yuki Silva,hello@rustyedit.com,+19027833017,LA,US,New Lead,1,Await reply (actioned today),2026-06-14,,,2720.0,,,template
+L0191,Old Rail,Mia Romano,miaromano@outlook.com,+18038993664,LA,US,Call Booked,0,Await reply (actioned today),2026-06-14,Priya,2026-02-23,5610.0,,,template
+L0259,Past Lane,Aisha Okafor,hello@pastlane.co.uk,07473285162,Leeds,UK,New Lead,5,Await reply (actioned today),2026-06-14,,2025-12-19,4580.0,,,template
+L0200,Found Bazaar,Zoe Fischer,zoefischer86@yahoo.com,0044725195903,Leeds,UK,New Lead,3,Await reply (actioned today),2026-06-14,,2026-02-09,1560.0,,,template
+L0204,House of Drawer,Liam Tanaka,liamtanaka75@hotmail.com,+447809816692,Leeds,UK,Contacted,1,Await reply (actioned today),2026-06-14,Maya,2026-02-18,5270.0,,,template
+L0183,Old Lane,James Marchetti,jamesmarchetti8@gmail.com,0044754231500,Leeds,UK,New Lead,6,Await reply (actioned today),2026-06-14,Priya,2026-02-02,5640.0,,,template
+L0203,Past Cellar,Greta Reid,info@pastcellar.store,,Leeds,UK,Warm,3,Await reply (actioned today),2026-06-14,,2026-02-27,410.0,,,template
+L0172,Camden Society,Felix Walsh,hello@camdensociety.store,0044712652037,Leeds,UK,Ghosted,6,Await reply (actioned today),2026-06-14,,2026-01-11,2440.0,,,template
+L0233,The Collective,Priya Tanaka,shop@thecollective.com,07182574459,London,UK,Warm,3,Await reply (actioned today),2026-06-14,Priya,2026-02-22,880.0,,,template
+L0213,Second Threads,Pablo Novak,shop@secondthreads.com,,London,UK,New Lead,0,Await reply (actioned today),2026-06-14,,2026-02-28,3100.0,,,template
+L0155,The Exchange,Ines Schmidt,hello@theexchange.com,+447618213574,London,UK,Ghosted,0,Await reply (actioned today),2026-06-14,,2026-01-23,4140.0,,,template
+L0235,Brick Lane Threads,Cora Khan,corakhan27@yahoo.com,07965352784,London,UK,Warm,6,Await reply (actioned today),2026-06-14,Priya,2026-02-24,5660.0,,,template
+L0184,Velvet Lane,Lukas Weber,,+447263875852,London,UK,Ghosted,3,Await reply (actioned today),2026-06-14,Tomas,2026-01-31,1920.0,,,template
+L0199,Vintage Lane,Zoe Park,zoepark33@outlook.com,7491870177,London,UK,Negotiating,2,Await reply (actioned today),2026-06-14,Maya,2026-02-10,1240.0,,,template
+L0220,Second Closet,Zoe Kaur,shop@secondcloset.store,7788153901,London,UK,Ghosted,5,Await reply (actioned today),2026-06-14,,2026-01-16,5510.0,,,template
+L0175,Loft Cellar,Priya Fischer,shop@loftcellar.com,0044785719596,Manchester,UK,Ghosted,4,Await reply (actioned today),2026-06-14,,,860.0,,,template
+L0244,The Vault,Marcus Lopez,marcuslopez35@gmail.com,+334097319885,Manchester,UK,New Lead,0,Await reply (actioned today),2026-06-14,Priya,2026-02-28,990.0,,,template
+L0153,Brick Lane Bazaar,Marta Schmidt,martaschmidt75@outlook.com,+447519325528,Manchester,UK,Ghosted,6,Await reply (actioned today),2026-06-14,Maya,2025-12-30,3430.0,,,template
+L0197,Corner Loom,Yuki Tanaka,hello@cornerloom.com,+447524968605,Manchester,UK,New Lead,5,Await reply (actioned today),2026-06-14,Tomas,2026-02-15,3980.0,,,template
+L0169,Found Loom,Marcus Silva,marcussilva93@outlook.com,0044783305446,Manchester,UK,Ghosted,3,Await reply (actioned today),2026-06-14,Priya,2026-02-24,490.0,,,template
+L0186,Past Edit,Carlos Hassan,info@pastedit.co.uk,+447544203406,Manchester,UK,Negotiating,2,Await reply (actioned today),2026-06-14,,2026-01-30,2100.0,,,template
+L0209,Corner Trunk,Marcus Cohen,info@cornertrunk.co.uk,+447916949092,Manchester,UK,Warm,3,Await reply (actioned today),2026-06-14,Tomas,,5600.0,,,template
+L0160,Found Exchange,Tom Bennett,hello@foundexchange.com,0044766005300,Manchester,UK,Negotiating,3,Await reply (actioned today),2026-06-14,,2026-02-03,4720.0,,,template
+L0225,Camden Loom,Zoe Moreau,zoemoreau64@gmail.com,0044775728317,Manchester,UK,Negotiating,0,Await reply (actioned today),2026-06-14,Tomas,2026-01-19,5930.0,,,template
+L0190,Maison Garms,Elena Reid,elenareid@gmail.com,+447786468104,Manchester,UK,Ghosted,6,Await reply (actioned today),2026-06-14,Maya,2026-02-18,5260.0,,,template
+L0226,Brick Lane Closet,Yuki Park,info@bricklaneclose.co.uk,+11389584195,New York,US,Ghosted,5,Await reply (actioned today),2026-06-14,,2026-01-05,5200.0,,,template
+L0193,House of Collective,Priya Berg,priyaberg@outlook.com,+13371436821,New York,US,Contacted,3,Await reply (actioned today),2026-06-14,,2026-01-03,1890.0,,,template
+L0217,Golden Wardrobe,Raj Murphy,rajmurphy@outlook.com,+18229051272,New York,US,Ghosted,3,Await reply (actioned today),2026-06-14,Priya,2026-02-22,4920.0,,,template
+L0255,Velvet Trunk,Omar Petrov,omarpetrov@gmail.com,+15561482584,New York,US,Contacted,1,Await reply (actioned today),2026-06-14,,2026-02-19,700.0,,,template
+L0182,Camden Cellar,Freya Fischer,shop@camdencellar.com,+18923546663,New York,US,New Lead,5,Await reply (actioned today),2026-06-14,,,4420.0,,,template
+L0234,Blue Vault,Aisha Nguyen,hello@bluevault.store,+16944301212,New York,US,New Lead,1,Await reply (actioned today),2026-06-14,Maya,,3730.0,,,template
+L0232,Retro Wardrobe,Liam Kaur,,+15477363339,New York,US,Warm,2,Await reply (actioned today),2026-06-14,Maya,2026-01-29,1810.0,,,template
+L0228,Second Trunk,Zoe Janssen,hello@secondtrunk.store,+16465543766,New York,US,Call Booked,6,Await reply (actioned today),2026-06-14,,2026-02-15,4670.0,,,template
+L0248,Atelier Garms,Carlos Park,,+338781129387,Paris,FR,Negotiating,6,Await reply (actioned today),2026-06-14,Maya,,1400.0,,,template
+L0236,Maison Emporium,Felix Rossi,felixrossi@gmail.com,+336923932047,Paris,FR,Replied,5,Await reply (actioned today),2026-06-14,,2026-02-19,5670.0,,,template
+L0231,House of Lane,Raj Nguyen,info@houseoflane.store,+332453781218,Paris,FR,Replied,5,Await reply (actioned today),2026-06-14,,2026-02-14,5120.0,,,template
+L0180,Old Collective,Marta Rossi,martarossi83@gmail.com,,Paris,FR,Contacted,1,Await reply (actioned today),2026-06-14,Priya,2026-02-24,1460.0,,,template
+L0192,Camden Exchange,Sven Hughes,hello@camdenexchange.store,+334896004150,Paris,FR,Contacted,5,Await reply (actioned today),2026-06-14,Maya,2026-02-27,4860.0,,,template
+L0181,Rusty Lab,Greta Lopez,gretalopez@gmail.com,+338523057348,Paris,FR,Ghosted,3,Await reply (actioned today),2026-06-14,Priya,2026-02-14,3010.0,,,template
+L0196,Golden Collective,Sofia Walsh,,+337041612736,Paris,FR,Ghosted,1,Await reply (actioned today),2026-06-14,Maya,2026-02-26,2290.0,,,template
+L0239,The Rail,Tom Tanaka,,+335745010661,Paris,FR,Contacted,0,Await reply (actioned today),2026-06-14,,2026-01-23,3610.0,,,template
+L0154,Old Lab,Carlos Silva,info@oldlab.co.uk,+336998199901,Paris,FR,Ghosted,6,Await reply (actioned today),2026-06-14,,2026-02-21,5090.0,,,template
