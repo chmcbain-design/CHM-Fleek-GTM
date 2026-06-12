@@ -21,7 +21,7 @@ python3 run_daily.py
 python3 run_daily.py --no-api
 ```
 
-**Requirements:** Python 3.9+, pandas, anthropic, python-dotenv. See `requirements.txt`.
+**Requirements:** Python 3.9+, pandas, openpyxl, anthropic, python-dotenv. See `requirements.txt`.
 
 ---
 
