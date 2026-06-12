@@ -101,7 +101,7 @@ def test_validate_catches_unanswered_question_not_referenced():
 def test_validate_passes_correct_dm():
     row = {"handle": "thriftvintage", "last_inbound_text": "do you ship to EU?",
            "contact_name": None}
-    good_draft = "Hi @thriftvintage, sorry for the slow reply -- yes, we ship to the EU. Happy to send details."
+    good_draft = "Hi @thriftvintage, sorry for the slow reply. Yes, we ship to the EU. Happy to send details."
     failures = _validate_draft(good_draft, row, "dm")
     assert failures == [], f"Expected no failures: {failures}"
 
@@ -109,7 +109,7 @@ def test_validate_passes_correct_dm():
 def test_validate_passes_correct_email():
     row = {"handle": None, "contact_name": "Ines Fischer",
            "last_inbound_text": "What's the fee structure?"}
-    good_draft = "Subject: Fleek x Atelier Loom\n\nHi Ines,\n\nThanks for asking about the fee structure -- [rep: answer]. Happy to set up a call."
+    good_draft = "Subject: Fleek x Atelier Loom\n\nHi Ines,\n\nThanks for asking about the fee structure: [rep: answer]. Happy to set up a call."
     failures = _validate_draft(good_draft, row, "email")
     assert failures == [], f"Expected no failures: {failures}"
 
@@ -119,6 +119,41 @@ def test_validate_rejects_empty_draft():
     assert _validate_draft("", row, "dm") != []
     assert _validate_draft("  ", row, "dm") != []
     assert _validate_draft("Hi.", row, "dm") != []  # under 20 chars
+
+
+def test_validate_rejects_double_hyphen():
+    """Check (e): '--' or em dash in draft must fail validation."""
+    row = {"handle": "testshop", "last_inbound_text": None, "contact_name": None}
+    bad1 = "Hi @testshop, great to hear from you -- happy to chat."
+    bad2 = "Hi @testshop, great to hear from you—happy to chat."
+    assert any("--" in f or "—" in f or "hyphen" in f or "dash" in f for f in _validate_draft(bad1, row, "dm"))
+    assert any("--" in f or "—" in f or "hyphen" in f or "dash" in f for f in _validate_draft(bad2, row, "dm"))
+
+
+def test_templates_contain_no_double_hyphens():
+    """All _template_draft outputs must be free of '--' and em dashes."""
+    rows_dm = [
+        {"handle": "shop1", "last_inbound_text": "can you help?", "num_touches": 0,
+         "last_touch_date": None, "est_monthly_spend_gbp": 500, "contact_name": None,
+         "store_name": None, "city": None},
+        {"handle": "shop2", "last_inbound_text": None, "num_touches": 0,
+         "last_touch_date": "2025-01-01", "est_monthly_spend_gbp": 500, "contact_name": None,
+         "store_name": None, "city": None},
+        {"handle": "shop3", "last_inbound_text": None, "num_touches": 1,
+         "last_touch_date": None, "est_monthly_spend_gbp": 500, "contact_name": None,
+         "store_name": None, "city": "London"},
+    ]
+    for tn in (1, 2, 3):
+        for row in rows_dm:
+            draft = _template_draft(row, "dm", 5, touch_number=tn)
+            assert "--" not in draft and "—" not in draft, (
+                f"Template touch={tn} contains '--' or em dash: {draft!r}"
+            )
+    row_email = {"handle": None, "contact_name": "Jane Smith", "store_name": "Test Shop",
+                 "last_inbound_text": None, "num_touches": 0, "last_touch_date": "2025-01-01",
+                 "est_monthly_spend_gbp": 1000, "city": "Bristol"}
+    draft = _template_draft(row_email, "email", 200)
+    assert "--" not in draft and "—" not in draft, f"Email template contains '--': {draft!r}"
 
 
 # ── No blank drafts in output CSV (regression for the NaN bug) ────────────────
@@ -140,7 +175,7 @@ def test_validate_passes_commercial_question_with_placeholder():
     row = {"handle": "sepiawaxarchive",
            "last_inbound_text": "what brands do you take?",
            "contact_name": None}
-    good = "Hi @sepiawaxarchive, great question -- [rep: insert brands accepted]. Happy to send more detail."
+    good = "Hi @sepiawaxarchive, great question: [rep: insert brands accepted]. Happy to send more detail."
     failures = _validate_draft(good, row, "dm")
     assert failures == [], f"Expected no failures: {failures}"
 
@@ -355,6 +390,8 @@ if __name__ == "__main__":
         test_validate_passes_correct_dm,
         test_validate_passes_correct_email,
         test_validate_rejects_empty_draft,
+        test_validate_rejects_double_hyphen,
+        test_templates_contain_no_double_hyphens,
         test_validate_catches_commercial_answer_without_placeholder,
         test_validate_passes_commercial_question_with_placeholder,
         test_commercial_keywords_covers_expected_terms,

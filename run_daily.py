@@ -467,13 +467,14 @@ def _engagement_score(row):
 
 _DRAFT_SYSTEM = (
     "You draft outreach messages for Fleek, a UK vintage clothing reseller platform. "
-    "Rules (all strict): British English only; no em dashes; never invent prices, stock "
+    "Rules (all strict): British English only; no em dashes; no double hyphens (--); "
+    "use commas, full stops or colons to connect clauses instead; never invent prices, stock "
     "levels, promotions, delivery terms or discounts; where a specific detail is needed "
     "write [rep: description of what to add] as a placeholder; output the message text "
-    "only -- no labels, headers or preamble; do not mention any account name, person name "
+    "only: no labels, headers or preamble; do not mention any account name, person name "
     "or business name beyond those explicitly given to you in the lead data; "
-    "you do not know Fleek's commercial specifics -- which brands it accepts, fee structures, "
-    "pricing, shipping terms, or stock levels -- if the lead's question touches any of these "
+    "you do not know Fleek's commercial specifics: which brands it accepts, fee structures, "
+    "pricing, shipping terms, or stock levels. If the lead's question touches any of these "
     "topics, do NOT attempt to answer it yourself; instead acknowledge the question warmly "
     "and insert a bracketed placeholder such as [rep: insert fee structure] so the rep can "
     "complete it; never assert facts about Fleek's offering."
@@ -514,19 +515,19 @@ def _draft_prompt(row: dict, channel: str, days_since, touch_number: int = 1) ->
     if channel == "dm":
         if handle and handle not in ("nan", "None"):
             lines.append(f"Handle: @{handle}")
-            lines.append(f'Addressing instruction: open with "Hi @{handle}" -- use this exact handle verbatim, no substitution.')
+            lines.append(f'Addressing instruction: open with "Hi @{handle}": use this exact handle verbatim, no substitution.')
         else:
             lines.append("Handle: unknown")
     else:
         if cname and cname not in ("nan", "None"):
             first = cname.split()[0]
             lines.append(f"Contact name: {cname}")
-            lines.append(f'Addressing instruction: greet them as "Hi {first}," -- use this exact first name, no substitution.')
+            lines.append(f'Addressing instruction: greet them as "Hi {first},": use this exact first name, no substitution.')
         else:
             lines.append("Contact name: unknown")
         if store and store not in ("nan", "None"):
             lines.append(f"Store name: {store}")
-            lines.append(f"Store instruction: refer to the business as '{store}' exactly -- no other business name.")
+            lines.append(f"Store instruction: refer to the business as '{store}' exactly: no other business name.")
 
     lines.append("No-invent rule: do not address, mention or reference any account, person or business other than the name(s) stated above.")
 
@@ -553,13 +554,13 @@ def _draft_prompt(row: dict, channel: str, days_since, touch_number: int = 1) ->
             is_commercial = bool(inbound_words & COMMERCIAL_KEYWORDS)
             lines.append(
                 "INBOUND QUESTION RULE: their last message contains an unanswered question. "
-                "Your draft MUST acknowledge or answer it first -- do not open with anything else."
+                "Your draft MUST acknowledge or answer it first: do not open with anything else."
             )
             if is_commercial:
                 lines.append(
                     "COMMERCIAL QUESTION RULE: this question touches Fleek's commercial specifics "
                     "(brands accepted, fees, pricing, shipping, or stock). "
-                    "You do not know these details -- do NOT answer it yourself. "
+                    "You do not know these details. Do NOT answer it yourself. "
                     "Acknowledge the question warmly and insert a [rep: ...] placeholder "
                     "(e.g. [rep: insert fee structure here]) for the rep to complete. "
                     "Never assert facts about Fleek's offering."
@@ -572,36 +573,36 @@ def _draft_prompt(row: dict, channel: str, days_since, touch_number: int = 1) ->
 
     # ── Tone note ─────────────────────────────────────────────────────────────
     if not has_q and stale:
-        lines.append(f"Tone note: it has been {days_since} days since last contact -- acknowledge the gap honestly, do not pretend continuity.")
+        lines.append(f"Tone note: it has been {days_since} days since last contact. Acknowledge the gap honestly; do not pretend continuity.")
     elif not has_q and nt == 0:
-        lines.append("Tone note: this is a first touch -- no prior relationship exists.")
+        lines.append("Tone note: this is a first touch. No prior relationship exists.")
 
     # ── Touch-sequence instruction ────────────────────────────────────────────
     lines.append(f"Touch sequence: {touch_number} of {MAX_TOUCHES}.")
     if touch_number == 1:
-        lines.append("This is the first outreach to this lead -- treat it as a fresh introduction.")
+        lines.append("This is the first outreach to this lead: treat it as a fresh introduction.")
     elif touch_number == 2:
         lines.append(
-            "This is a follow-up -- we reached out a few days ago and haven't heard back. "
+            "This is a follow-up: we reached out a few days ago and haven't heard back. "
             "Keep it short and light. Reference that you got in touch recently, but do not guilt-trip "
             "or over-explain. One sentence of context, then the ask."
         )
     elif touch_number >= 3:
         lines.append(
             "This is the final check-in. Be warm and low-pressure. Give them an explicit easy out: "
-            "something like 'no worries if the timing isn't right -- happy to reconnect whenever.' "
+            "something like 'no worries if the timing isn't right. Happy to reconnect whenever.' "
             "Do not pitch hard. Leave the door open."
         )
 
     # ── Channel instruction ───────────────────────────────────────────────────
     if channel == "dm":
-        ch_instr = "an Instagram DM -- casual, direct, 2-3 sentences max, at most one emoji if it reads naturally"
+        ch_instr = "an Instagram DM: casual, direct, 2-3 sentences max, at most one emoji if it reads naturally"
     elif channel == "email":
-        ch_instr = "an email -- first line must be 'Subject: [subject line]', then a blank line, then the body (3-5 sentences), no emojis"
+        ch_instr = "an email: first line must be 'Subject: [subject line]', then a blank line, then the body (3-5 sentences), no emojis"
     elif channel == "call":
-        ch_instr = "call talking points -- 3-5 bullet points starting with a dash, prompts for a rep (not a script), no emojis"
+        ch_instr = "call talking points: 3-5 bullet points starting with a dash, prompts for a rep (not a script), no emojis"
     else:
-        ch_instr = "visit prep notes -- 3-4 bullet points starting with a dash, for a field rep, no emojis"
+        ch_instr = "visit prep notes: 3-4 bullet points starting with a dash, for a field rep, no emojis"
 
     return "\n".join(lines) + f"\n\nWrite {ch_instr}."
 
@@ -649,6 +650,10 @@ def _validate_draft(draft: str, row: dict, channel: str) -> list:
                 "at least one keyword from it must appear"
             )
 
+    # (e) No double hyphens or em dashes (auto-convert to em dash in many DM clients)
+    if "--" in draft or "—" in draft:
+        failures.append("draft contains '--' or '—'; restructure with a comma, full stop or colon instead")
+
     # (d) Commercial question must use a [rep: ...] placeholder, not an invented answer
     if has_q and inbound:
         inbound_words = set(re.findall(r"\w+", inbound.lower()))
@@ -695,34 +700,34 @@ def _template_draft(row: dict, channel: str, days_since, touch_number: int = 1) 
 
     if channel == "dm":
         if has_q:
-            return (f"Hi {handle}, sorry for the slow reply -- to answer your question: "
+            return (f"Hi {handle}, sorry for the slow reply. To answer your question: "
                     f"[rep: answer \"{inbound}\"]. Happy to send more detail if that's useful.")
         elif touch_number == 2:
-            return (f"Hi {handle}, just following up on my message from a few days ago -- "
-                    "happy to answer any questions. [rep: one-line reminder of Fleek offer].")
+            return (f"Hi {handle}, just following up on my message from a few days ago. "
+                    "Happy to answer any questions. [rep: one-line reminder of Fleek offer].")
         elif touch_number >= 3:
-            return (f"Hi {handle}, last one from me -- no worries if the timing isn't right, "
+            return (f"Hi {handle}, last one from me. No worries if the timing isn't right, "
                     "door's open whenever. [rep: one-line offer or reason to reconnect].")
         elif stale:
-            return (f"Hi {handle}, it's been a while -- hope things are going well. "
+            return (f"Hi {handle}, it's been a while. Hope things are going well. "
                     "Reaching back out in case the timing is better now. "
                     "[rep: one-line reminder of Fleek offer].")
         elif nt == 0:
             return (f"Hi {handle}, spotted your page and thought there might be a good fit "
                     "with Fleek. Happy to share how it works if you're open to it.")
         else:
-            return (f"Hi {handle}, just checking back in -- happy to share what we've been "
+            return (f"Hi {handle}, just checking back in. Happy to share what we've been "
                     "working on lately if useful. [rep: add one hook from their listings/niche].")
 
     elif channel == "email":
         sal  = f"Hi {cname}," if cname and str(cname) not in ("nan", "None") else "Hi there,"
-        subj = f"Fleek x {store}" if store and str(store) not in ("nan", "None") else "Fleek -- quick question"
+        subj = f"Fleek x {store}" if store and str(store) not in ("nan", "None") else "Fleek: quick question"
         if has_q:
             body = (f"Thanks for getting back to me. To answer your question: "
                     f"[rep: answer \"{inbound}\"]. Happy to set up a call to run through anything else.")
         elif stale:
             ref  = store if store and str(store) not in ("nan", "None") else "the shop"
-            body = (f"It's been a while since we last spoke -- I hope things are going well at {ref}. "
+            body = (f"It's been a while since we last spoke. Hope things are going well at {ref}. "
                     "Reaching back out in case the timing is better now. [rep: brief Fleek value prop].")
         elif nt == 0:
             body = (f"[rep: one-line intro on Fleek]. I came across {store or 'your shop'} and "
@@ -736,12 +741,12 @@ def _template_draft(row: dict, channel: str, days_since, touch_number: int = 1) 
         points = [
             "- Confirm they received our outreach re: Fleek",
             "- Key ask: [rep: 1-2 sentences on Fleek value prop for their seller type]",
-            f"- Their context: {city + ' -- mention local angle' if city else '[rep: reference listings/niche]'}",
+            f"- Their context: {city + ': mention local angle' if city else '[rep: reference listings/niche]'}",
         ]
         if has_q:
             points.insert(1, f"- Address their question first: [rep: answer \"{inbound}\"]")
         if stale:
-            points.append(f"- It's been {days_since}d -- acknowledge the gap, ask if timing is better")
+            points.append(f"- It's been {days_since}d since last contact. Acknowledge the gap, ask if timing is better.")
         points.append("- Proposed next step: [rep: trial consignment / follow-up email / visit date]")
         return "\n".join(points)
 
