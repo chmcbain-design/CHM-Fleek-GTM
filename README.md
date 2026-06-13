@@ -67,6 +67,10 @@ The script is safe to re-run: the ledger tracks what has already been actioned, 
 
 ## Key design decisions
 
+- **`source` is the authoritative classifier; `handle` is a secondary heuristic** — `source == "physical"` always forces `lead_type = "shop"` regardless of whether the lead has an Instagram handle. This is intentional: a physical store may well have an Instagram presence. The secondary rule (has handle → reseller) is accurate for the vast majority of leads but has a known edge case: a physical shop discovered via Instagram and entered without `source = "physical"` would be misclassified as a reseller. The correct fix for such cases is to enter `source` accurately in the CRM — the `SOURCE_MAP` in `normalise_source()` already normalises "physical store", "google maps", "in-person", and similar labels. Do not rely on handle absence as a signal that a lead is a physical shop.
+
+- **Email resellers are routed to the email channel, not DM** — resellers (`lead_type = "reseller"`) who have a verified email address (`has_email = True`) are removed from the DM scoring pool entirely and instead receive email actions in `shops_actions.csv`. They follow the same three-touch cadence (3-day window) as DM resellers. This prevents them from competing for the 40 DM slots, which are reserved for no-email resellers where Instagram DM is the only viable channel. `store_name` in the output is set to `contact_name` if available, or `@handle` otherwise.
+
 - **Conversation state weighted heaviest (40%)** — a lead with an unanswered inbound question is actively waiting; scoring it at 95/100 and prioritising it above cold high-spend leads reflects the real conversion logic: warm intent converts faster than raw spend potential.
 
 - **Three-touch cadence with 3-day window** — resellers get at most three automated touches, spaced at least 3 days apart, before being parked. Touch 2 is a light nudge; touch 3 is a graceful exit. Due follow-ups receive a +10 score boost so they rank above equivalent cold leads (they've already shown intent by not declining). The 48-hour hard floor is a secondary safety net against same-day runs.

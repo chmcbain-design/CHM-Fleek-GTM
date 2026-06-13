@@ -371,6 +371,9 @@ def merge_into_book(new_df: pd.DataFrame, conn: sqlite3.Connection) -> dict:
                     new_fields[col] = row[col]
 
             if new_fields:
+                # If email enriched (null → value), propagate to has_email flag
+                if "email" in new_fields and not _is_null(new_fields["email"]):
+                    new_fields["has_email"] = 1
                 accumulated = pending_updates.setdefault(match_id, {})
                 accumulated.update(new_fields)
                 # Reflect into existing_data so subsequent rows see the merged state
@@ -1091,8 +1094,14 @@ def score_and_output(conn: sqlite3.Connection, run_id: str, run_date: str,
     resellers  = df[df["lead_type"] == "reseller"].copy()
     stage_excl = resellers["stage"].isin(["Lost", "Won"]) | resellers["last_inbound_text"].apply(_is_decline)
 
+    # Email resellers are routed to the email channel and removed from DM scoring.
+    # They use the same cadence (3-touch, 3-day window) but output to shops_actions.csv.
+    active_resellers = resellers[~stage_excl]
+    dm_resellers    = active_resellers[~active_resellers["has_email"].astype(bool)]
+    email_resellers = active_resellers[active_resellers["has_email"].astype(bool)]
+
     scored_rows = []
-    for _, row in resellers[~stage_excl].iterrows():
+    for _, row in dm_resellers.iterrows():
         lid = row["lead_id"]
         cad = cadence.get(lid, {"touch_count": 0, "last_touch_date": None, "parked": 0})
 
@@ -1269,6 +1278,73 @@ def score_and_output(conn: sqlite3.Connection, run_id: str, run_date: str,
                 "action": action, "score": None, "reason": None,
             })
 
+    # ── Email resellers (has_email=True, removed from DM pool) ──────────────────
+    # Same 3-touch cadence logic as DM resellers, but action goes to shops_actions.csv.
+    # store_name is set to contact_name or @handle so the BDR knows who to email.
+    email_resellers_count = 0
+    for _, row in email_resellers.iterrows():
+        lid = row["lead_id"]
+        cad = cadence.get(lid, {"touch_count": 0, "last_touch_date": None, "parked": 0})
+
+        if cad["parked"]:
+            continue
+
+        if lid in recent_ids:
+            ledger_excl += 1
+            try:    _nt = int(float(str(row.get("num_touches") or 0).replace("<NA>", "0")))
+            except: _nt = 0
+            shop_rows.append({
+                "lead_id": lid,
+                "store_name": row.get("contact_name") or f"@{row.get('handle', '')}",
+                "contact_name": row.get("contact_name"), "email": row.get("email"),
+                "phone": row.get("phone"), "city": row.get("city"),
+                "country": row.get("country"), "stage": str(row.get("stage") or "").strip(),
+                "num_touches": _nt,
+                "next_action": _recent_action.get(lid, "Await reply (actioned recently)"),
+                "due_date": str(SCORE_DATE),
+                "assigned_bdr": row.get("assigned_bdr"),
+                "last_touch_date": row.get("last_touch_date"),
+                "est_monthly_spend_gbp": row.get("est_monthly_spend_gbp"),
+            })
+            continue
+
+        if cad["last_touch_date"]:
+            last_d = _to_date(cad["last_touch_date"])
+            if last_d and (SCORE_DATE - last_d).days < CADENCE_WINDOW_DAYS:
+                ledger_excl += 1
+                continue
+
+        touch_number = cad["touch_count"] + 1
+        if touch_number == 1:
+            action = "Email: first touch"
+        elif touch_number == 2:
+            action = "Email: follow-up 2"
+        else:
+            action = "Email: final follow-up"
+
+        try:    nt = int(float(str(row.get("num_touches") or 0).replace("<NA>", "0")))
+        except: nt = 0
+
+        shop_rows.append({
+            "lead_id": lid,
+            "store_name": row.get("contact_name") or f"@{row.get('handle', '')}",
+            "contact_name": row.get("contact_name"), "email": row.get("email"),
+            "phone": row.get("phone"), "city": row.get("city"),
+            "country": row.get("country"), "stage": str(row.get("stage") or "").strip(),
+            "num_touches": nt, "next_action": action, "due_date": str(SCORE_DATE),
+            "assigned_bdr": row.get("assigned_bdr"),
+            "last_touch_date": row.get("last_touch_date"),
+            "est_monthly_spend_gbp": row.get("est_monthly_spend_gbp"),
+        })
+        email_resellers_count += 1
+
+        if not dry_run:
+            actions_to_log.append({
+                "lead_id": lid, "channel": "email",
+                "action": action, "score": None, "reason": None,
+            })
+            upsert_cadence(conn, lid, touch_number, run_date, parked=0)
+
     shops_df = pd.DataFrame(shop_rows) if shop_rows else pd.DataFrame(columns=SHOP_COLS)
 
     if len(shops_df) and "city" in shops_df.columns:
@@ -1325,19 +1401,20 @@ def score_and_output(conn: sqlite3.Connection, run_id: str, run_date: str,
                     draft_sources[src] = draft_sources.get(src, 0) + int(cnt)
 
     return {
-        "resellers_scored":    len(scored_df),
-        "hard_excluded":       int(stage_excl.sum()),
-        "ledger_excluded":     ledger_excl,
-        "action_dedup":        action_dedup,
-        "parked_today":        parked_today,
-        "dms_issued":          len(top_dms),
-        "shops_actioned":      len(shop_rows),
-        "top_dms":             top_dms,
-        "shops_df":            shops_df,
-        "actions_logged":      len(actions_to_log),
-        "samples":             samples,
-        "api_used":            api_client is not None,
-        "draft_sources":       draft_sources,
+        "resellers_scored":         len(scored_df),
+        "hard_excluded":            int(stage_excl.sum()),
+        "ledger_excluded":          ledger_excl,
+        "action_dedup":             action_dedup,
+        "parked_today":             parked_today,
+        "dms_issued":               len(top_dms),
+        "shops_actioned":           len(shop_rows),
+        "email_resellers_actioned": email_resellers_count,
+        "top_dms":                  top_dms,
+        "shops_df":                 shops_df,
+        "actions_logged":           len(actions_to_log),
+        "samples":                  samples,
+        "api_used":                 api_client is not None,
+        "draft_sources":            draft_sources,
     }
 
 
@@ -1375,7 +1452,8 @@ def print_report(run_id, run_date, ingest_stats, score_stats, prev_run_info,
     print(f"  Totals: {total_rows} rows read, {total_new} new leads, {total_dups} duplicates caught")
 
     print(f"\n  SCORING & EXCLUSIONS")
-    print(f"    Resellers eligible (after hard excl.):  {score_stats['resellers_scored']}")
+    print(f"    DM resellers eligible:                  {score_stats['resellers_scored']}")
+    print(f"    Email resellers (email channel):        {score_stats.get('email_resellers_actioned', 0)}")
     print(f"    Hard excluded (lost/DNC/won):           {score_stats['hard_excluded']}")
     print(f"    Excluded by ledger / cadence window:    {score_stats['ledger_excluded']}")
     print(f"    Skipped (action already issued before): {score_stats['action_dedup']}")
