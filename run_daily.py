@@ -737,7 +737,11 @@ def _draft_prompt(row: dict, channel: str, days_since, touch_number: int = 1) ->
     if not has_q and stale:
         lines.append(f"Tone note: it has been {days_since} days since last contact. Acknowledge the gap honestly; do not pretend continuity.")
     elif not has_q and nt == 0:
-        lines.append("Tone note: this is a first touch. No prior relationship exists.")
+        lines.append(
+            "Tone note: this is a first touch — no prior relationship exists. "
+            "Do not imply any past meeting, event, or prior contact of any kind. "
+            "Do not reference markets, shows, prior conversations, or anything that happened before this message."
+        )
 
     # ── Touch-sequence instruction ────────────────────────────────────────────
     lines.append(f"Touch sequence: {touch_number} of {MAX_TOUCHES}.")
@@ -769,7 +773,14 @@ def _draft_prompt(row: dict, channel: str, days_since, touch_number: int = 1) ->
     return "\n".join(lines) + f"\n\nWrite {ch_instr}."
 
 
-FIRST_TOUCH_REVIVE_PHRASES = ("been a while", "last spoke", "reaching back out")
+FIRST_TOUCH_REVIVE_PHRASES = (
+    "been a while", "last spoke", "reaching back out",
+    # Prior-meeting hallucinations the API invents for cold leads.
+    # Longer phrases before their substrings so the loop matches the most specific phrase first.
+    "since we last", "since we met", "since we spoke",
+    "last time we", "last connected", "crossed paths",
+    "met at", "we met", "we spoke",
+)
 
 
 def _validate_draft(draft: str, row: dict, channel: str, touch_number: int = 1) -> list:
@@ -959,8 +970,8 @@ def _add_drafts(output_df: pd.DataFrame, full_leads: pd.DataFrame,
         action     = str(r.get(action_col) or "")
         days_since = _days_ago(_to_date(r.get("last_touch_date")))
 
-        # Await-reply rows: blank placeholder, no outreach needed
-        if action.startswith("Await reply"):
+        # Await-reply rows and same-day replay rows: blank placeholder, no outreach needed
+        if action.startswith("Await reply") or r.get("_is_replay"):
             drafts.append("")
             sources.append("template")
             continue
@@ -1204,6 +1215,7 @@ def score_and_output(conn: sqlite3.Connection, run_id: str, run_date: str,
             try:    _nt = int(float(str(row.get("num_touches") or 0).replace("<NA>", "0")))
             except: _nt = 0
             # Replay the last logged action so the CSV stays useful; do NOT re-log.
+            # _is_replay=True tells _add_drafts to skip the API and leave draft blank.
             shop_rows.append({
                 "lead_id": lid, "store_name": row.get("store_name"),
                 "contact_name": row.get("contact_name"), "email": row.get("email"),
@@ -1215,6 +1227,7 @@ def score_and_output(conn: sqlite3.Connection, run_id: str, run_date: str,
                 "assigned_bdr": row.get("assigned_bdr"),
                 "last_touch_date": row.get("last_touch_date"),
                 "est_monthly_spend_gbp": row.get("est_monthly_spend_gbp"),
+                "_is_replay": True,
             })
             continue
 
@@ -1282,6 +1295,17 @@ def score_and_output(conn: sqlite3.Connection, run_id: str, run_date: str,
     # Same 3-touch cadence logic as DM resellers, but action goes to shops_actions.csv.
     # store_name is set to contact_name or @handle so the BDR knows who to email.
     email_resellers_count = 0
+
+    def _er_store_name(row):
+        """Sanitized display name for an email reseller: contact_name or @handle, never 'nan'."""
+        cname = str(row.get("contact_name") or "").strip()
+        handle = str(row.get("handle") or "").strip()
+        if cname and cname.lower() not in ("nan", "none"):
+            return cname
+        if handle and handle.lower() not in ("nan", "none"):
+            return f"@{handle}"
+        return "—"
+
     for _, row in email_resellers.iterrows():
         lid = row["lead_id"]
         cad = cadence.get(lid, {"touch_count": 0, "last_touch_date": None, "parked": 0})
@@ -1295,7 +1319,7 @@ def score_and_output(conn: sqlite3.Connection, run_id: str, run_date: str,
             except: _nt = 0
             shop_rows.append({
                 "lead_id": lid,
-                "store_name": row.get("contact_name") or f"@{row.get('handle', '')}",
+                "store_name": _er_store_name(row),
                 "contact_name": row.get("contact_name"), "email": row.get("email"),
                 "phone": row.get("phone"), "city": row.get("city"),
                 "country": row.get("country"), "stage": str(row.get("stage") or "").strip(),
@@ -1305,6 +1329,7 @@ def score_and_output(conn: sqlite3.Connection, run_id: str, run_date: str,
                 "assigned_bdr": row.get("assigned_bdr"),
                 "last_touch_date": row.get("last_touch_date"),
                 "est_monthly_spend_gbp": row.get("est_monthly_spend_gbp"),
+                "_is_replay": True,
             })
             continue
 
@@ -1327,7 +1352,7 @@ def score_and_output(conn: sqlite3.Connection, run_id: str, run_date: str,
 
         shop_rows.append({
             "lead_id": lid,
-            "store_name": row.get("contact_name") or f"@{row.get('handle', '')}",
+            "store_name": _er_store_name(row),
             "contact_name": row.get("contact_name"), "email": row.get("email"),
             "phone": row.get("phone"), "city": row.get("city"),
             "country": row.get("country"), "stage": str(row.get("stage") or "").strip(),
@@ -1383,12 +1408,17 @@ def score_and_output(conn: sqlite3.Connection, run_id: str, run_date: str,
     if not dry_run and "draft_message" in shops_df.columns and "next_action" in shops_df.columns:
         email_rows = shops_df[
             shops_df["next_action"].str.contains("Email", na=False) &
-            shops_df["draft_message"].astype(str).str.strip().ne("")
+            shops_df["draft_message"].astype(str).str.strip().ne("") &
+            ~shops_df.get("_is_replay", pd.Series(False, index=shops_df.index))
         ]
         if len(email_rows):
             r = email_rows.iloc[0]
+            raw_store = r.get("store_name")
+            store_disp = (str(raw_store).strip()
+                          if raw_store and str(raw_store).strip().lower() not in ("nan", "none", "")
+                          else "—")
             samples["shop_email"] = {
-                "store": r.get("store_name"), "action": r.get("next_action"),
+                "store": store_disp, "action": r.get("next_action"),
                 "draft": r.get("draft_message", ""), "source": r.get("draft_source", ""),
             }
 
