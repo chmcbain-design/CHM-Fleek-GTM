@@ -326,10 +326,12 @@ def merge_into_book(new_df: pd.DataFrame, conn: sqlite3.Connection) -> dict:
             handle_idx[h] = lid
         if e and not _is_null(e):
             email_idx[e] = lid
-        cn = str(ex.get("contact_name") or "").strip()
-        sn = str(ex.get("store_name")   or "").strip()
+        _cn = ex.get("contact_name")
+        _sn = ex.get("store_name")
+        cn = "" if _is_null(_cn) else str(_cn).strip()
+        sn = "" if _is_null(_sn) else str(_sn).strip()
         name = cn or sn
-        if name and name.lower() not in ("nan", "none", ""):
+        if name:
             name_pairs.append((name, lid))
 
     # Accumulate bulk ops — applied at the end to avoid per-row overhead
@@ -341,8 +343,10 @@ def merge_into_book(new_df: pd.DataFrame, conn: sqlite3.Connection) -> dict:
     for _, row in new_df.iterrows():
         h     = row.get("handle")
         e     = row.get("email")
-        cname = str(row.get("contact_name") or "").strip()
-        sname = str(row.get("store_name")   or "").strip()
+        _rcn  = row.get("contact_name")
+        _rsn  = row.get("store_name")
+        cname = "" if _is_null(_rcn) else str(_rcn).strip()
+        sname = "" if _is_null(_rsn) else str(_rsn).strip()
 
         # Match: handle → email → fuzzy name (same priority as before)
         match_id = None
@@ -395,10 +399,10 @@ def merge_into_book(new_df: pd.DataFrame, conn: sqlite3.Connection) -> dict:
                 handle_idx[vals["handle"]] = lid
             if vals.get("email") and not _is_null(vals["email"]):
                 email_idx[vals["email"]] = lid
-            cn = str(vals.get("contact_name") or "").strip()
-            sn = str(vals.get("store_name")   or "").strip()
+            cn = "" if _is_null(vals.get("contact_name")) else str(vals["contact_name"]).strip()
+            sn = "" if _is_null(vals.get("store_name"))   else str(vals["store_name"]).strip()
             name = cn or sn
-            if name and name.lower() not in ("nan", "none", ""):
+            if name:
                 name_pairs.append((name, lid))
 
     # Bulk INSERT all new leads in one round-trip
