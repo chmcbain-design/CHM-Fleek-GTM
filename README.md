@@ -9,23 +9,40 @@ A lightweight sales pipeline tool built for Fleek's UK vintage clothing reseller
 ```bash
 git clone https://github.com/chmcbain-design/CHM-Fleek-GTM.git
 cd CHM-Fleek-GTM
-pip install -r requirements.txt
+
+# Mac / Linux
+python3 -m pip install -r requirements.txt
 python3 run_daily.py --no-api
+
+# Windows
+py -m pip install -r requirements.txt
+py run_daily.py --no-api
 ```
 
 That's it. On the first run the script detects an empty lead book, auto-ingests `data/pipeline_data.xlsx` (265 day-one leads), scores them, and writes `today_dms.csv` and `shops_actions.csv`.
 
 **To simulate day 2** (30 new leads drop in):
 ```bash
+# Mac / Linux
 cp data/new_drop_day2.xlsx inbox/
 python3 run_daily.py --no-api
+
+# Windows
+copy data\new_drop_day2.xlsx inbox\
+py run_daily.py --no-api
 ```
 
 **To use live AI drafts** instead of templates, add your Anthropic API key first:
 ```bash
+# Mac / Linux
 cp .env.example .env
 # Edit .env: set ANTHROPIC_API_KEY=sk-ant-...
 python3 run_daily.py
+
+# Windows
+copy .env.example .env
+# Edit .env: set ANTHROPIC_API_KEY=sk-ant-...
+py run_daily.py
 ```
 
 **Requirements:** Python 3.9+, pandas, openpyxl, anthropic, python-dotenv. See `requirements.txt`.
@@ -52,7 +69,7 @@ python3 run_daily.py
 
 ```
 1. Drop any updated lead files into inbox/
-2. python3 run_daily.py
+2. Mac/Linux: python3 run_daily.py   |   Windows: py run_daily.py
 3. Open today_dms.csv and shops_actions.csv
 4. Review drafts — fill in any [rep: ...] placeholders
 5. Send approved messages
