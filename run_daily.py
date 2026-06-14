@@ -971,7 +971,7 @@ def _add_drafts(output_df: pd.DataFrame, full_leads: pd.DataFrame,
         days_since = _days_ago(_to_date(r.get("last_touch_date")))
 
         # Await-reply rows and same-day replay rows: blank placeholder, no outreach needed
-        if action.startswith("Await reply") or r.get("_is_replay"):
+        if action.startswith("Await reply") or r.get("_is_replay") is True:
             drafts.append("")
             sources.append("template")
             continue
@@ -1372,6 +1372,14 @@ def score_and_output(conn: sqlite3.Connection, run_id: str, run_date: str,
 
     shops_df = pd.DataFrame(shop_rows) if shop_rows else pd.DataFrame(columns=SHOP_COLS)
 
+    # Normalise _is_replay to a proper bool column: rows without the key become NaN
+    # (float) when pandas builds the DataFrame from a mixed list of dicts, which
+    # makes ~ fail and NaN truthy in Python if-checks give wrong results.
+    if "_is_replay" not in shops_df.columns:
+        shops_df["_is_replay"] = False
+    else:
+        shops_df["_is_replay"] = shops_df["_is_replay"].fillna(False).astype(bool)
+
     if len(shops_df) and "city" in shops_df.columns:
         shops_df = shops_df.sort_values(["city", "next_action"])
         visit_shops = shops_df[shops_df["next_action"].str.startswith("Visit")]
@@ -1409,7 +1417,7 @@ def score_and_output(conn: sqlite3.Connection, run_id: str, run_date: str,
         email_rows = shops_df[
             shops_df["next_action"].str.contains("Email", na=False) &
             shops_df["draft_message"].astype(str).str.strip().ne("") &
-            ~shops_df.get("_is_replay", pd.Series(False, index=shops_df.index))
+            ~shops_df["_is_replay"]
         ]
         if len(email_rows):
             r = email_rows.iloc[0]
