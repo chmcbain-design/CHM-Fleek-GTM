@@ -1,526 +1,526 @@
 ﻿lead_id,store_name,contact_name,email,phone,city,country,stage,num_touches,next_action,due_date,assigned_bdr,last_touch_date,est_monthly_spend_gbp,_is_replay,city_cluster,draft_message,draft_source
-L0159,Camden Vault,Sven Petrov,svenpetrov39@gmail.com,+317011781216,Amsterdam,NL,Call Booked,3,Call: warm lead / confirm call,2026-06-22,,,5810.0,False,Day trip: Amsterdam (3 visits),"- Confirm they received our outreach re: Fleek
+L0159,Camden Vault,Sven Petrov,svenpetrov39@gmail.com,+317011781216,Amsterdam,NL,Call Booked,3,Call: warm lead / confirm call,2026-06-28,,,5810.0,False,Day trip: Amsterdam (3 visits),"- Confirm they received our outreach re: Fleek
 - Key ask: [rep: 1-2 sentences on Fleek value prop for their seller type]
 - Their context: Amsterdam: mention local angle
 - Proposed next step: [rep: trial consignment / follow-up email / visit date]",template
-L0258,Second Threads,Bea Bennett,,+313652691664,Amsterdam,NL,New Lead,5,Email: first touch,2026-06-22,Tomas,2026-01-10,4510.0,False,Day trip: Amsterdam (3 visits),"Subject: Fleek x Second Threads
+L0258,Second Threads,Bea Bennett,,+313652691664,Amsterdam,NL,New Lead,5,Email: first touch,2026-06-28,Tomas,2026-01-10,4510.0,False,Day trip: Amsterdam (3 visits),"Subject: Fleek x Second Threads
 
 Hi Bea Bennett,
 
 [rep: one-line intro on Fleek]. I came across Second Threads and thought it could be a great fit. Would you be open to a quick call to explore?
 
 [rep: your name]",template
-L0206,Atelier Loom,Ines Fischer,inesfischer52@gmail.com,+312318014119,Amsterdam,NL,New Lead,3,Email: first touch,2026-06-22,Maya,2026-01-28,4790.0,False,Day trip: Amsterdam (3 visits),"Subject: Fleek x Atelier Loom
+L0206,Atelier Loom,Ines Fischer,inesfischer52@gmail.com,+312318014119,Amsterdam,NL,New Lead,3,Email: first touch,2026-06-28,Maya,2026-01-28,4790.0,False,Day trip: Amsterdam (3 visits),"Subject: Fleek x Atelier Loom
 
 Hi Ines Fischer,
 
 Thanks for getting back to me. To answer your question: [rep: answer ""What's the fee structure?""]. Happy to set up a call to run through anything else.
 
 [rep: your name]",template
-L0229,Corner Trunk,Lukas Tanaka,lukastanaka@yahoo.com,+317553365298,Amsterdam,NL,Contacted,0,Email: first touch,2026-06-22,,2025-12-15,1840.0,False,Day trip: Amsterdam (3 visits),"Subject: Fleek x Corner Trunk
+L0229,Corner Trunk,Lukas Tanaka,lukastanaka@yahoo.com,+317553365298,Amsterdam,NL,Contacted,0,Email: first touch,2026-06-28,,2025-12-15,1840.0,False,Day trip: Amsterdam (3 visits),"Subject: Fleek x Corner Trunk
 
 Hi Lukas Tanaka,
 
 Thanks for getting back to me. To answer your question: [rep: answer ""Thanks, can you email a one-pager?""]. Happy to set up a call to run through anything else.
 
 [rep: your name]",template
-L0242,Velvet Trunk,Nadia Reid,nadiareid29@outlook.com,+312866892778,Amsterdam,NL,Warm,0,Email: first touch,2026-06-22,,,1730.0,False,Day trip: Amsterdam (3 visits),"Subject: Fleek x Velvet Trunk
+L0242,Velvet Trunk,Nadia Reid,nadiareid29@outlook.com,+312866892778,Amsterdam,NL,Warm,0,Email: first touch,2026-06-28,,,1730.0,False,Day trip: Amsterdam (3 visits),"Subject: Fleek x Velvet Trunk
 
 Hi Nadia Reid,
 
 [rep: one-line intro on Fleek]. I came across Velvet Trunk and thought it could be a great fit. Would you be open to a quick call to explore?
 
 [rep: your name]",template
-L0252,Rusty Wardrobe,Dmitri Rossi,shop@rustywardrobe.com,+315768362487,Amsterdam,NL,Contacted,4,Visit: email + call unanswered,2026-06-22,Tomas,2026-02-09,5170.0,False,Day trip: Amsterdam (3 visits),"- Confirm they received our outreach re: Fleek
+L0252,Rusty Wardrobe,Dmitri Rossi,shop@rustywardrobe.com,+315768362487,Amsterdam,NL,Contacted,4,Visit: email + call unanswered,2026-06-28,Tomas,2026-02-09,5170.0,False,Day trip: Amsterdam (3 visits),"- Confirm they received our outreach re: Fleek
 - Key ask: [rep: 1-2 sentences on Fleek value prop for their seller type]
 - Their context: Amsterdam: mention local angle
-- It's been 133d since last contact. Acknowledge the gap, ask if timing is better.
+- It's been 139d since last contact. Acknowledge the gap, ask if timing is better.
 - Proposed next step: [rep: trial consignment / follow-up email / visit date]",template
-L0215,Corner Bazaar,Raj Romano,info@cornerbazaar.store,+311925081201,Amsterdam,NL,Contacted,3,Visit: email + call unanswered,2026-06-22,Priya,2026-02-22,2520.0,False,Day trip: Amsterdam (3 visits),"- Confirm they received our outreach re: Fleek
+L0215,Corner Bazaar,Raj Romano,info@cornerbazaar.store,+311925081201,Amsterdam,NL,Contacted,3,Visit: email + call unanswered,2026-06-28,Priya,2026-02-22,2520.0,False,Day trip: Amsterdam (3 visits),"- Confirm they received our outreach re: Fleek
 - Key ask: [rep: 1-2 sentences on Fleek value prop for their seller type]
 - Their context: Amsterdam: mention local angle
-- It's been 120d since last contact. Acknowledge the gap, ask if timing is better.
+- It's been 126d since last contact. Acknowledge the gap, ask if timing is better.
 - Proposed next step: [rep: trial consignment / follow-up email / visit date]",template
-L0178,Golden Cellar,Zoe Petrov,shop@goldencellar.store,+319663623910,Amsterdam,NL,Ghosted,2,Visit: final re-engage attempt,2026-06-22,Priya,2026-01-19,5960.0,False,Day trip: Amsterdam (3 visits),"- Confirm they received our outreach re: Fleek
+L0178,Golden Cellar,Zoe Petrov,shop@goldencellar.store,+319663623910,Amsterdam,NL,Ghosted,2,Visit: final re-engage attempt,2026-06-28,Priya,2026-01-19,5960.0,False,Day trip: Amsterdam (3 visits),"- Confirm they received our outreach re: Fleek
 - Key ask: [rep: 1-2 sentences on Fleek value prop for their seller type]
 - Their context: Amsterdam: mention local angle
-- It's been 154d since last contact. Acknowledge the gap, ask if timing is better.
+- It's been 160d since last contact. Acknowledge the gap, ask if timing is better.
 - Proposed next step: [rep: trial consignment / follow-up email / visit date]",template
-L0158,Velvet Edit,Priya Silva,info@velvetedit.store,+498135200091,Berlin,DE,Call Booked,2,Call: warm lead / confirm call,2026-06-22,,2026-01-09,980.0,False,,"- Confirm they received our outreach re: Fleek
+L0158,Velvet Edit,Priya Silva,info@velvetedit.store,+498135200091,Berlin,DE,Call Booked,2,Call: warm lead / confirm call,2026-06-28,,2026-01-09,980.0,False,,"- Confirm they received our outreach re: Fleek
 - Key ask: [rep: 1-2 sentences on Fleek value prop for their seller type]
 - Their context: Berlin: mention local angle
-- It's been 164d since last contact. Acknowledge the gap, ask if timing is better.
+- It's been 170d since last contact. Acknowledge the gap, ask if timing is better.
 - Proposed next step: [rep: trial consignment / follow-up email / visit date]",template
-L0167,Rusty Edit,Pablo Okafor,info@rustyedit.store,+496659322961,Berlin,DE,Warm,6,Call: warm lead / confirm call,2026-06-22,Tomas,2026-02-18,1030.0,False,,"- Confirm they received our outreach re: Fleek
+L0167,Rusty Edit,Pablo Okafor,info@rustyedit.store,+496659322961,Berlin,DE,Warm,6,Call: warm lead / confirm call,2026-06-28,Tomas,2026-02-18,1030.0,False,,"- Confirm they received our outreach re: Fleek
 - Key ask: [rep: 1-2 sentences on Fleek value prop for their seller type]
 - Their context: Berlin: mention local angle
-- It's been 124d since last contact. Acknowledge the gap, ask if timing is better.
+- It's been 130d since last contact. Acknowledge the gap, ask if timing is better.
 - Proposed next step: [rep: trial consignment / follow-up email / visit date]",template
-L0195,Rusty Edit,Hugo Berg,hugoberg91@outlook.com,+496481002890,Berlin,DE,Call Booked,6,Call: warm lead / confirm call,2026-06-22,Priya,2026-02-27,3890.0,False,,"- Confirm they received our outreach re: Fleek
+L0195,Rusty Edit,Hugo Berg,hugoberg91@outlook.com,+496481002890,Berlin,DE,Call Booked,6,Call: warm lead / confirm call,2026-06-28,Priya,2026-02-27,3890.0,False,,"- Confirm they received our outreach re: Fleek
 - Key ask: [rep: 1-2 sentences on Fleek value prop for their seller type]
 - Their context: Berlin: mention local angle
-- It's been 115d since last contact. Acknowledge the gap, ask if timing is better.
+- It's been 121d since last contact. Acknowledge the gap, ask if timing is better.
 - Proposed next step: [rep: trial consignment / follow-up email / visit date]",template
-L0179,Velvet Emporium,Carlos Walsh,info@velvetemporium.com,,Berlin,DE,New Lead,3,Email: first touch,2026-06-22,Tomas,,2850.0,False,,"Subject: Fleek x Velvet Emporium
+L0179,Velvet Emporium,Carlos Walsh,info@velvetemporium.com,,Berlin,DE,New Lead,3,Email: first touch,2026-06-28,Tomas,,2850.0,False,,"Subject: Fleek x Velvet Emporium
 
 Hi Carlos Walsh,
 
 [rep: one-line intro on Fleek]. I came across Velvet Emporium and thought it could be a great fit. Would you be open to a quick call to explore?
 
 [rep: your name]",template
-L0241,Maison Vault,Elena Schmidt,elenaschmidt50@outlook.com,+494422144906,Berlin,DE,New Lead,3,Email: first touch,2026-06-22,Priya,2026-01-14,5420.0,False,,"Subject: Fleek x Maison Vault
+L0241,Maison Vault,Elena Schmidt,elenaschmidt50@outlook.com,+494422144906,Berlin,DE,New Lead,3,Email: first touch,2026-06-28,Priya,2026-01-14,5420.0,False,,"Subject: Fleek x Maison Vault
 
 Hi Elena Schmidt,
 
 [rep: one-line intro on Fleek]. I came across Maison Vault and thought it could be a great fit. Would you be open to a quick call to explore?
 
 [rep: your name]",template
-L0221,Found Vault,Theo Nguyen,theonguyen12@yahoo.com,+491787308973,Berlin,DE,Call Booked,0,Email: first touch,2026-06-22,Priya,,2580.0,False,,"Subject: Fleek x Found Vault
+L0221,Found Vault,Theo Nguyen,theonguyen12@yahoo.com,+491787308973,Berlin,DE,Call Booked,0,Email: first touch,2026-06-28,Priya,,2580.0,False,,"Subject: Fleek x Found Vault
 
 Hi Theo Nguyen,
 
 [rep: one-line intro on Fleek]. I came across Found Vault and thought it could be a great fit. Would you be open to a quick call to explore?
 
 [rep: your name]",template
-L0170,Camden Garms,Elena Hassan,elenahassan13@yahoo.com,+494893323395,Berlin,DE,Negotiating,3,Email: follow up on proposal,2026-06-22,Tomas,2026-02-23,1150.0,False,,"Subject: Fleek x Camden Garms
+L0170,Camden Garms,Elena Hassan,elenahassan13@yahoo.com,+494893323395,Berlin,DE,Negotiating,3,Email: follow up on proposal,2026-06-28,Tomas,2026-02-23,1150.0,False,,"Subject: Fleek x Camden Garms
 
 Hi Elena Hassan,
 
 It's been a while since we last spoke. Hope things are going well at Camden Garms. Reaching back out in case the timing is better now. [rep: brief Fleek value prop].
 
 [rep: your name]",template
-L0214,House of Wardrobe,Hugo Adebayo,shop@houseofwardrob.store,+493772397393,Berlin,DE,Replied,4,Email: reply to their message,2026-06-22,Priya,2026-02-04,4780.0,False,,"Subject: Fleek x House of Wardrobe
+L0214,House of Wardrobe,Hugo Adebayo,shop@houseofwardrob.store,+493772397393,Berlin,DE,Replied,4,Email: reply to their message,2026-06-28,Priya,2026-02-04,4780.0,False,,"Subject: Fleek x House of Wardrobe
 
 Hi Hugo Adebayo,
 
 Thanks for getting back to me. To answer your question: [rep: answer ""What's the fee structure?""]. Happy to set up a call to run through anything else.
 
 [rep: your name]",template
-L0202,Loft Collective,Nadia Nguyen,nadianguyen76@gmail.com,+497013495802,Berlin,DE,Ghosted,5,Visit: final re-engage attempt,2026-06-22,Priya,2026-02-21,2670.0,False,,"- Confirm they received our outreach re: Fleek
+L0202,Loft Collective,Nadia Nguyen,nadianguyen76@gmail.com,+497013495802,Berlin,DE,Ghosted,5,Visit: final re-engage attempt,2026-06-28,Priya,2026-02-21,2670.0,False,,"- Confirm they received our outreach re: Fleek
 - Key ask: [rep: 1-2 sentences on Fleek value prop for their seller type]
 - Their context: Berlin: mention local angle
-- It's been 121d since last contact. Acknowledge the gap, ask if timing is better.
+- It's been 127d since last contact. Acknowledge the gap, ask if timing is better.
 - Proposed next step: [rep: trial consignment / follow-up email / visit date]",template
-L0227,Loft Emporium,Zoe Marchetti,shop@loftemporium.co.uk,,Brighton,UK,Call Booked,6,Call: warm lead / confirm call,2026-06-22,Tomas,2026-02-24,2150.0,False,,"- Confirm they received our outreach re: Fleek
+L0227,Loft Emporium,Zoe Marchetti,shop@loftemporium.co.uk,,Brighton,UK,Call Booked,6,Call: warm lead / confirm call,2026-06-28,Tomas,2026-02-24,2150.0,False,,"- Confirm they received our outreach re: Fleek
 - Key ask: [rep: 1-2 sentences on Fleek value prop for their seller type]
 - Their context: Brighton: mention local angle
-- It's been 118d since last contact. Acknowledge the gap, ask if timing is better.
+- It's been 124d since last contact. Acknowledge the gap, ask if timing is better.
 - Proposed next step: [rep: trial consignment / follow-up email / visit date]",template
-L0212,Golden Lane,Sven Marchetti,info@goldenlane.com,07772893185,Brighton,UK,New Lead,3,Email: first touch,2026-06-22,,,4470.0,False,,"Subject: Fleek x Golden Lane
+L0212,Golden Lane,Sven Marchetti,info@goldenlane.com,07772893185,Brighton,UK,New Lead,3,Email: first touch,2026-06-28,,,4470.0,False,,"Subject: Fleek x Golden Lane
 
 Hi Sven Marchetti,
 
 [rep: one-line intro on Fleek]. I came across Golden Lane and thought it could be a great fit. Would you be open to a quick call to explore?
 
 [rep: your name]",template
-L0185,Brick Lane Closet,Zoe Lopez,shop@bricklaneclose.co.uk,,Brighton,UK,Negotiating,3,Email: follow up on proposal,2026-06-22,Priya,2026-01-22,860.0,False,,"Subject: Fleek x Brick Lane Closet
+L0185,Brick Lane Closet,Zoe Lopez,shop@bricklaneclose.co.uk,,Brighton,UK,Negotiating,3,Email: follow up on proposal,2026-06-28,Priya,2026-01-22,860.0,False,,"Subject: Fleek x Brick Lane Closet
 
 Hi Zoe Lopez,
 
 It's been a while since we last spoke. Hope things are going well at Brick Lane Closet. Reaching back out in case the timing is better now. [rep: brief Fleek value prop].
 
 [rep: your name]",template
-L0245,Blue Garms,Zoe Hassan,info@bluegarms.co.uk,07991883600,Brighton,UK,Negotiating,2,Email: follow up on proposal,2026-06-22,Priya,2026-01-09,1040.0,False,,"Subject: Fleek x Blue Garms
+L0245,Blue Garms,Zoe Hassan,info@bluegarms.co.uk,07991883600,Brighton,UK,Negotiating,2,Email: follow up on proposal,2026-06-28,Priya,2026-01-09,1040.0,False,,"Subject: Fleek x Blue Garms
 
 Hi Zoe Hassan,
 
 It's been a while since we last spoke. Hope things are going well at Blue Garms. Reaching back out in case the timing is better now. [rep: brief Fleek value prop].
 
 [rep: your name]",template
-L0218,Loft Threads,Freya Lopez,freyalopez@hotmail.com,7974367360,Brighton,UK,Replied,4,Email: reply to their message,2026-06-22,Tomas,2026-02-07,2930.0,False,,"Subject: Fleek x Loft Threads
+L0218,Loft Threads,Freya Lopez,freyalopez@hotmail.com,7974367360,Brighton,UK,Replied,4,Email: reply to their message,2026-06-28,Tomas,2026-02-07,2930.0,False,,"Subject: Fleek x Loft Threads
 
 Hi Freya Lopez,
 
 Thanks for getting back to me. To answer your question: [rep: answer ""Thanks, can you email a one-pager?""]. Happy to set up a call to run through anything else.
 
 [rep: your name]",template
-L0208,Corner Emporium,Nadia Andersson,nadiaandersson94@yahoo.com,,Brighton,UK,Replied,2,Email: reply to their message,2026-06-22,,2026-02-24,2990.0,False,,"Subject: Fleek x Corner Emporium
+L0208,Corner Emporium,Nadia Andersson,nadiaandersson94@yahoo.com,,Brighton,UK,Replied,2,Email: reply to their message,2026-06-28,,2026-02-24,2990.0,False,,"Subject: Fleek x Corner Emporium
 
 Hi Nadia Andersson,
 
 It's been a while since we last spoke. Hope things are going well at Corner Emporium. Reaching back out in case the timing is better now. [rep: brief Fleek value prop].
 
 [rep: your name]",template
-L0222,Corner Loom,Theo Reid,info@cornerloom.co.uk,7462639414,Brighton,UK,Replied,3,Email: reply to their message,2026-06-22,,2026-02-09,440.0,False,,"Subject: Fleek x Corner Loom
+L0222,Corner Loom,Theo Reid,info@cornerloom.co.uk,7462639414,Brighton,UK,Replied,3,Email: reply to their message,2026-06-28,,2026-02-09,440.0,False,,"Subject: Fleek x Corner Loom
 
 Hi Theo Reid,
 
 It's been a while since we last spoke. Hope things are going well at Corner Loom. Reaching back out in case the timing is better now. [rep: brief Fleek value prop].
 
 [rep: your name]",template
-L0205,Maison Trunk,Hugo Marchetti,hugomarchetti@outlook.com,+447400985349,Brighton,UK,Contacted,5,Visit: email + call unanswered,2026-06-22,Tomas,2026-01-23,2400.0,False,,"- Confirm they received our outreach re: Fleek
+L0205,Maison Trunk,Hugo Marchetti,hugomarchetti@outlook.com,+447400985349,Brighton,UK,Contacted,5,Visit: email + call unanswered,2026-06-28,Tomas,2026-01-23,2400.0,False,,"- Confirm they received our outreach re: Fleek
 - Key ask: [rep: 1-2 sentences on Fleek value prop for their seller type]
 - Their context: Brighton: mention local angle
-- It's been 150d since last contact. Acknowledge the gap, ask if timing is better.
+- It's been 156d since last contact. Acknowledge the gap, ask if timing is better.
 - Proposed next step: [rep: trial consignment / follow-up email / visit date]",template
-L0174,Second Collective,Lukas Walsh,lukaswalsh70@outlook.com,+447800705413,Bristol,UK,Replied,0,Email: first touch,2026-06-22,Maya,2026-02-14,4960.0,False,Day trip: Bristol (2 visits),"Subject: Fleek x Second Collective
+L0174,Second Collective,Lukas Walsh,lukaswalsh70@outlook.com,+447800705413,Bristol,UK,Replied,0,Email: first touch,2026-06-28,Maya,2026-02-14,4960.0,False,Day trip: Bristol (2 visits),"Subject: Fleek x Second Collective
 
 Hi Lukas Walsh,
 
 Thanks for getting back to me. To answer your question: [rep: answer ""What's the fee structure?""]. Happy to set up a call to run through anything else.
 
 [rep: your name]",template
-L0164,Golden Emporium,Hugo Kaur,hugokaur@yahoo.com,+447347656134,Bristol,UK,New Lead,1,Email: first touch,2026-06-22,,2026-02-15,1640.0,False,Day trip: Bristol (2 visits),"Subject: Fleek x Golden Emporium
+L0164,Golden Emporium,Hugo Kaur,hugokaur@yahoo.com,+447347656134,Bristol,UK,New Lead,1,Email: first touch,2026-06-28,,2026-02-15,1640.0,False,Day trip: Bristol (2 visits),"Subject: Fleek x Golden Emporium
 
 Hi Hugo Kaur,
 
 [rep: one-line intro on Fleek]. I came across Golden Emporium and thought it could be a great fit. Would you be open to a quick call to explore?
 
 [rep: your name]",template
-L0161,Maison Rail,Noah Fischer,info@maisonrail.com,+447237119418,Bristol,UK,Negotiating,6,Email: follow up on proposal,2026-06-22,,2026-02-26,3150.0,False,Day trip: Bristol (2 visits),"Subject: Fleek x Maison Rail
+L0161,Maison Rail,Noah Fischer,info@maisonrail.com,+447237119418,Bristol,UK,Negotiating,6,Email: follow up on proposal,2026-06-28,,2026-02-26,3150.0,False,Day trip: Bristol (2 visits),"Subject: Fleek x Maison Rail
 
 Hi Noah Fischer,
 
 It's been a while since we last spoke. Hope things are going well at Maison Rail. Reaching back out in case the timing is better now. [rep: brief Fleek value prop].
 
 [rep: your name]",template
-L0163,Blue Collective,Tom Park,,,Bristol,UK,Replied,6,Email: reply to their message,2026-06-22,,2026-02-17,610.0,False,Day trip: Bristol (2 visits),"Subject: Fleek x Blue Collective
+L0163,Blue Collective,Tom Park,,,Bristol,UK,Replied,6,Email: reply to their message,2026-06-28,,2026-02-17,610.0,False,Day trip: Bristol (2 visits),"Subject: Fleek x Blue Collective
 
 Hi Tom Park,
 
 It's been a while since we last spoke. Hope things are going well at Blue Collective. Reaching back out in case the timing is better now. [rep: brief Fleek value prop].
 
 [rep: your name]",template
-L0157,Atelier Drawer,Freya Janssen,freyajanssen@yahoo.com,0044784145620,Bristol,UK,Contacted,3,Visit: email + call unanswered,2026-06-22,Maya,2026-02-21,4360.0,False,Day trip: Bristol (2 visits),"- Confirm they received our outreach re: Fleek
+L0157,Atelier Drawer,Freya Janssen,freyajanssen@yahoo.com,0044784145620,Bristol,UK,Contacted,3,Visit: email + call unanswered,2026-06-28,Maya,2026-02-21,4360.0,False,Day trip: Bristol (2 visits),"- Confirm they received our outreach re: Fleek
 - Key ask: [rep: 1-2 sentences on Fleek value prop for their seller type]
 - Their context: Bristol: mention local angle
-- It's been 121d since last contact. Acknowledge the gap, ask if timing is better.
+- It's been 127d since last contact. Acknowledge the gap, ask if timing is better.
 - Proposed next step: [rep: trial consignment / follow-up email / visit date]",template
-L0156,Loft Lane,Lena Park,lenapark79@outlook.com,+447737683411,Bristol,UK,Ghosted,2,Visit: final re-engage attempt,2026-06-22,Maya,2026-01-05,2580.0,False,Day trip: Bristol (2 visits),"- Confirm they received our outreach re: Fleek
+L0156,Loft Lane,Lena Park,lenapark79@outlook.com,+447737683411,Bristol,UK,Ghosted,2,Visit: final re-engage attempt,2026-06-28,Maya,2026-01-05,2580.0,False,Day trip: Bristol (2 visits),"- Confirm they received our outreach re: Fleek
 - Key ask: [rep: 1-2 sentences on Fleek value prop for their seller type]
 - Their context: Bristol: mention local angle
-- It's been 168d since last contact. Acknowledge the gap, ask if timing is better.
+- It's been 174d since last contact. Acknowledge the gap, ask if timing is better.
 - Proposed next step: [rep: trial consignment / follow-up email / visit date]",template
-L0230,Second Garms,James Weber,info@secondgarms.co.uk,+16169161729,LA,US,Warm,5,Call: warm lead / confirm call,2026-06-22,,2026-02-21,2790.0,False,,"- Confirm they received our outreach re: Fleek
+L0230,Second Garms,James Weber,info@secondgarms.co.uk,+16169161729,LA,US,Warm,5,Call: warm lead / confirm call,2026-06-28,,2026-02-21,2790.0,False,,"- Confirm they received our outreach re: Fleek
 - Address their question first: [rep: answer ""Thanks, can you email a one-pager?""]
 - Key ask: [rep: 1-2 sentences on Fleek value prop for their seller type]
 - Their context: LA: mention local angle
-- It's been 121d since last contact. Acknowledge the gap, ask if timing is better.
+- It's been 127d since last contact. Acknowledge the gap, ask if timing is better.
 - Proposed next step: [rep: trial consignment / follow-up email / visit date]",template
-L0256,Rusty Cellar,Raj Novak,shop@rustycellar.store,+16208071959,LA,US,New Lead,3,Email: first touch,2026-06-22,Priya,2025-12-27,5090.0,False,,"Subject: Fleek x Rusty Cellar
+L0256,Rusty Cellar,Raj Novak,shop@rustycellar.store,+16208071959,LA,US,New Lead,3,Email: first touch,2026-06-28,Priya,2025-12-27,5090.0,False,,"Subject: Fleek x Rusty Cellar
 
 Hi Raj Novak,
 
 [rep: one-line intro on Fleek]. I came across Rusty Cellar and thought it could be a great fit. Would you be open to a quick call to explore?
 
 [rep: your name]",template
-L0210,Old Collective,James Park,info@oldcollective.store,+18783983612,LA,US,New Lead,1,Email: first touch,2026-06-22,Maya,,5190.0,False,,"Subject: Fleek x Old Collective
+L0210,Old Collective,James Park,info@oldcollective.store,+18783983612,LA,US,New Lead,1,Email: first touch,2026-06-28,Maya,,5190.0,False,,"Subject: Fleek x Old Collective
 
 Hi James Park,
 
 [rep: one-line intro on Fleek]. I came across Old Collective and thought it could be a great fit. Would you be open to a quick call to explore?
 
 [rep: your name]",template
-L0168,Rusty Edit,Yuki Silva,hello@rustyedit.com,+19027833017,LA,US,New Lead,1,Email: first touch,2026-06-22,,,2720.0,False,,"Subject: Fleek x Rusty Edit
+L0168,Rusty Edit,Yuki Silva,hello@rustyedit.com,+19027833017,LA,US,New Lead,1,Email: first touch,2026-06-28,,,2720.0,False,,"Subject: Fleek x Rusty Edit
 
 Hi Yuki Silva,
 
 [rep: one-line intro on Fleek]. I came across Rusty Edit and thought it could be a great fit. Would you be open to a quick call to explore?
 
 [rep: your name]",template
-L0191,Old Rail,Mia Romano,miaromano@outlook.com,+18038993664,LA,US,Call Booked,0,Email: first touch,2026-06-22,Priya,2026-02-23,5610.0,False,,"Subject: Fleek x Old Rail
+L0191,Old Rail,Mia Romano,miaromano@outlook.com,+18038993664,LA,US,Call Booked,0,Email: first touch,2026-06-28,Priya,2026-02-23,5610.0,False,,"Subject: Fleek x Old Rail
 
 Hi Mia Romano,
 
 Thanks for getting back to me. To answer your question: [rep: answer ""Thanks, can you email a one-pager?""]. Happy to set up a call to run through anything else.
 
 [rep: your name]",template
-L0211,Second Society,Aisha Costa,aishacosta79@outlook.com,+12608084195,LA,US,Negotiating,6,Email: follow up on proposal,2026-06-22,,2026-02-21,2760.0,False,,"Subject: Fleek x Second Society
+L0211,Second Society,Aisha Costa,aishacosta79@outlook.com,+12608084195,LA,US,Negotiating,6,Email: follow up on proposal,2026-06-28,,2026-02-21,2760.0,False,,"Subject: Fleek x Second Society
 
 Hi Aisha Costa,
 
 It's been a while since we last spoke. Hope things are going well at Second Society. Reaching back out in case the timing is better now. [rep: brief Fleek value prop].
 
 [rep: your name]",template
-L0224,Past Cellar,Tom Berg,tomberg@outlook.com,+13948899136,LA,US,Replied,5,Email: reply to their message,2026-06-22,,2025-12-18,5150.0,False,,"Subject: Fleek x Past Cellar
+L0224,Past Cellar,Tom Berg,tomberg@outlook.com,+13948899136,LA,US,Replied,5,Email: reply to their message,2026-06-28,,2025-12-18,5150.0,False,,"Subject: Fleek x Past Cellar
 
 Hi Tom Berg,
 
 It's been a while since we last spoke. Hope things are going well at Past Cellar. Reaching back out in case the timing is better now. [rep: brief Fleek value prop].
 
 [rep: your name]",template
-L0260,Vintage Closet,Noah Silva,,+14052154527,LA,US,Replied,2,Email: reply to their message,2026-06-22,,2026-01-19,2860.0,False,,"Subject: Fleek x Vintage Closet
+L0260,Vintage Closet,Noah Silva,,+14052154527,LA,US,Replied,2,Email: reply to their message,2026-06-28,,2026-01-19,2860.0,False,,"Subject: Fleek x Vintage Closet
 
 Hi Noah Silva,
 
 It's been a while since we last spoke. Hope things are going well at Vintage Closet. Reaching back out in case the timing is better now. [rep: brief Fleek value prop].
 
 [rep: your name]",template
-L0203,Past Cellar,Greta Reid,info@pastcellar.store,,Leeds,UK,Warm,3,Call: warm lead / confirm call,2026-06-22,,2026-02-27,410.0,False,Day trip: Leeds (2 visits),"- Confirm they received our outreach re: Fleek
+L0203,Past Cellar,Greta Reid,info@pastcellar.store,,Leeds,UK,Warm,3,Call: warm lead / confirm call,2026-06-28,,2026-02-27,410.0,False,Day trip: Leeds (2 visits),"- Confirm they received our outreach re: Fleek
 - Key ask: [rep: 1-2 sentences on Fleek value prop for their seller type]
 - Their context: Leeds: mention local angle
-- It's been 115d since last contact. Acknowledge the gap, ask if timing is better.
+- It's been 121d since last contact. Acknowledge the gap, ask if timing is better.
 - Proposed next step: [rep: trial consignment / follow-up email / visit date]",template
-L0259,Past Lane,Aisha Okafor,hello@pastlane.co.uk,07473285162,Leeds,UK,New Lead,5,Email: first touch,2026-06-22,,2025-12-19,4580.0,False,Day trip: Leeds (2 visits),"Subject: Fleek x Past Lane
+L0259,Past Lane,Aisha Okafor,hello@pastlane.co.uk,07473285162,Leeds,UK,New Lead,5,Email: first touch,2026-06-28,,2025-12-19,4580.0,False,Day trip: Leeds (2 visits),"Subject: Fleek x Past Lane
 
 Hi Aisha Okafor,
 
 [rep: one-line intro on Fleek]. I came across Past Lane and thought it could be a great fit. Would you be open to a quick call to explore?
 
 [rep: your name]",template
-L0200,Found Bazaar,Zoe Fischer,zoefischer86@yahoo.com,0044725195903,Leeds,UK,New Lead,3,Email: first touch,2026-06-22,,2026-02-09,1560.0,False,Day trip: Leeds (2 visits),"Subject: Fleek x Found Bazaar
+L0200,Found Bazaar,Zoe Fischer,zoefischer86@yahoo.com,0044725195903,Leeds,UK,New Lead,3,Email: first touch,2026-06-28,,2026-02-09,1560.0,False,Day trip: Leeds (2 visits),"Subject: Fleek x Found Bazaar
 
 Hi Zoe Fischer,
 
 Thanks for getting back to me. To answer your question: [rep: answer ""Thanks, can you email a one-pager?""]. Happy to set up a call to run through anything else.
 
 [rep: your name]",template
-L0183,Old Lane,James Marchetti,jamesmarchetti8@gmail.com,0044754231500,Leeds,UK,New Lead,6,Email: first touch,2026-06-22,Priya,2026-02-02,5640.0,False,Day trip: Leeds (2 visits),"Subject: Fleek x Old Lane
+L0183,Old Lane,James Marchetti,jamesmarchetti8@gmail.com,0044754231500,Leeds,UK,New Lead,6,Email: first touch,2026-06-28,Priya,2026-02-02,5640.0,False,Day trip: Leeds (2 visits),"Subject: Fleek x Old Lane
 
 Hi James Marchetti,
 
 [rep: one-line intro on Fleek]. I came across Old Lane and thought it could be a great fit. Would you be open to a quick call to explore?
 
 [rep: your name]",template
-L0204,House of Drawer,Liam Tanaka,liamtanaka75@hotmail.com,+447809816692,Leeds,UK,Contacted,1,Visit: email + call unanswered,2026-06-22,Maya,2026-02-18,5270.0,False,Day trip: Leeds (2 visits),"- Confirm they received our outreach re: Fleek
+L0204,House of Drawer,Liam Tanaka,liamtanaka75@hotmail.com,+447809816692,Leeds,UK,Contacted,1,Visit: email + call unanswered,2026-06-28,Maya,2026-02-18,5270.0,False,Day trip: Leeds (2 visits),"- Confirm they received our outreach re: Fleek
 - Key ask: [rep: 1-2 sentences on Fleek value prop for their seller type]
 - Their context: Leeds: mention local angle
+- It's been 130d since last contact. Acknowledge the gap, ask if timing is better.
+- Proposed next step: [rep: trial consignment / follow-up email / visit date]",template
+L0172,Camden Society,Felix Walsh,hello@camdensociety.store,0044712652037,Leeds,UK,Ghosted,6,Visit: final re-engage attempt,2026-06-28,,2026-01-11,2440.0,False,Day trip: Leeds (2 visits),"- Confirm they received our outreach re: Fleek
+- Key ask: [rep: 1-2 sentences on Fleek value prop for their seller type]
+- Their context: Leeds: mention local angle
+- It's been 168d since last contact. Acknowledge the gap, ask if timing is better.
+- Proposed next step: [rep: trial consignment / follow-up email / visit date]",template
+L0233,The Collective,Priya Tanaka,shop@thecollective.com,07182574459,London,UK,Warm,3,Call: warm lead / confirm call,2026-06-28,Priya,2026-02-22,880.0,False,,"- Confirm they received our outreach re: Fleek
+- Key ask: [rep: 1-2 sentences on Fleek value prop for their seller type]
+- Their context: London: mention local angle
+- It's been 126d since last contact. Acknowledge the gap, ask if timing is better.
+- Proposed next step: [rep: trial consignment / follow-up email / visit date]",template
+L0235,Brick Lane Threads,Cora Khan,corakhan27@yahoo.com,07965352784,London,UK,Warm,6,Call: warm lead / confirm call,2026-06-28,Priya,2026-02-24,5660.0,False,,"- Confirm they received our outreach re: Fleek
+- Key ask: [rep: 1-2 sentences on Fleek value prop for their seller type]
+- Their context: London: mention local angle
 - It's been 124d since last contact. Acknowledge the gap, ask if timing is better.
 - Proposed next step: [rep: trial consignment / follow-up email / visit date]",template
-L0172,Camden Society,Felix Walsh,hello@camdensociety.store,0044712652037,Leeds,UK,Ghosted,6,Visit: final re-engage attempt,2026-06-22,,2026-01-11,2440.0,False,Day trip: Leeds (2 visits),"- Confirm they received our outreach re: Fleek
-- Key ask: [rep: 1-2 sentences on Fleek value prop for their seller type]
-- Their context: Leeds: mention local angle
-- It's been 162d since last contact. Acknowledge the gap, ask if timing is better.
-- Proposed next step: [rep: trial consignment / follow-up email / visit date]",template
-L0233,The Collective,Priya Tanaka,shop@thecollective.com,07182574459,London,UK,Warm,3,Call: warm lead / confirm call,2026-06-22,Priya,2026-02-22,880.0,False,,"- Confirm they received our outreach re: Fleek
-- Key ask: [rep: 1-2 sentences on Fleek value prop for their seller type]
-- Their context: London: mention local angle
-- It's been 120d since last contact. Acknowledge the gap, ask if timing is better.
-- Proposed next step: [rep: trial consignment / follow-up email / visit date]",template
-L0235,Brick Lane Threads,Cora Khan,corakhan27@yahoo.com,07965352784,London,UK,Warm,6,Call: warm lead / confirm call,2026-06-22,Priya,2026-02-24,5660.0,False,,"- Confirm they received our outreach re: Fleek
-- Key ask: [rep: 1-2 sentences on Fleek value prop for their seller type]
-- Their context: London: mention local angle
-- It's been 118d since last contact. Acknowledge the gap, ask if timing is better.
-- Proposed next step: [rep: trial consignment / follow-up email / visit date]",template
-L0213,Second Threads,Pablo Novak,shop@secondthreads.com,,London,UK,New Lead,0,Email: first touch,2026-06-22,,2026-02-28,3100.0,False,,"Subject: Fleek x Second Threads
+L0213,Second Threads,Pablo Novak,shop@secondthreads.com,,London,UK,New Lead,0,Email: first touch,2026-06-28,,2026-02-28,3100.0,False,,"Subject: Fleek x Second Threads
 
 Hi Pablo Novak,
 
 [rep: one-line intro on Fleek]. I came across Second Threads and thought it could be a great fit. Would you be open to a quick call to explore?
 
 [rep: your name]",template
-L0155,The Exchange,Ines Schmidt,hello@theexchange.com,+447618213574,London,UK,Ghosted,0,Email: first touch,2026-06-22,,2026-01-23,4140.0,False,,"Subject: Fleek x The Exchange
+L0155,The Exchange,Ines Schmidt,hello@theexchange.com,+447618213574,London,UK,Ghosted,0,Email: first touch,2026-06-28,,2026-01-23,4140.0,False,,"Subject: Fleek x The Exchange
 
 Hi Ines Schmidt,
 
 [rep: one-line intro on Fleek]. I came across The Exchange and thought it could be a great fit. Would you be open to a quick call to explore?
 
 [rep: your name]",template
-L0199,Vintage Lane,Zoe Park,zoepark33@outlook.com,7491870177,London,UK,Negotiating,2,Email: follow up on proposal,2026-06-22,Maya,2026-02-10,1240.0,False,,"Subject: Fleek x Vintage Lane
+L0199,Vintage Lane,Zoe Park,zoepark33@outlook.com,7491870177,London,UK,Negotiating,2,Email: follow up on proposal,2026-06-28,Maya,2026-02-10,1240.0,False,,"Subject: Fleek x Vintage Lane
 
 Hi Zoe Park,
 
 It's been a while since we last spoke. Hope things are going well at Vintage Lane. Reaching back out in case the timing is better now. [rep: brief Fleek value prop].
 
 [rep: your name]",template
-L0184,Velvet Lane,Lukas Weber,,+447263875852,London,UK,Ghosted,3,Email: re-engagement (last attempt),2026-06-22,Tomas,2026-01-31,1920.0,False,,"Subject: Fleek x Velvet Lane
+L0184,Velvet Lane,Lukas Weber,,+447263875852,London,UK,Ghosted,3,Email: re-engagement (last attempt),2026-06-28,Tomas,2026-01-31,1920.0,False,,"Subject: Fleek x Velvet Lane
 
 Hi Lukas Weber,
 
 It's been a while since we last spoke. Hope things are going well at Velvet Lane. Reaching back out in case the timing is better now. [rep: brief Fleek value prop].
 
 [rep: your name]",template
-L0220,Second Closet,Zoe Kaur,shop@secondcloset.store,7788153901,London,UK,Ghosted,5,Email: re-engagement (last attempt),2026-06-22,,2026-01-16,5510.0,False,,"Subject: Fleek x Second Closet
+L0220,Second Closet,Zoe Kaur,shop@secondcloset.store,7788153901,London,UK,Ghosted,5,Email: re-engagement (last attempt),2026-06-28,,2026-01-16,5510.0,False,,"Subject: Fleek x Second Closet
 
 Hi Zoe Kaur,
 
 It's been a while since we last spoke. Hope things are going well at Second Closet. Reaching back out in case the timing is better now. [rep: brief Fleek value prop].
 
 [rep: your name]",template
-L0209,Corner Trunk,Marcus Cohen,info@cornertrunk.co.uk,+447916949092,Manchester,UK,Warm,3,Call: warm lead / confirm call,2026-06-22,Tomas,,5600.0,False,Day trip: Manchester (4 visits),"- Confirm they received our outreach re: Fleek
+L0209,Corner Trunk,Marcus Cohen,info@cornertrunk.co.uk,+447916949092,Manchester,UK,Warm,3,Call: warm lead / confirm call,2026-06-28,Tomas,,5600.0,False,Day trip: Manchester (4 visits),"- Confirm they received our outreach re: Fleek
 - Key ask: [rep: 1-2 sentences on Fleek value prop for their seller type]
 - Their context: Manchester: mention local angle
 - Proposed next step: [rep: trial consignment / follow-up email / visit date]",template
-L0244,The Vault,Marcus Lopez,marcuslopez35@gmail.com,+334097319885,Manchester,UK,New Lead,0,Email: first touch,2026-06-22,Priya,2026-02-28,990.0,False,Day trip: Manchester (4 visits),"Subject: Fleek x The Vault
+L0244,The Vault,Marcus Lopez,marcuslopez35@gmail.com,+334097319885,Manchester,UK,New Lead,0,Email: first touch,2026-06-28,Priya,2026-02-28,990.0,False,Day trip: Manchester (4 visits),"Subject: Fleek x The Vault
 
 Hi Marcus Lopez,
 
 [rep: one-line intro on Fleek]. I came across The Vault and thought it could be a great fit. Would you be open to a quick call to explore?
 
 [rep: your name]",template
-L0197,Corner Loom,Yuki Tanaka,hello@cornerloom.com,+447524968605,Manchester,UK,New Lead,5,Email: first touch,2026-06-22,Tomas,2026-02-15,3980.0,False,Day trip: Manchester (4 visits),"Subject: Fleek x Corner Loom
+L0197,Corner Loom,Yuki Tanaka,hello@cornerloom.com,+447524968605,Manchester,UK,New Lead,5,Email: first touch,2026-06-28,Tomas,2026-02-15,3980.0,False,Day trip: Manchester (4 visits),"Subject: Fleek x Corner Loom
 
 Hi Yuki Tanaka,
 
 Thanks for getting back to me. To answer your question: [rep: answer ""Thanks, can you email a one-pager?""]. Happy to set up a call to run through anything else.
 
 [rep: your name]",template
-L0225,Camden Loom,Zoe Moreau,zoemoreau64@gmail.com,0044775728317,Manchester,UK,Negotiating,0,Email: first touch,2026-06-22,Tomas,2026-01-19,5930.0,False,Day trip: Manchester (4 visits),"Subject: Fleek x Camden Loom
+L0225,Camden Loom,Zoe Moreau,zoemoreau64@gmail.com,0044775728317,Manchester,UK,Negotiating,0,Email: first touch,2026-06-28,Tomas,2026-01-19,5930.0,False,Day trip: Manchester (4 visits),"Subject: Fleek x Camden Loom
 
 Hi Zoe Moreau,
 
 Thanks for getting back to me. To answer your question: [rep: answer ""Thanks, can you email a one-pager?""]. Happy to set up a call to run through anything else.
 
 [rep: your name]",template
-L0186,Past Edit,Carlos Hassan,info@pastedit.co.uk,+447544203406,Manchester,UK,Negotiating,2,Email: follow up on proposal,2026-06-22,,2026-01-30,2100.0,False,Day trip: Manchester (4 visits),"Subject: Fleek x Past Edit
+L0186,Past Edit,Carlos Hassan,info@pastedit.co.uk,+447544203406,Manchester,UK,Negotiating,2,Email: follow up on proposal,2026-06-28,,2026-01-30,2100.0,False,Day trip: Manchester (4 visits),"Subject: Fleek x Past Edit
 
 Hi Carlos Hassan,
 
 It's been a while since we last spoke. Hope things are going well at Past Edit. Reaching back out in case the timing is better now. [rep: brief Fleek value prop].
 
 [rep: your name]",template
-L0160,Found Exchange,Tom Bennett,hello@foundexchange.com,0044766005300,Manchester,UK,Negotiating,3,Email: follow up on proposal,2026-06-22,,2026-02-03,4720.0,False,Day trip: Manchester (4 visits),"Subject: Fleek x Found Exchange
+L0160,Found Exchange,Tom Bennett,hello@foundexchange.com,0044766005300,Manchester,UK,Negotiating,3,Email: follow up on proposal,2026-06-28,,2026-02-03,4720.0,False,Day trip: Manchester (4 visits),"Subject: Fleek x Found Exchange
 
 Hi Tom Bennett,
 
 It's been a while since we last spoke. Hope things are going well at Found Exchange. Reaching back out in case the timing is better now. [rep: brief Fleek value prop].
 
 [rep: your name]",template
-L0175,Loft Cellar,Priya Fischer,shop@loftcellar.com,0044785719596,Manchester,UK,Ghosted,4,Visit: final re-engage attempt,2026-06-22,,,860.0,False,Day trip: Manchester (4 visits),"- Confirm they received our outreach re: Fleek
+L0175,Loft Cellar,Priya Fischer,shop@loftcellar.com,0044785719596,Manchester,UK,Ghosted,4,Visit: final re-engage attempt,2026-06-28,,,860.0,False,Day trip: Manchester (4 visits),"- Confirm they received our outreach re: Fleek
 - Key ask: [rep: 1-2 sentences on Fleek value prop for their seller type]
 - Their context: Manchester: mention local angle
 - Proposed next step: [rep: trial consignment / follow-up email / visit date]",template
-L0153,Brick Lane Bazaar,Marta Schmidt,martaschmidt75@outlook.com,+447519325528,Manchester,UK,Ghosted,6,Visit: final re-engage attempt,2026-06-22,Maya,2025-12-30,3430.0,False,Day trip: Manchester (4 visits),"- Confirm they received our outreach re: Fleek
+L0153,Brick Lane Bazaar,Marta Schmidt,martaschmidt75@outlook.com,+447519325528,Manchester,UK,Ghosted,6,Visit: final re-engage attempt,2026-06-28,Maya,2025-12-30,3430.0,False,Day trip: Manchester (4 visits),"- Confirm they received our outreach re: Fleek
 - Key ask: [rep: 1-2 sentences on Fleek value prop for their seller type]
 - Their context: Manchester: mention local angle
-- It's been 174d since last contact. Acknowledge the gap, ask if timing is better.
+- It's been 180d since last contact. Acknowledge the gap, ask if timing is better.
 - Proposed next step: [rep: trial consignment / follow-up email / visit date]",template
-L0169,Found Loom,Marcus Silva,marcussilva93@outlook.com,0044783305446,Manchester,UK,Ghosted,3,Visit: final re-engage attempt,2026-06-22,Priya,2026-02-24,490.0,False,Day trip: Manchester (4 visits),"- Confirm they received our outreach re: Fleek
-- Key ask: [rep: 1-2 sentences on Fleek value prop for their seller type]
-- Their context: Manchester: mention local angle
-- It's been 118d since last contact. Acknowledge the gap, ask if timing is better.
-- Proposed next step: [rep: trial consignment / follow-up email / visit date]",template
-L0190,Maison Garms,Elena Reid,elenareid@gmail.com,+447786468104,Manchester,UK,Ghosted,6,Visit: final re-engage attempt,2026-06-22,Maya,2026-02-18,5260.0,False,Day trip: Manchester (4 visits),"- Confirm they received our outreach re: Fleek
+L0169,Found Loom,Marcus Silva,marcussilva93@outlook.com,0044783305446,Manchester,UK,Ghosted,3,Visit: final re-engage attempt,2026-06-28,Priya,2026-02-24,490.0,False,Day trip: Manchester (4 visits),"- Confirm they received our outreach re: Fleek
 - Key ask: [rep: 1-2 sentences on Fleek value prop for their seller type]
 - Their context: Manchester: mention local angle
 - It's been 124d since last contact. Acknowledge the gap, ask if timing is better.
 - Proposed next step: [rep: trial consignment / follow-up email / visit date]",template
-L0232,Retro Wardrobe,Liam Kaur,,+15477363339,New York,US,Warm,2,Call: warm lead / confirm call,2026-06-22,Maya,2026-01-29,1810.0,False,Day trip: New York (4 visits),"- Confirm they received our outreach re: Fleek
+L0190,Maison Garms,Elena Reid,elenareid@gmail.com,+447786468104,Manchester,UK,Ghosted,6,Visit: final re-engage attempt,2026-06-28,Maya,2026-02-18,5260.0,False,Day trip: Manchester (4 visits),"- Confirm they received our outreach re: Fleek
+- Key ask: [rep: 1-2 sentences on Fleek value prop for their seller type]
+- Their context: Manchester: mention local angle
+- It's been 130d since last contact. Acknowledge the gap, ask if timing is better.
+- Proposed next step: [rep: trial consignment / follow-up email / visit date]",template
+L0232,Retro Wardrobe,Liam Kaur,,+15477363339,New York,US,Warm,2,Call: warm lead / confirm call,2026-06-28,Maya,2026-01-29,1810.0,False,Day trip: New York (4 visits),"- Confirm they received our outreach re: Fleek
 - Address their question first: [rep: answer ""Thanks, can you email a one-pager?""]
 - Key ask: [rep: 1-2 sentences on Fleek value prop for their seller type]
 - Their context: New York: mention local angle
-- It's been 144d since last contact. Acknowledge the gap, ask if timing is better.
+- It's been 150d since last contact. Acknowledge the gap, ask if timing is better.
 - Proposed next step: [rep: trial consignment / follow-up email / visit date]",template
-L0228,Second Trunk,Zoe Janssen,hello@secondtrunk.store,+16465543766,New York,US,Call Booked,6,Call: warm lead / confirm call,2026-06-22,,2026-02-15,4670.0,False,Day trip: New York (4 visits),"- Confirm they received our outreach re: Fleek
+L0228,Second Trunk,Zoe Janssen,hello@secondtrunk.store,+16465543766,New York,US,Call Booked,6,Call: warm lead / confirm call,2026-06-28,,2026-02-15,4670.0,False,Day trip: New York (4 visits),"- Confirm they received our outreach re: Fleek
 - Key ask: [rep: 1-2 sentences on Fleek value prop for their seller type]
 - Their context: New York: mention local angle
-- It's been 127d since last contact. Acknowledge the gap, ask if timing is better.
+- It's been 133d since last contact. Acknowledge the gap, ask if timing is better.
 - Proposed next step: [rep: trial consignment / follow-up email / visit date]",template
-L0182,Camden Cellar,Freya Fischer,shop@camdencellar.com,+18923546663,New York,US,New Lead,5,Email: first touch,2026-06-22,,,4420.0,False,Day trip: New York (4 visits),"Subject: Fleek x Camden Cellar
+L0182,Camden Cellar,Freya Fischer,shop@camdencellar.com,+18923546663,New York,US,New Lead,5,Email: first touch,2026-06-28,,,4420.0,False,Day trip: New York (4 visits),"Subject: Fleek x Camden Cellar
 
 Hi Freya Fischer,
 
 [rep: one-line intro on Fleek]. I came across Camden Cellar and thought it could be a great fit. Would you be open to a quick call to explore?
 
 [rep: your name]",template
-L0234,Blue Vault,Aisha Nguyen,hello@bluevault.store,+16944301212,New York,US,New Lead,1,Email: first touch,2026-06-22,Maya,,3730.0,False,Day trip: New York (4 visits),"Subject: Fleek x Blue Vault
+L0234,Blue Vault,Aisha Nguyen,hello@bluevault.store,+16944301212,New York,US,New Lead,1,Email: first touch,2026-06-28,Maya,,3730.0,False,Day trip: New York (4 visits),"Subject: Fleek x Blue Vault
 
 Hi Aisha Nguyen,
 
 [rep: one-line intro on Fleek]. I came across Blue Vault and thought it could be a great fit. Would you be open to a quick call to explore?
 
 [rep: your name]",template
-L0193,House of Collective,Priya Berg,priyaberg@outlook.com,+13371436821,New York,US,Contacted,3,Visit: email + call unanswered,2026-06-22,,2026-01-03,1890.0,False,Day trip: New York (4 visits),"- Confirm they received our outreach re: Fleek
+L0193,House of Collective,Priya Berg,priyaberg@outlook.com,+13371436821,New York,US,Contacted,3,Visit: email + call unanswered,2026-06-28,,2026-01-03,1890.0,False,Day trip: New York (4 visits),"- Confirm they received our outreach re: Fleek
 - Key ask: [rep: 1-2 sentences on Fleek value prop for their seller type]
 - Their context: New York: mention local angle
-- It's been 170d since last contact. Acknowledge the gap, ask if timing is better.
+- It's been 176d since last contact. Acknowledge the gap, ask if timing is better.
 - Proposed next step: [rep: trial consignment / follow-up email / visit date]",template
-L0255,Velvet Trunk,Omar Petrov,omarpetrov@gmail.com,+15561482584,New York,US,Contacted,1,Visit: email + call unanswered,2026-06-22,,2026-02-19,700.0,False,Day trip: New York (4 visits),"- Confirm they received our outreach re: Fleek
+L0255,Velvet Trunk,Omar Petrov,omarpetrov@gmail.com,+15561482584,New York,US,Contacted,1,Visit: email + call unanswered,2026-06-28,,2026-02-19,700.0,False,Day trip: New York (4 visits),"- Confirm they received our outreach re: Fleek
 - Key ask: [rep: 1-2 sentences on Fleek value prop for their seller type]
 - Their context: New York: mention local angle
-- It's been 123d since last contact. Acknowledge the gap, ask if timing is better.
+- It's been 129d since last contact. Acknowledge the gap, ask if timing is better.
 - Proposed next step: [rep: trial consignment / follow-up email / visit date]",template
-L0226,Brick Lane Closet,Yuki Park,info@bricklaneclose.co.uk,+11389584195,New York,US,Ghosted,5,Visit: final re-engage attempt,2026-06-22,,2026-01-05,5200.0,False,Day trip: New York (4 visits),"- Confirm they received our outreach re: Fleek
+L0226,Brick Lane Closet,Yuki Park,info@bricklaneclose.co.uk,+11389584195,New York,US,Ghosted,5,Visit: final re-engage attempt,2026-06-28,,2026-01-05,5200.0,False,Day trip: New York (4 visits),"- Confirm they received our outreach re: Fleek
 - Key ask: [rep: 1-2 sentences on Fleek value prop for their seller type]
 - Their context: New York: mention local angle
-- It's been 168d since last contact. Acknowledge the gap, ask if timing is better.
+- It's been 174d since last contact. Acknowledge the gap, ask if timing is better.
 - Proposed next step: [rep: trial consignment / follow-up email / visit date]",template
-L0217,Golden Wardrobe,Raj Murphy,rajmurphy@outlook.com,+18229051272,New York,US,Ghosted,3,Visit: final re-engage attempt,2026-06-22,Priya,2026-02-22,4920.0,False,Day trip: New York (4 visits),"- Confirm they received our outreach re: Fleek
+L0217,Golden Wardrobe,Raj Murphy,rajmurphy@outlook.com,+18229051272,New York,US,Ghosted,3,Visit: final re-engage attempt,2026-06-28,Priya,2026-02-22,4920.0,False,Day trip: New York (4 visits),"- Confirm they received our outreach re: Fleek
 - Key ask: [rep: 1-2 sentences on Fleek value prop for their seller type]
 - Their context: New York: mention local angle
-- It's been 120d since last contact. Acknowledge the gap, ask if timing is better.
+- It's been 126d since last contact. Acknowledge the gap, ask if timing is better.
 - Proposed next step: [rep: trial consignment / follow-up email / visit date]",template
-L0180,Old Collective,Marta Rossi,martarossi83@gmail.com,,Paris,FR,Contacted,1,Call: no reply to email,2026-06-22,Priya,2026-02-24,1460.0,False,Day trip: Paris (3 visits),"- Confirm they received our outreach re: Fleek
+L0180,Old Collective,Marta Rossi,martarossi83@gmail.com,,Paris,FR,Contacted,1,Call: no reply to email,2026-06-28,Priya,2026-02-24,1460.0,False,Day trip: Paris (3 visits),"- Confirm they received our outreach re: Fleek
 - Key ask: [rep: 1-2 sentences on Fleek value prop for their seller type]
 - Their context: Paris: mention local angle
-- It's been 118d since last contact. Acknowledge the gap, ask if timing is better.
+- It's been 124d since last contact. Acknowledge the gap, ask if timing is better.
 - Proposed next step: [rep: trial consignment / follow-up email / visit date]",template
-L0239,The Rail,Tom Tanaka,,+335745010661,Paris,FR,Contacted,0,Email: first touch,2026-06-22,,2026-01-23,3610.0,False,Day trip: Paris (3 visits),"Subject: Fleek x The Rail
+L0239,The Rail,Tom Tanaka,,+335745010661,Paris,FR,Contacted,0,Email: first touch,2026-06-28,,2026-01-23,3610.0,False,Day trip: Paris (3 visits),"Subject: Fleek x The Rail
 
 Hi Tom Tanaka,
 
 [rep: one-line intro on Fleek]. I came across The Rail and thought it could be a great fit. Would you be open to a quick call to explore?
 
 [rep: your name]",template
-L0248,Atelier Garms,Carlos Park,,+338781129387,Paris,FR,Negotiating,6,Email: follow up on proposal,2026-06-22,Maya,,1400.0,False,Day trip: Paris (3 visits),"Subject: Fleek x Atelier Garms
+L0248,Atelier Garms,Carlos Park,,+338781129387,Paris,FR,Negotiating,6,Email: follow up on proposal,2026-06-28,Maya,,1400.0,False,Day trip: Paris (3 visits),"Subject: Fleek x Atelier Garms
 
 Hi Carlos Park,
 
 Just following up on our last conversation. [rep: reference last touch context]. Happy to pick up whenever suits you.
 
 [rep: your name]",template
-L0154,Old Lab,Carlos Silva,info@oldlab.co.uk,+336998199901,Paris,FR,Ghosted,6,Email: re-engagement (last attempt),2026-06-22,,2026-02-21,5090.0,False,Day trip: Paris (3 visits),"Subject: Fleek x Old Lab
+L0154,Old Lab,Carlos Silva,info@oldlab.co.uk,+336998199901,Paris,FR,Ghosted,6,Email: re-engagement (last attempt),2026-06-28,,2026-02-21,5090.0,False,Day trip: Paris (3 visits),"Subject: Fleek x Old Lab
 
 Hi Carlos Silva,
 
 It's been a while since we last spoke. Hope things are going well at Old Lab. Reaching back out in case the timing is better now. [rep: brief Fleek value prop].
 
 [rep: your name]",template
-L0236,Maison Emporium,Felix Rossi,felixrossi@gmail.com,+336923932047,Paris,FR,Replied,5,Email: reply to their message,2026-06-22,,2026-02-19,5670.0,False,Day trip: Paris (3 visits),"Subject: Fleek x Maison Emporium
+L0236,Maison Emporium,Felix Rossi,felixrossi@gmail.com,+336923932047,Paris,FR,Replied,5,Email: reply to their message,2026-06-28,,2026-02-19,5670.0,False,Day trip: Paris (3 visits),"Subject: Fleek x Maison Emporium
 
 Hi Felix Rossi,
 
 It's been a while since we last spoke. Hope things are going well at Maison Emporium. Reaching back out in case the timing is better now. [rep: brief Fleek value prop].
 
 [rep: your name]",template
-L0231,House of Lane,Raj Nguyen,info@houseoflane.store,+332453781218,Paris,FR,Replied,5,Email: reply to their message,2026-06-22,,2026-02-14,5120.0,False,Day trip: Paris (3 visits),"Subject: Fleek x House of Lane
+L0231,House of Lane,Raj Nguyen,info@houseoflane.store,+332453781218,Paris,FR,Replied,5,Email: reply to their message,2026-06-28,,2026-02-14,5120.0,False,Day trip: Paris (3 visits),"Subject: Fleek x House of Lane
 
 Hi Raj Nguyen,
 
 It's been a while since we last spoke. Hope things are going well at House of Lane. Reaching back out in case the timing is better now. [rep: brief Fleek value prop].
 
 [rep: your name]",template
-L0192,Camden Exchange,Sven Hughes,hello@camdenexchange.store,+334896004150,Paris,FR,Contacted,5,Visit: email + call unanswered,2026-06-22,Maya,2026-02-27,4860.0,False,Day trip: Paris (3 visits),"- Confirm they received our outreach re: Fleek
+L0192,Camden Exchange,Sven Hughes,hello@camdenexchange.store,+334896004150,Paris,FR,Contacted,5,Visit: email + call unanswered,2026-06-28,Maya,2026-02-27,4860.0,False,Day trip: Paris (3 visits),"- Confirm they received our outreach re: Fleek
 - Key ask: [rep: 1-2 sentences on Fleek value prop for their seller type]
 - Their context: Paris: mention local angle
-- It's been 115d since last contact. Acknowledge the gap, ask if timing is better.
+- It's been 121d since last contact. Acknowledge the gap, ask if timing is better.
 - Proposed next step: [rep: trial consignment / follow-up email / visit date]",template
-L0181,Rusty Lab,Greta Lopez,gretalopez@gmail.com,+338523057348,Paris,FR,Ghosted,3,Visit: final re-engage attempt,2026-06-22,Priya,2026-02-14,3010.0,False,Day trip: Paris (3 visits),"- Confirm they received our outreach re: Fleek
+L0181,Rusty Lab,Greta Lopez,gretalopez@gmail.com,+338523057348,Paris,FR,Ghosted,3,Visit: final re-engage attempt,2026-06-28,Priya,2026-02-14,3010.0,False,Day trip: Paris (3 visits),"- Confirm they received our outreach re: Fleek
 - Key ask: [rep: 1-2 sentences on Fleek value prop for their seller type]
 - Their context: Paris: mention local angle
-- It's been 128d since last contact. Acknowledge the gap, ask if timing is better.
+- It's been 134d since last contact. Acknowledge the gap, ask if timing is better.
 - Proposed next step: [rep: trial consignment / follow-up email / visit date]",template
-L0196,Golden Collective,Sofia Walsh,,+337041612736,Paris,FR,Ghosted,1,Visit: final re-engage attempt,2026-06-22,Maya,2026-02-26,2290.0,False,Day trip: Paris (3 visits),"- Confirm they received our outreach re: Fleek
+L0196,Golden Collective,Sofia Walsh,,+337041612736,Paris,FR,Ghosted,1,Visit: final re-engage attempt,2026-06-28,Maya,2026-02-26,2290.0,False,Day trip: Paris (3 visits),"- Confirm they received our outreach re: Fleek
 - Key ask: [rep: 1-2 sentences on Fleek value prop for their seller type]
 - Their context: Paris: mention local angle
-- It's been 116d since last contact. Acknowledge the gap, ask if timing is better.
+- It's been 122d since last contact. Acknowledge the gap, ask if timing is better.
 - Proposed next step: [rep: trial consignment / follow-up email / visit date]",template
-L0087,@giltwornarchive,,pablokhan50@gmail.com,,,,Replied,4,Email: first touch,2026-06-22,Tomas,2026-01-03,1680.0,False,,"Subject: Fleek: quick question
+L0087,@giltwornarchive,,pablokhan50@gmail.com,,,,Replied,4,Email: first touch,2026-06-28,Tomas,2026-01-03,1680.0,False,,"Subject: Fleek: quick question
 
 Hi there,
 
 [rep: one-line intro on Fleek]. I came across nan and thought it could be a great fit. Would you be open to a quick call to explore?
 
 [rep: your name]",template
-L0144,@y2kvaultcollective,,coraokafor35@hotmail.com,,,,Warm,5,Email: first touch,2026-06-22,,2026-01-03,230.0,False,,"Subject: Fleek: quick question
+L0144,@y2kvaultcollective,,coraokafor35@hotmail.com,,,,Warm,5,Email: first touch,2026-06-28,,2026-01-03,230.0,False,,"Subject: Fleek: quick question
 
 Hi there,
 
 [rep: one-line intro on Fleek]. I came across nan and thought it could be a great fit. Would you be open to a quick call to explore?
 
 [rep: your name]",template
-L0006,Marcus,Marcus,marcus@gmail.com,,,,Replied,3,Email: first touch,2026-06-22,Priya,2026-02-05,1440.0,False,,"Subject: Fleek: quick question
+L0006,Marcus,Marcus,marcus@gmail.com,,,,Replied,3,Email: first touch,2026-06-28,Priya,2026-02-05,1440.0,False,,"Subject: Fleek: quick question
 
 Hi Marcus,
 
 [rep: one-line intro on Fleek]. I came across nan and thought it could be a great fit. Would you be open to a quick call to explore?
 
 [rep: your name]",template
-L0023,@cobaltfadedstore,,ineskhan30@yahoo.com,,,,Warm,7,Email: first touch,2026-06-22,,2026-01-05,800.0,False,,"Subject: Fleek: quick question
+L0023,@cobaltfadedstore,,ineskhan30@yahoo.com,,,,Warm,7,Email: first touch,2026-06-28,,2026-01-05,800.0,False,,"Subject: Fleek: quick question
 
 Hi there,
 
 [rep: one-line intro on Fleek]. I came across nan and thought it could be a great fit. Would you be open to a quick call to explore?
 
 [rep: your name]",template
-L0074,Tom,Tom,tom90@outlook.com,,,,Warm,4,Email: first touch,2026-06-22,Maya,2025-12-26,2340.0,False,,"Subject: Fleek: quick question
+L0074,Tom,Tom,tom90@outlook.com,,,,Warm,4,Email: first touch,2026-06-28,Maya,2025-12-26,2340.0,False,,"Subject: Fleek: quick question
 
 Hi Tom,
 
 [rep: one-line intro on Fleek]. I came across nan and thought it could be a great fit. Would you be open to a quick call to explore?
 
 [rep: your name]",template
-L0019,@archiveatticvintage,,carlosjanssen79@hotmail.com,,,,Replied,6,Email: first touch,2026-06-22,,2026-02-19,1870.0,False,,"Subject: Fleek: quick question
+L0019,@archiveatticvintage,,carlosjanssen79@hotmail.com,,,,Replied,6,Email: first touch,2026-06-28,,2026-02-19,1870.0,False,,"Subject: Fleek: quick question
 
 Hi there,
 
