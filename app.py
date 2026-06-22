@@ -203,6 +203,21 @@ def is_blank(value) -> bool:
     return clean_text(value, fallback="") == ""
 
 
+def has_actionable_draft(draft) -> bool:
+    """True if draft_message has real, sendable content — mirrors render_draft()'s
+    own emptiness checks (blank/NaN, or a "Subject: ..." line with no body) so a
+    row only counts as actionable if render_draft() would actually show a
+    populated draft-card rather than a "not due" / "needs rewrite" status-card."""
+    text = "" if pd.isna(draft) else str(draft)
+    if not text.strip():
+        return False
+    body = text
+    if text.startswith("Subject:"):
+        _, _, rest = text.partition("\n")
+        body = rest.lstrip("\n")
+    return bool(body.strip())
+
+
 # ─────────────────────────────────────────────────────────────────────────
 # Tab 1: DM Queue
 # ─────────────────────────────────────────────────────────────────────────
@@ -299,6 +314,11 @@ def day_trip_section(df: pd.DataFrame):
 
     st.markdown("#### Day-trip clusters")
     for city, group in trips.groupby("city"):
+        # A cluster where every shop is a same-day replay (already actioned,
+        # nothing to send right now) isn't actionable -- skip it rather than
+        # show an operator a cluster with no real work in it.
+        if not group["draft_message"].apply(has_actionable_draft).any():
+            continue
         visit_rows = group[group["next_action"].fillna("").str.startswith("Visit")]
         dropin_rows = group[
             ~group["next_action"].fillna("").str.startswith("Visit")
@@ -345,11 +365,31 @@ def shop_actions_tab():
     action_mask = df["next_action"].fillna("").str.split(":").str[0].isin(action_filter)
     filtered = df[city_mask & action_mask]
 
-    st.markdown(f"**{len(filtered)} of {len(df)} shops** match the current filters")
+    # Only show shops with a real draft ready to send right now -- a same-day
+    # replay or "not yet due" row is noise for an operator deciding what to
+    # action today, not a missing feature. They're hidden, not deleted: the
+    # caption below tells the operator how many exist and when they'll be back.
+    actionable_mask = filtered["draft_message"].apply(has_actionable_draft)
+    actionable = filtered[actionable_mask].copy()
+    hidden_count = int((~actionable_mask).sum())
+
+    CHANNEL_ORDER = {"Email": 0, "Call": 1, "Visit": 2}
+    actionable["_channel_rank"] = (
+        actionable["next_action"].fillna("").str.split(":").str[0].map(CHANNEL_ORDER).fillna(99)
+    )
+    actionable = actionable.sort_values(["_channel_rank", "store_name"])
+
+    st.markdown(f"**{len(actionable)} of {len(df)} shops** ready to action")
+    if hidden_count:
+        st.caption(f"{hidden_count} shops hidden — already actioned today, drafts available tomorrow.")
+
+    if actionable.empty:
+        empty_state("No shop actions ready right now — check back once the cadence window passes.")
+        return
 
     table_cols = ["store_name", "city", "stage", "next_action", "due_date"]
-    table_cols = [c for c in table_cols if c in filtered.columns]
-    display = filtered[table_cols].copy()
+    table_cols = [c for c in table_cols if c in actionable.columns]
+    display = actionable[table_cols].copy()
     display["store_name"] = display["store_name"].apply(clean_text)
     display["city"] = display["city"].apply(clean_text)
     st.dataframe(
@@ -362,7 +402,7 @@ def shop_actions_tab():
     )
 
     st.markdown("#### Drafts")
-    for _, row in filtered.iterrows():
+    for _, row in actionable.iterrows():
         store = clean_text(row.get("store_name"))
         action = clean_text(row.get("next_action"))
         with st.expander(f"{store} — {action}"):

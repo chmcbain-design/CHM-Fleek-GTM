@@ -194,6 +194,19 @@ def render_controls():
     )
     api_args = [] if use_api else ["--no-api"]
 
+    # Single source of truth for the quick-jump dates and the status line
+    # below: pulled from pipeline.db's own records (ingestion_log + cadence),
+    # not assumed from date.today() + a fixed offset. A hardcoded +3/+6 only
+    # works if you click every guide step on the same calendar day Day 1 ran;
+    # any gap between sessions drifted it from the real next-eligible date.
+    cadence_status = _get_cadence_status()
+    day_one = cadence_status["day_one"] if cadence_status else None
+    next_touch_due = cadence_status["next_touch_due"] if cadence_status else None
+    touch2_due = next_touch_due or (
+        day_one + timedelta(days=CADENCE_WINDOW_DAYS) if day_one else None
+    )
+    touch3_due = (touch2_due + timedelta(days=CADENCE_WINDOW_DAYS)) if touch2_due else None
+
     with st.sidebar.expander("📖 Demo guide", expanded=False):
         st.markdown(
             "**Step 1 — Reset & start fresh → Day 1**\n\n"
@@ -214,38 +227,47 @@ def render_controls():
         st.divider()
 
         st.markdown(
-            "**Step 3 — Jump to Day 4 (today + 3)**\n\n"
+            "**Step 3 — Jump to touch 2**\n\n"
             "Touch-2 follow-ups due for the original cohort — they get a score "
             "boost, so they keep winning all 40 daily DM slots over the day-2 "
             "cohort. (Day-2 resellers stay in the scoring pool but won't "
             "surface in the DM queue until the original cohort clears out.)"
         )
-        if st.button("Day 4 (touch 2 due)", width="stretch", key="guide_day4"):
-            jump_date = date.today() + timedelta(days=3)
-            _execute(api_args + ["--date", jump_date.isoformat()], f"Running pipeline for {jump_date.isoformat()} (Day 4)…")
+        if touch2_due:
+            if st.button(f"Touch 2 due — {touch2_due.strftime('%d %b')}", width="stretch", key="guide_day4"):
+                _execute(
+                    api_args + ["--date", touch2_due.isoformat()],
+                    f"Running pipeline for {touch2_due.isoformat()} (touch 2 due)…",
+                )
+        else:
+            st.button("Run Day 1 first", width="stretch", key="guide_day4", disabled=True)
         st.divider()
 
         st.markdown(
-            "**Step 4 — Jump to Day 7 (today + 6)**\n\n"
+            "**Step 4 — Jump to touch 3**\n\n"
             "Touch-3 final messages go out for the leads due. (Parking happens "
             "on the *next* run after that — once a lead's 3rd touch has been "
             "sent, it's excluded from future runs.)"
         )
-        if st.button("Day 7 (touch 3 / parking)", width="stretch", key="guide_day7"):
-            jump_date = date.today() + timedelta(days=6)
-            _execute(api_args + ["--date", jump_date.isoformat()], f"Running pipeline for {jump_date.isoformat()} (Day 7)…")
+        if touch3_due:
+            if st.button(f"Touch 3 due — {touch3_due.strftime('%d %b')}", width="stretch", key="guide_day7"):
+                _execute(
+                    api_args + ["--date", touch3_due.isoformat()],
+                    f"Running pipeline for {touch3_due.isoformat()} (touch 3 due)…",
+                )
+        else:
+            st.button("Run Day 1 first", width="stretch", key="guide_day7", disabled=True)
 
     st.sidebar.divider()
-    if has_run_this_session():
-        status = _get_cadence_status()
-        if status:
-            parts = []
-            if status["day_one"]:
-                parts.append(f"Day 1 was **{status['day_one'].isoformat()}**")
-            if status["next_touch_due"]:
-                parts.append(f"next touch due **{status['next_touch_due'].isoformat()}**")
-            elif status["day_one"]:
-                parts.append("no leads currently waiting on a next touch")
+    if has_run_this_session() and cadence_status:
+        parts = []
+        if day_one:
+            parts.append(f"Day 1 was **{day_one.isoformat()}**")
+        if next_touch_due:
+            parts.append(f"next touch due **{next_touch_due.isoformat()}**")
+        elif day_one:
+            parts.append("no leads currently waiting on a next touch")
+        if parts:
             st.sidebar.caption("📅 " + " · ".join(parts))
 
     run_date = st.sidebar.date_input("Run date", value=date.today(), key="ctrl_run_date")
