@@ -157,11 +157,39 @@ def _get_cadence_status():
     return {"day_one": day_one_date, "next_touch_due": next_touch_due}
 
 
+def _mtime(path: Path):
+    try:
+        return path.stat().st_mtime
+    except OSError:
+        return None
+
+
 def _execute(args: list, spinner_text: str):
+    # Snapshot output-file mtimes before the run so we can prove afterward that
+    # run_daily.py actually rewrote them -- subprocess.run() blocking on the
+    # child process guarantees no read-before-write race today, but this catches
+    # *any* future failure mode (a crashed write, a stuck duplicate process
+    # holding the file, a future change that makes the call non-blocking) by
+    # turning "file silently wasn't updated" into a loud, visible error instead
+    # of the dashboard quietly displaying stale data.
+    dms_before = _mtime(DMS_PATH)
+    shops_before = _mtime(SHOPS_PATH)
+
     with st.spinner(spinner_text):
         result = _run(args)
         result["dm_draft_warning"] = _check_dm_draft_coverage()
         result["shop_drafting"] = _shop_drafting_summary()
+
+        if result["ok"]:
+            stale = []
+            dms_after = _mtime(DMS_PATH)
+            if dms_after is None or (dms_before is not None and dms_after <= dms_before):
+                stale.append("today_dms.csv")
+            shops_after = _mtime(SHOPS_PATH)
+            if shops_after is None or (shops_before is not None and shops_after <= shops_before):
+                stale.append("shops_actions.csv")
+            result["stale_outputs"] = stale or None
+
         st.session_state["last_run"] = result
     # Marks that a run was triggered in *this* browser session, regardless of
     # outcome. Tabs use this to decide whether on-disk CSVs/pipeline.db are
@@ -357,6 +385,17 @@ def render_last_run_report():
         st.error(f"run_daily.py exited with code {last['returncode']}.")
     else:
         st.success("Run completed.")
+
+    stale = last.get("stale_outputs")
+    if stale:
+        st.error(
+            f"⚠️ run_daily.py exited successfully, but {', '.join(stale)} was NOT "
+            "rewritten (its file timestamp didn't advance). The tabs below may be "
+            "showing stale data from a previous run rather than this one — do not "
+            "trust them until this is resolved. This usually means another process "
+            "is holding the file open, or the run errored after printing its "
+            "report but before writing output; check stderr below."
+        )
 
     if last.get("stdout"):
         st.code(last["stdout"], language=None)

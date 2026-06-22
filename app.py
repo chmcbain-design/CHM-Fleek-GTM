@@ -350,14 +350,28 @@ def shop_actions_tab():
     day_trip_section(df)
     st.divider()
 
+    cities = sorted(df["city"].dropna().unique().tolist())
+    action_types = sorted(df["next_action"].dropna().str.split(":").str[0].unique().tolist())
+    include_unknown_city = df["city"].isna().any()
+
+    # Same staleness guard as the DM Queue tab's score/touch filters: these
+    # multiselects have no key-stability across a fresh run, so if shops_actions.csv
+    # is regenerated with different cities/action-types (e.g. a day-2 drop adds a
+    # new city), a previously-narrowed filter selection would otherwise silently
+    # keep excluding the new data instead of resetting to "show everything."
+    bounds_key = "shop_filter_bounds"
+    current_bounds = (tuple(cities), tuple(action_types))
+    reset_clicked = st.button("Reset filters", key="shop_reset_filters")
+    if reset_clicked or st.session_state.get(bounds_key) != current_bounds:
+        st.session_state["shop_city_filter"] = cities
+        st.session_state["shop_action_filter"] = action_types
+        st.session_state[bounds_key] = current_bounds
+
     col1, col2 = st.columns(2)
     with col1:
-        cities = sorted(df["city"].dropna().unique().tolist())
-        city_filter = st.multiselect("City", cities, default=cities)
-        include_unknown_city = df["city"].isna().any()
+        city_filter = st.multiselect("City", cities, key="shop_city_filter")
     with col2:
-        action_types = sorted(df["next_action"].dropna().str.split(":").str[0].unique().tolist())
-        action_filter = st.multiselect("Action type", action_types, default=action_types)
+        action_filter = st.multiselect("Action type", action_types, key="shop_action_filter")
 
     city_mask = df["city"].isin(city_filter)
     if include_unknown_city:
@@ -401,19 +415,34 @@ def shop_actions_tab():
         hide_index=True,
     )
 
+    def render_shop_drafts(rows: pd.DataFrame):
+        for _, row in rows.iterrows():
+            store = clean_text(row.get("store_name"))
+            action = clean_text(row.get("next_action"))
+            with st.expander(f"{store} — {action}"):
+                meta_cols = st.columns(3)
+                meta_cols[0].caption(f"City: {clean_text(row.get('city'))}")
+                meta_cols[1].caption(f"Contact: {clean_text(row.get('contact_name'))}")
+                meta_cols[2].caption(f"Due: {clean_text(row.get('due_date'))}")
+                render_draft(
+                    row.get("draft_message"), action=row.get("next_action"),
+                    is_replay=row.get("_is_replay"),
+                )
+
     st.markdown("#### Drafts")
-    for _, row in actionable.iterrows():
-        store = clean_text(row.get("store_name"))
-        action = clean_text(row.get("next_action"))
-        with st.expander(f"{store} — {action}"):
-            meta_cols = st.columns(3)
-            meta_cols[0].caption(f"City: {clean_text(row.get('city'))}")
-            meta_cols[1].caption(f"Contact: {clean_text(row.get('contact_name'))}")
-            meta_cols[2].caption(f"Due: {clean_text(row.get('due_date'))}")
-            render_draft(
-                row.get("draft_message"), action=row.get("next_action"),
-                is_replay=row.get("_is_replay"),
-            )
+    # Email-routed resellers (lead_type == "reseller") never have a physical
+    # city -- that's the engine's own authoritative signal for them, not a
+    # "looks like a shop" heuristic. Split into two clearly labeled groups
+    # rather than interleaving handles and store names in one list.
+    resellers = actionable[actionable["city"].isna()]
+    shops = actionable[~actionable["city"].isna()]
+
+    if not resellers.empty:
+        st.markdown("##### 📧 Email-routed resellers")
+        render_shop_drafts(resellers)
+    if not shops.empty:
+        st.markdown("##### 🏬 Physical shops")
+        render_shop_drafts(shops)
 
 
 # ─────────────────────────────────────────────────────────────────────────
