@@ -1,0 +1,96 @@
+﻿lead_id,store_name,contact_name,email,phone,city,country,stage,num_touches,next_action,due_date,assigned_bdr,last_touch_date,est_monthly_spend_gbp,city_cluster
+L0159,Camden Vault,Sven Petrov,svenpetrov39@gmail.com,+317011781216,Amsterdam,NL,Call Booked,3,Call: warm lead / confirm call,2026-06-11,,,5810.0,Day trip: Amsterdam (3 visits)
+L0206,Atelier Loom,Ines Fischer,inesfischer52@gmail.com,+312318014119,Amsterdam,NL,New Lead,3,Email: first touch,2026-06-11,Maya,2026-01-28,4790.0,Day trip: Amsterdam (3 visits)
+L0229,Corner Trunk,Lukas Tanaka,lukastanaka@yahoo.com,+317553365298,Amsterdam,NL,Contacted,0,Email: first touch,2026-06-11,,2025-12-15,1840.0,Day trip: Amsterdam (3 visits)
+L0242,Velvet Trunk,Nadia Reid,nadiareid29@outlook.com,+312866892778,Amsterdam,NL,Warm,0,Email: first touch,2026-06-11,,,1730.0,Day trip: Amsterdam (3 visits)
+L0286,Old Vault,Pablo Fischer,hello@oldvault.co.uk,+317997887559,Amsterdam,NL,New Lead,0,Email: first touch,2026-06-11,,,5080.0,Day trip: Amsterdam (3 visits)
+L0277,Atelier Trunk,Sven Okafor,shop@ateliertrunk.com,+318639720810,Amsterdam,NL,New Lead,0,Email: first touch,2026-06-11,,,2730.0,Day trip: Amsterdam (3 visits)
+L0252,Rusty Wardrobe,Dmitri Rossi,shop@rustywardrobe.com,+315768362487,Amsterdam,NL,Contacted,4,Visit: email + call unanswered,2026-06-11,Tomas,2026-02-09,5170.0,Day trip: Amsterdam (3 visits)
+L0215,Corner Bazaar,Raj Romano,info@cornerbazaar.store,+311925081201,Amsterdam,NL,Contacted,3,Visit: email + call unanswered,2026-06-11,Priya,2026-02-22,2520.0,Day trip: Amsterdam (3 visits)
+L0178,Golden Cellar,Zoe Petrov,shop@goldencellar.store,+319663623910,Amsterdam,NL,Ghosted,2,Visit: final re-engage attempt,2026-06-11,Priya,2026-01-19,5960.0,Day trip: Amsterdam (3 visits)
+L0167,Rusty Edit,Pablo Okafor,info@rustyedit.store,+496659322961,Berlin,DE,Warm,6,Call: warm lead / confirm call,2026-06-11,Tomas,2026-02-18,1030.0,
+L0195,Rusty Edit,Hugo Berg,hugoberg91@outlook.com,+496481002890,Berlin,DE,Call Booked,6,Call: warm lead / confirm call,2026-06-11,Priya,2026-02-27,3890.0,
+L0158,Velvet Edit,Priya Silva,info@velvetedit.store,+498135200091,Berlin,DE,Call Booked,2,Call: warm lead / confirm call,2026-06-11,,2026-01-09,980.0,
+L0241,Maison Vault,Elena Schmidt,elenaschmidt50@outlook.com,+494422144906,Berlin,DE,New Lead,3,Email: first touch,2026-06-11,Priya,2026-01-14,5420.0,
+L0221,Found Vault,Theo Nguyen,theonguyen12@yahoo.com,+491787308973,Berlin,DE,Call Booked,0,Email: first touch,2026-06-11,Priya,,2580.0,
+L0179,Velvet Emporium,Carlos Walsh,info@velvetemporium.com,,Berlin,DE,New Lead,3,Email: first touch,2026-06-11,Tomas,,2850.0,
+L0274,Blue Trunk,Tom Okafor,tomokafor87@hotmail.com,+499713101493,Berlin,DE,New Lead,0,Email: first touch,2026-06-11,,,4710.0,
+L0170,Camden Garms,Elena Hassan,elenahassan13@yahoo.com,+494893323395,Berlin,DE,Negotiating,3,Email: follow up on proposal,2026-06-11,Tomas,2026-02-23,1150.0,
+L0214,House of Wardrobe,Hugo Adebayo,shop@houseofwardrob.store,+493772397393,Berlin,DE,Replied,4,Email: reply to their message,2026-06-11,Priya,2026-02-04,4780.0,
+L0227,Loft Emporium,Zoe Marchetti,shop@loftemporium.co.uk,,Brighton,UK,Call Booked,6,Call: warm lead / confirm call,2026-06-11,Tomas,2026-02-24,2150.0,
+L0212,Golden Lane,Sven Marchetti,info@goldenlane.com,07772893185,Brighton,UK,New Lead,3,Email: first touch,2026-06-11,,,4470.0,
+L0291,The Loom,Theo Walsh,theowalsh81@yahoo.com,+447725229176,Brighton,UK,New Lead,0,Email: first touch,2026-06-11,,,2560.0,
+L0245,Blue Garms,Zoe Hassan,info@bluegarms.co.uk,07991883600,Brighton,UK,Negotiating,2,Email: follow up on proposal,2026-06-11,Priya,2026-01-09,1040.0,
+L0185,Brick Lane Closet,Zoe Lopez,shop@bricklaneclose.co.uk,,Brighton,UK,Negotiating,3,Email: follow up on proposal,2026-06-11,Priya,2026-01-22,860.0,
+L0218,Loft Threads,Freya Lopez,freyalopez@hotmail.com,7974367360,Brighton,UK,Replied,4,Email: reply to their message,2026-06-11,Tomas,2026-02-07,2930.0,
+L0222,Corner Loom,Theo Reid,info@cornerloom.co.uk,7462639414,Brighton,UK,Replied,3,Email: reply to their message,2026-06-11,,2026-02-09,440.0,
+L0208,Corner Emporium,Nadia Andersson,nadiaandersson94@yahoo.com,,Brighton,UK,Replied,2,Email: reply to their message,2026-06-11,,2026-02-24,2990.0,
+L0205,Maison Trunk,Hugo Marchetti,hugomarchetti@outlook.com,+447400985349,Brighton,UK,Contacted,5,Visit: email + call unanswered,2026-06-11,Tomas,2026-01-23,2400.0,
+L0174,Second Collective,Lukas Walsh,lukaswalsh70@outlook.com,+447800705413,Bristol,UK,Replied,0,Email: first touch,2026-06-11,Maya,2026-02-14,4960.0,Day trip: Bristol (2 visits)
+L0164,Golden Emporium,Hugo Kaur,hugokaur@yahoo.com,+447347656134,Bristol,UK,New Lead,1,Email: first touch,2026-06-11,,2026-02-15,1640.0,Day trip: Bristol (2 visits)
+L0279,Corner Collective,Liam Reid,hello@cornercollecti.com,+447724851761,Bristol,UK,New Lead,0,Email: first touch,2026-06-11,,,2120.0,Day trip: Bristol (2 visits)
+L0161,Maison Rail,Noah Fischer,info@maisonrail.com,+447237119418,Bristol,UK,Negotiating,6,Email: follow up on proposal,2026-06-11,,2026-02-26,3150.0,Day trip: Bristol (2 visits)
+L0157,Atelier Drawer,Freya Janssen,freyajanssen@yahoo.com,0044784145620,Bristol,UK,Contacted,3,Visit: email + call unanswered,2026-06-11,Maya,2026-02-21,4360.0,Day trip: Bristol (2 visits)
+L0156,Loft Lane,Lena Park,lenapark79@outlook.com,+447737683411,Bristol,UK,Ghosted,2,Visit: final re-engage attempt,2026-06-11,Maya,2026-01-05,2580.0,Day trip: Bristol (2 visits)
+L0230,Second Garms,James Weber,info@secondgarms.co.uk,+16169161729,LA,US,Warm,5,Call: warm lead / confirm call,2026-06-11,,2026-02-21,2790.0,
+L0256,Rusty Cellar,Raj Novak,shop@rustycellar.store,+16208071959,LA,US,New Lead,3,Email: first touch,2026-06-11,Priya,2025-12-27,5090.0,
+L0168,Rusty Edit,Yuki Silva,hello@rustyedit.com,+19027833017,LA,US,New Lead,1,Email: first touch,2026-06-11,,,2720.0,
+L0210,Old Collective,James Park,info@oldcollective.store,+18783983612,LA,US,New Lead,1,Email: first touch,2026-06-11,Maya,,5190.0,
+L0211,Second Society,Aisha Costa,aishacosta79@outlook.com,+12608084195,LA,US,Negotiating,6,Email: follow up on proposal,2026-06-11,,2026-02-21,2760.0,
+L0224,Past Cellar,Tom Berg,tomberg@outlook.com,+13948899136,LA,US,Replied,5,Email: reply to their message,2026-06-11,,2025-12-18,5150.0,
+L0203,Past Cellar,Greta Reid,info@pastcellar.store,,Leeds,UK,Warm,3,Call: warm lead / confirm call,2026-06-11,,2026-02-27,410.0,Day trip: Leeds (3 visits)
+L0200,Found Bazaar,Zoe Fischer,zoefischer86@yahoo.com,0044725195903,Leeds,UK,New Lead,3,Email: first touch,2026-06-11,,2026-02-09,1560.0,Day trip: Leeds (3 visits)
+L0183,Old Lane,James Marchetti,jamesmarchetti8@gmail.com,0044754231500,Leeds,UK,New Lead,6,Email: first touch,2026-06-11,Priya,2026-02-02,5640.0,Day trip: Leeds (3 visits)
+L0259,Past Lane,Aisha Okafor,hello@pastlane.co.uk,07473285162,Leeds,UK,New Lead,5,Email: first touch,2026-06-11,,2025-12-19,4580.0,Day trip: Leeds (3 visits)
+L0282,Rusty Cellar,Nadia Moreau,shop@rustycellar.co.uk,,Leeds,UK,New Lead,0,Email: first touch,2026-06-11,Tomas,,5320.0,Day trip: Leeds (3 visits)
+L0272,Retro Loom,Zoe Silva,zoesilva55@hotmail.com,,Leeds,UK,New Lead,0,Email: first touch,2026-06-11,Priya,,4610.0,Day trip: Leeds (3 visits)
+L0270,Past Edit,Nadia Petrov,nadiapetrov@outlook.com,7197769276,Leeds,UK,New Lead,0,Email: first touch,2026-06-11,Maya,,4930.0,Day trip: Leeds (3 visits)
+L0273,House of Society,Lukas Moreau,lukasmoreau69@outlook.com,+447940476743,Leeds,UK,New Lead,0,Email: first touch,2026-06-11,Tomas,,2850.0,Day trip: Leeds (3 visits)
+L0204,House of Drawer,Liam Tanaka,liamtanaka75@hotmail.com,+447809816692,Leeds,UK,Contacted,1,Visit: email + call unanswered,2026-06-11,Maya,2026-02-18,5270.0,Day trip: Leeds (3 visits)
+L0194,Blue Edit,Nadia Nguyen,nadianguyen76@gmail.com,07223378267,Leeds,UK,Contacted,6,Visit: email + call unanswered,2026-06-11,Priya,2026-02-23,1010.0,Day trip: Leeds (3 visits)
+L0172,Camden Society,Felix Walsh,hello@camdensociety.store,0044712652037,Leeds,UK,Ghosted,6,Visit: final re-engage attempt,2026-06-11,,2026-01-11,2440.0,Day trip: Leeds (3 visits)
+L0233,The Collective,Priya Tanaka,shop@thecollective.com,07182574459,London,UK,Warm,3,Call: warm lead / confirm call,2026-06-11,Priya,2026-02-22,880.0,
+L0235,Brick Lane Threads,Cora Khan,corakhan27@yahoo.com,07965352784,London,UK,Warm,6,Call: warm lead / confirm call,2026-06-11,Priya,2026-02-24,5660.0,
+L0155,The Exchange,Ines Schmidt,hello@theexchange.com,+447618213574,London,UK,Ghosted,0,Email: first touch,2026-06-11,,2026-01-23,4140.0,
+L0213,Second Threads,Pablo Novak,shop@secondthreads.com,,London,UK,New Lead,0,Email: first touch,2026-06-11,,2026-02-28,3100.0,
+L0199,Vintage Lane,Zoe Park,zoepark33@outlook.com,7491870177,London,UK,Negotiating,2,Email: follow up on proposal,2026-06-11,Maya,2026-02-10,1240.0,
+L0220,Second Closet,Zoe Kaur,shop@secondcloset.store,7788153901,London,UK,Ghosted,5,Email: re-engagement (last attempt),2026-06-11,,2026-01-16,5510.0,
+L0209,Corner Trunk,Marcus Cohen,info@cornertrunk.co.uk,+447916949092,Manchester,UK,Warm,3,Call: warm lead / confirm call,2026-06-11,Tomas,,5600.0,Day trip: Manchester (3 visits)
+L0225,Camden Loom,Zoe Moreau,zoemoreau64@gmail.com,0044775728317,Manchester,UK,Negotiating,0,Email: first touch,2026-06-11,Tomas,2026-01-19,5930.0,Day trip: Manchester (3 visits)
+L0197,Corner Loom,Yuki Tanaka,hello@cornerloom.com,+447524968605,Manchester,UK,New Lead,5,Email: first touch,2026-06-11,Tomas,2026-02-15,3980.0,Day trip: Manchester (3 visits)
+L0268,The Trunk,Noah Khan,info@thetrunk.com,7799339576,Manchester,UK,New Lead,0,Email: first touch,2026-06-11,Tomas,,4220.0,Day trip: Manchester (3 visits)
+L0266,Camden Lab,Bea Reid,shop@camdenlab.com,07442671631,Manchester,UK,New Lead,0,Email: first touch,2026-06-11,,,660.0,Day trip: Manchester (3 visits)
+L0186,Past Edit,Carlos Hassan,info@pastedit.co.uk,+447544203406,Manchester,UK,Negotiating,2,Email: follow up on proposal,2026-06-11,,2026-01-30,2100.0,Day trip: Manchester (3 visits)
+L0160,Found Exchange,Tom Bennett,hello@foundexchange.com,0044766005300,Manchester,UK,Negotiating,3,Email: follow up on proposal,2026-06-11,,2026-02-03,4720.0,Day trip: Manchester (3 visits)
+L0175,Loft Cellar,Priya Fischer,shop@loftcellar.com,0044785719596,Manchester,UK,Ghosted,4,Visit: final re-engage attempt,2026-06-11,,,860.0,Day trip: Manchester (3 visits)
+L0153,Brick Lane Bazaar,Marta Schmidt,martaschmidt75@outlook.com,+447519325528,Manchester,UK,Ghosted,6,Visit: final re-engage attempt,2026-06-11,Maya,2025-12-30,3430.0,Day trip: Manchester (3 visits)
+L0190,Maison Garms,Elena Reid,elenareid@gmail.com,+447786468104,Manchester,UK,Ghosted,6,Visit: final re-engage attempt,2026-06-11,Maya,2026-02-18,5260.0,Day trip: Manchester (3 visits)
+L0228,Second Trunk,Zoe Janssen,hello@secondtrunk.store,+16465543766,New York,US,Call Booked,6,Call: warm lead / confirm call,2026-06-11,,2026-02-15,4670.0,Day trip: New York (4 visits)
+L0234,Blue Vault,Aisha Nguyen,hello@bluevault.store,+16944301212,New York,US,New Lead,1,Email: first touch,2026-06-11,Maya,,3730.0,Day trip: New York (4 visits)
+L0182,Camden Cellar,Freya Fischer,shop@camdencellar.com,+18923546663,New York,US,New Lead,5,Email: first touch,2026-06-11,,,4420.0,Day trip: New York (4 visits)
+L0289,Atelier Lab,Pablo Kaur,shop@atelierlab.co.uk,,New York,US,New Lead,0,Email: first touch,2026-06-11,,,1930.0,Day trip: New York (4 visits)
+L0287,Atelier Drawer,Marta Murphy,hello@atelierdrawer.store,+14514744219,New York,US,New Lead,0,Email: first touch,2026-06-11,,,5950.0,Day trip: New York (4 visits)
+L0219,Corner Vault,Marcus Silva,hello@cornervault.com,+14855371013,New York,US,Negotiating,4,Email: follow up on proposal,2026-06-11,Priya,2026-02-18,2590.0,Day trip: New York (4 visits)
+L0193,House of Collective,Priya Berg,priyaberg@outlook.com,+13371436821,New York,US,Contacted,3,Visit: email + call unanswered,2026-06-11,,2026-01-03,1890.0,Day trip: New York (4 visits)
+L0255,Velvet Trunk,Omar Petrov,omarpetrov@gmail.com,+15561482584,New York,US,Contacted,1,Visit: email + call unanswered,2026-06-11,,2026-02-19,700.0,Day trip: New York (4 visits)
+L0226,Brick Lane Closet,Yuki Park,info@bricklaneclose.co.uk,+11389584195,New York,US,Ghosted,5,Visit: final re-engage attempt,2026-06-11,,2026-01-05,5200.0,Day trip: New York (4 visits)
+L0217,Golden Wardrobe,Raj Murphy,rajmurphy@outlook.com,+18229051272,New York,US,Ghosted,3,Visit: final re-engage attempt,2026-06-11,Priya,,4920.0,Day trip: New York (4 visits)
+L0180,Old Collective,Marta Rossi,martarossi83@gmail.com,,Paris,FR,Contacted,1,Call: no reply to email,2026-06-11,Priya,2026-02-24,1460.0,Day trip: Paris (3 visits)
+L0284,Maison Lab,Hugo Fischer,hugofischer@gmail.com,+336664789270,Paris,FR,New Lead,0,Email: first touch,2026-06-11,Maya,,1450.0,Day trip: Paris (3 visits)
+L0271,Golden Lane,Dmitri Berg,dmitriberg32@hotmail.com,+339342614342,Paris,FR,New Lead,0,Email: first touch,2026-06-11,Tomas,,5400.0,Day trip: Paris (3 visits)
+L0288,Blue Lab,Sofia Petrov,sofiapetrov@yahoo.com,+336104191051,Paris,FR,New Lead,0,Email: first touch,2026-06-11,Maya,,5370.0,Day trip: Paris (3 visits)
+L0290,Vintage Collective,James Rossi,hello@vintagecollect.com,+335319606552,Paris,FR,New Lead,0,Email: first touch,2026-06-11,,,5640.0,Day trip: Paris (3 visits)
+L0292,Vintage Closet,Aisha Khan,shop@vintagecloset.co.uk,+339669546987,Paris,FR,New Lead,0,Email: first touch,2026-06-11,,,880.0,Day trip: Paris (3 visits)
+L0154,Old Lab,Carlos Silva,info@oldlab.co.uk,+336998199901,Paris,FR,Ghosted,6,Email: re-engagement (last attempt),2026-06-11,,2026-02-21,5090.0,Day trip: Paris (3 visits)
+L0236,Maison Emporium,Felix Rossi,felixrossi@gmail.com,+336923932047,Paris,FR,Replied,5,Email: reply to their message,2026-06-11,,2026-02-19,5670.0,Day trip: Paris (3 visits)
+L0231,House of Lane,Raj Nguyen,info@houseoflane.store,+332453781218,Paris,FR,Replied,5,Email: reply to their message,2026-06-11,,2026-02-14,5120.0,Day trip: Paris (3 visits)
+L0192,Camden Exchange,Sven Hughes,hello@camdenexchange.store,+334896004150,Paris,FR,Contacted,5,Visit: email + call unanswered,2026-06-11,Maya,2026-02-27,4860.0,Day trip: Paris (3 visits)
+L0198,Loft Lab,Marcus Lopez,shop@loftlab.com,+334097319885,Paris,FR,Contacted,5,Visit: email + call unanswered,2026-06-11,,2026-01-26,3060.0,Day trip: Paris (3 visits)
+L0181,Rusty Lab,Greta Lopez,gretalopez@gmail.com,+338523057348,Paris,FR,Ghosted,3,Visit: final re-engage attempt,2026-06-11,Priya,2026-02-14,3010.0,Day trip: Paris (3 visits)
+L0144,,,coraokafor35@hotmail.com,,,,Warm,5,Call: warm lead / confirm call,2026-06-11,,2026-01-03,230.0,
+L0023,,,ineskhan30@yahoo.com,,,,Warm,7,Call: warm lead / confirm call,2026-06-11,,2026-01-05,800.0,
+L0071,,Hugo,hugo91@gmail.com,,,,Replied,4,Email: reply to their message,2026-06-11,Maya,2026-01-01,420.0,
+L0087,,,pablokhan50@gmail.com,,,,Replied,4,Email: reply to their message,2026-06-11,Tomas,2026-01-03,1680.0,
+L0059,,Tom,tom73@hotmail.com,,,,Replied,3,Email: reply to their message,2026-06-11,,2025-12-26,1490.0,
+L0025,,Marcus,marcus@gmail.com,,,,Replied,4,Email: reply to their message,2026-06-11,Tomas,2026-02-11,9000.0,
+L0019,,,carlosjanssen79@hotmail.com,,,,Replied,6,Email: reply to their message,2026-06-11,,2026-02-19,1870.0,
