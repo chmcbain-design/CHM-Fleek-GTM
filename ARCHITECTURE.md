@@ -16,8 +16,14 @@ flowchart TD
         G --> J[today_dms.csv + touch_number\nshops_actions.csv\nRun report]
     end
 
+    subgraph UI["DASHBOARD — optional, read-only layer (streamlit run app.py)"]
+        J --> Q[Streamlit dashboard\nDM Queue · Shop Actions\nFollow-ups · System / Scale]
+        N --> Q
+    end
+
     subgraph HUMAN["HUMAN / AGENT — deliberate action required before send"]
         J --> K([👤 Human / BDR Agent\nReview drafts · Fill rep placeholders · Send])
+        Q --> K
         K --> L{Reply?}
         L -->|Yes — update CRM,\nre-drop to inbox/| A
         L -->|No reply after touch 3| M[Lead parked\nnext run: excluded from outputs]
@@ -37,13 +43,15 @@ flowchart TD
     G --> P
 ```
 
-## The three zones
+## The three zones (plus an optional fourth)
 
 **AUTOMATIC** covers everything that runs deterministically from a single command: ingest, clean, classify, score, apply cadence rules, draft, validate, and write outputs. No human decision is needed in this zone — the pipeline either succeeds or falls back to a safe template.
 
-**HUMAN / AGENT** is the deliberate gate between automation and the customer. A human (or BDR agent) reviews drafted messages, fills `[rep: ...]` placeholders with facts only they have access to (live pricing, stock levels, brand acceptance), and presses send. After sending they update the CRM and optionally re-ingest a reply, which resets the cadence automatically.
+**DASHBOARD (optional)** is a read-only view layer on top of AUTOMATIC's outputs: `streamlit run app.py` reads `today_dms.csv`, `shops_actions.csv`, and `pipeline.db` and presents them as four browser tabs (DM Queue, Shop Actions, Follow-ups, System/Scale), with a sidebar that can trigger `run_daily.py` as a subprocess for click-through demos. It contains no pipeline logic of its own — it's a presentation layer, not a parallel implementation. **Terminal use and agent invocation do not require the dashboard**; everything it shows is equally available by opening the CSVs directly or reading the run report.
 
-**DATA** holds all persistent state: `pipeline.db` (leads + cadence ledger), `cleaned_pipeline.csv` (master book), and the daily output CSVs. The AUTOMATIC zone reads from and writes to DATA; the HUMAN zone reads from DATA (via CSVs) and writes back to it (via CRM updates).
+**HUMAN / AGENT** is the deliberate gate between automation and the customer, reached either via the raw CSVs or via the dashboard. A human (or BDR agent) reviews drafted messages, fills `[rep: ...]` placeholders with facts only they have access to (live pricing, stock levels, brand acceptance), and presses send. After sending they update the CRM and optionally re-ingest a reply, which resets the cadence automatically.
+
+**DATA** holds all persistent state: `pipeline.db` (leads + cadence ledger), `cleaned_pipeline.csv` (master book), and the daily output CSVs. The AUTOMATIC zone reads from and writes to DATA; the DASHBOARD zone only reads from DATA; the HUMAN zone reads from DATA (via CSVs or the dashboard) and writes back to it (via CRM updates).
 
 ## The cadence loop
 

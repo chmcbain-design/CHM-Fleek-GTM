@@ -1,15 +1,48 @@
 # Fleek GTM Pipeline
 
-A lightweight sales pipeline tool built for Fleek's UK vintage clothing reseller outreach. It ingests a cleaned lead list, scores and sequences every lead daily using real data signals, runs each lead through a three-touch cadence (spaced 3 days apart), drafts personalised outreach messages via the Anthropic API, and writes ready-to-send outputs for a human (or BDR agent) to review before hitting send. The design is deliberately simple: one idempotent script, a SQLite state ledger that prevents double-contacting and tracks touch sequences, and a drafting layer that adapts tone by touch number and falls back to safe templates rather than silently failing. The whole thing is runnable by a non-technical rep or an AI agent from a single command.
+A lightweight sales pipeline tool built for Fleek's UK vintage clothing reseller outreach — runnable by a non-technical rep, a BDR agent, or reviewed via the dashboard. Every day it scores and sequences leads across two channels — Instagram DM for individual resellers, capped at 40 sends a day, and email/call/visit for bricks-and-mortar shops, which has no such cap — runs each lead through a three-touch cadence spaced 3 days apart, drafts personalised outreach via the Anthropic API, and writes ready-to-send outputs for a human to review before hitting send. The design is deliberately simple: one idempotent script, a SQLite state ledger that prevents double-contacting and tracks touch sequences, and a drafting layer that adapts tone by touch number and falls back to safe templates rather than silently failing.
 
 ---
 
-## Quick Start
+## Quick Start — Dashboard
 
 ```bash
 git clone https://github.com/chmcbain-design/CHM-Fleek-GTM.git
 cd CHM-Fleek-GTM
 
+# Mac / Linux
+python3 -m pip install -r requirements.txt
+streamlit run app.py
+
+# Windows
+py -m pip install -r requirements.txt
+streamlit run app.py
+```
+
+Then open **http://localhost:8501** in your browser.
+
+You'll land on four tabs — **DM Queue**, **Shop Actions**, **Follow-ups**, **System / Scale** — and a **Run controls** panel in the sidebar with buttons to reset the book, ingest new leads, and jump the cadence forward to a specific touch date. Every action shows a live run report straight in the page. The dashboard calls the engine automatically — no terminal commands needed during normal use; it only ever reads `today_dms.csv`, `shops_actions.csv`, and `pipeline.db`, and runs `run_daily.py` as a subprocess on your behalf. It never reimplements engine logic.
+
+---
+
+## Dashboard Walkthrough
+
+A reviewer or first-time demo should click through these four steps in the sidebar, in order:
+
+1. **Click "🗑 Reset & start fresh (Day 1)"**, then confirm — ingests the 265-lead day-one book, scores it, and queues today's 40 DMs and shop actions.
+2. **Click "📥 Drop day-2 leads & run"** — drops in the day-2 batch (26 new leads, 4 duplicates caught), scores and drafts again; the new shop leads get emailed immediately, and the Shop Actions tab shows them at the top.
+3. **Click "Touch 2 due — [date]"** (inside the **📖 Demo guide** panel) — advances the cadence to the date the original cohort's follow-up is actually due; touch-2 DMs appear in the queue with a tone-adjusted nudge.
+4. **Click "Touch 3 due — [date]"** — advances again to the final touch's due date; touch-3 DMs go out with a graceful exit message. (Leads get marked parked on the *next* run after this one, once their third touch has been sent — the run report's "Parked today" line will show it then.)
+
+The Demo guide panel computes the touch-2/3 dates from the actual book state (`pipeline.db`), not a fixed offset — they're correct however many days have actually passed since Day 1.
+
+---
+
+## Terminal Use (Advanced)
+
+The dashboard is the recommended way to run and review the pipeline. The terminal is still fully supported underneath it — useful for automation, scripting, CI, or an AI agent invoking the pipeline directly without a browser.
+
+```bash
 # Mac / Linux
 python3 -m pip install -r requirements.txt
 python3 run_daily.py --no-api
@@ -45,7 +78,7 @@ copy .env.example .env
 py run_daily.py
 ```
 
-**Requirements:** Python 3.9+, pandas, openpyxl, anthropic, python-dotenv. See `requirements.txt`.
+**Requirements:** Python 3.9+, pandas, openpyxl, anthropic, python-dotenv, streamlit. See `requirements.txt`.
 
 ---
 
@@ -61,16 +94,16 @@ py run_daily.py
 
 5. **Draft with validation** — for every actioned lead, the Anthropic API (`claude-haiku-4-5-20251001`) generates a personalised draft. Each draft is validated in code before being accepted: must contain the exact @handle or contact first name; must contain no invented @mentions; must reference any unanswered inbound question; must use a `[rep: ...]` placeholder if the question touches Fleek's commercial specifics (fees, brands, shipping, etc.). A failing draft gets one retry with the failure explained; if it fails again, a safe template is used and the row is flagged `template_fallback`. Drafts are tone-adjusted by touch: touch 1 is a fresh introduction; touch 2 is a short, light nudge referencing the prior message; touch 3 is a graceful final check with an explicit easy out.
 
-6. **Outputs** — `today_dms.csv` (top 40 resellers, scored, with draft messages) and `shops_actions.csv` (all active shops, sequenced by city, with draft messages). Both are UTF-8 BOM encoded for Excel compatibility.
+6. **Outputs** — `today_dms.csv` (top 40 resellers, scored, with draft messages) and `shops_actions.csv` (all active shops, sequenced by city, with draft messages). Both are UTF-8 BOM encoded for Excel compatibility. The dashboard reads both directly; nothing about them changes when viewed through the UI versus opened in Excel.
 
 ---
 
 ## Daily workflow
 
 ```
-1. Drop any updated lead files into inbox/
-2. Mac/Linux: python3 run_daily.py   |   Windows: py run_daily.py
-3. Open today_dms.csv and shops_actions.csv
+1. Drop any updated lead files into inbox/ (or use "Drop day-2 leads & run" in the dashboard)
+2. Run the pipeline — dashboard sidebar, or: python3 run_daily.py
+3. Review today_dms.csv and shops_actions.csv — in the dashboard tabs, or open the CSVs directly
 4. Review drafts — fill in any [rep: ...] placeholders
 5. Send approved messages
 6. When a lead replies: update their stage / last_touch_date in the CRM,
@@ -86,7 +119,7 @@ The script is safe to re-run: the ledger tracks what has already been actioned, 
 
 - **`source` is the authoritative classifier; `handle` is a secondary heuristic** — `source == "physical"` always forces `lead_type = "shop"` regardless of whether the lead has an Instagram handle. This is intentional: a physical store may well have an Instagram presence. The secondary rule (has handle → reseller) is accurate for the vast majority of leads but has a known edge case: a physical shop discovered via Instagram and entered without `source = "physical"` would be misclassified as a reseller. The correct fix for such cases is to enter `source` accurately in the CRM — the `SOURCE_MAP` in `normalise_source()` already normalises "physical store", "google maps", "in-person", and similar labels. Do not rely on handle absence as a signal that a lead is a physical shop.
 
-- **Email resellers are routed to the email channel, not DM** — resellers (`lead_type = "reseller"`) who have a verified email address (`has_email = True`) are removed from the DM scoring pool entirely and instead receive email actions in `shops_actions.csv`. They follow the same three-touch cadence (3-day window) as DM resellers. This prevents them from competing for the 40 DM slots, which are reserved for no-email resellers where Instagram DM is the only viable channel. `store_name` in the output is set to `contact_name` if available, or `@handle` otherwise.
+- **Email resellers are routed to the email channel, not DM** — resellers (`lead_type = "reseller"`) who have a verified email address (`has_email = True`) are removed from the DM scoring pool entirely and instead receive email actions in `shops_actions.csv`. They follow the same three-touch cadence (3-day window) as DM resellers. This prevents them from competing for the 40 DM slots, which are reserved for no-email resellers where Instagram DM is the only viable channel. `store_name` in the output is set to `contact_name` if available, or `@handle` otherwise. The dashboard's Shop Actions tab groups these under "Email-routed resellers", separate from physical shops.
 
 - **Conversation state weighted heaviest (40%)** — a lead with an unanswered inbound question is actively waiting; scoring it at 95/100 and prioritising it above cold high-spend leads reflects the real conversion logic: warm intent converts faster than raw spend potential.
 
@@ -99,6 +132,8 @@ The script is safe to re-run: the ledger tracks what has already been actioned, 
 - **Commercial questions force `[rep: ...]`** — the model doesn't know Fleek's accepted brands, fee structures, or shipping terms. Letting it invent an answer would send false information to a lead. The validation layer makes it structurally impossible for an invented commercial answer to reach the output.
 
 - **£9k spend values flagged as capped, £120 as unverified** — the source data caps reported spend at £9,000 (40 leads hit this exactly) and uses £120 as a default placeholder. The reason string and spend label flag both cases so a BDR knows which spend figures to trust.
+
+- **The dashboard is a read-only view layer over the same engine** — `app.py` never reimplements scoring, cadence, or drafting logic. It reads `today_dms.csv`, `shops_actions.csv`, and `pipeline.db`, and its sidebar controls invoke `run_daily.py` as a subprocess exactly as you would from the terminal. Anything the dashboard shows is equally derivable from the raw CSVs and the run report.
 
 ---
 
