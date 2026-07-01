@@ -374,6 +374,18 @@ def merge_into_book(new_df: pd.DataFrame, conn: sqlite3.Connection) -> dict:
                 if _is_null(current.get(col)) and not _is_null(row.get(col)):
                     new_fields[col] = row[col]
 
+            # CRM-authoritative refresh: if the incoming row carries a strictly
+            # newer last_touch_date, the CRM has been updated since we last saw
+            # this lead (e.g. a reply was logged). Take the newer date and the
+            # fields a rep would have updated alongside it. Without this, the
+            # reply-reset in score_and_output can never fire for existing leads.
+            inc_d = _to_date(row.get("last_touch_date"))
+            cur_d = _to_date(current.get("last_touch_date"))
+            if inc_d and (not cur_d or inc_d > cur_d):
+                for col in ("last_touch_date", "stage", "last_inbound_text", "num_touches"):
+                    if not _is_null(row.get(col)):
+                        new_fields[col] = row[col]
+
             if new_fields:
                 # If email enriched (null → value), propagate to has_email flag
                 if "email" in new_fields and not _is_null(new_fields["email"]):
