@@ -652,3 +652,52 @@ if __name__ == "__main__":
         sys.exit(1)
     else:
         print(f"All {len(tests)} tests passed.")
+
+
+# ── Reply-reset regression (found by the extensions repo's e2e test) ──────────
+
+def test_merge_refreshes_crm_authoritative_fields_on_newer_date():
+    """
+    Regression: merge_into_book only null-filled duplicate fields, so a
+    re-ingested lead carrying a newer last_touch_date (the rep logged a reply
+    in the CRM) never updated the book. score_and_output's reply-reset
+    compares cadence dates against the book, so the documented reset could
+    never fire for an existing lead. A duplicate with a strictly newer
+    last_touch_date must refresh last_touch_date, stage, last_inbound_text
+    and num_touches.
+    """
+    conn = _merge_db()
+    conn.execute(
+        "INSERT INTO leads (lead_id, handle, stage, last_touch_date, last_inbound_text) "
+        "VALUES ('E101', 'replyer', 'Contacted', '2026-06-20', NULL)")
+    conn.commit()
+
+    incoming = pd.DataFrame([_make_lead(
+        lead_id="E101", handle="replyer", stage="Replied",
+        last_touch_date="2026-07-03", last_inbound_text="keen, asked about fees")])
+    stats = merge_into_book(incoming, conn)
+
+    assert stats["duplicates"] == 1
+    row = conn.execute("SELECT * FROM leads WHERE lead_id='E101'").fetchone()
+    assert row["last_touch_date"] == "2026-07-03", "newer CRM date must be taken"
+    assert row["stage"] == "Replied"
+    assert row["last_inbound_text"] == "keen, asked about fees"
+
+
+def test_merge_ignores_stale_date_on_duplicate():
+    """A duplicate carrying an OLDER last_touch_date (e.g. the day-2 batch
+    re-lists a lead from a stale export) must NOT regress the book."""
+    conn = _merge_db()
+    conn.execute(
+        "INSERT INTO leads (lead_id, handle, stage, last_touch_date) "
+        "VALUES ('E102', 'steady', 'Replied', '2026-07-01')")
+    conn.commit()
+
+    incoming = pd.DataFrame([_make_lead(
+        lead_id="E102", handle="steady", stage="Contacted",
+        last_touch_date="2026-05-01")])
+    merge_into_book(incoming, conn)
+
+    row = conn.execute("SELECT * FROM leads WHERE lead_id='E102'").fetchone()
+    assert row["last_touch_date"] == "2026-07-01", "stale date must not overwrite"
+    assert row["stage"] == "Replied", "stale stage must not overwrite"
